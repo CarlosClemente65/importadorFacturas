@@ -66,5 +66,8 @@
   <ItemGroup>
     <Content Include="dse.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="dse_dlls\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
