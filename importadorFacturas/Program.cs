@@ -10,9 +10,6 @@ namespace importadorFacturas
     {
         static void Main(string[] args)
         {
-            // Configurar el evento AssemblyResolve para cargar las bibliotecas desde la carpeta dse_dlls
-            AppDomain.CurrentDomain.AssemblyResolve += ResolverBiblioteca;
-
             string ficheroEntrada = string.Empty;
             string ficheroSalida = string.Empty;
             string tipoProceso = string.Empty;
@@ -23,8 +20,8 @@ namespace importadorFacturas
                 return;
             }
 
-            //Solo se pasan 2 parametros: el primero es el tipo de proceso que se puede usar para futuras importaciones, el segundo es el fichero excel a leer
-            //Nota: el tipo de proceso debe ser una letra (E para ventas y R para compras) seguido de dos numeros (hasta 99 importaciones diferentes)
+            //Se pueden pasar 3 parametros: el primero es el tipo de proceso que se puede usar para futuras importaciones, el segundo es el fichero excel a leer, y el tercero es el fichero de salida aunque este es opcional
+            
             tipoProceso = args[0];
 
             ficheroEntrada = args[1];
@@ -40,46 +37,33 @@ namespace importadorFacturas
             procesarFichero(tipoProceso, ficheroEntrada, ficheroSalida);
 
         }
-        
+
 
         private static void procesarFichero(string tipoProceso, string ficheroEntrada, string ficheroSalida)
         {
-            //Metodo para leer el fichero Excel y procesar los datos
+            //Metodo para leer el fichero Excel y procesar los datos segun el tipo pasado por parametro
+
+            //Nota: el tipo de proceso debe ser una letra (E para ventas y R para compras) seguido de dos numeros (hasta 99 importaciones diferentes)
 
             Procesos proceso = new Procesos();
 
             switch (tipoProceso)
             {
                 case "E01":
-                    procesoAlcasar metodo = new procesoAlcasar();
+                    //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
+                    
+                    //Inicializa campos
+                    procesoAlcasal metodo = new procesoAlcasal();
 
+                    //Procesar los datos del fichero de Excel
                     metodo.emitidasAlcasar(ficheroEntrada);
 
-                    List<ingresosAlcasar> datosProcesados = ingresosAlcasar.obtenerDatos();
+                    //Carga los datos procesados para pasarlos al csv
+                    List<facturasEmitidas> datosProcesados = facturasEmitidas.obtenerDatos();
                     proceso.grabarCsv(ficheroSalida, datosProcesados);
 
                     break;
             }
         }
-
-        private static Assembly ResolverBiblioteca(object sender, ResolveEventArgs args)
-        {
-            // Carpeta donde se almacenan las bibliotecas
-            string carpetaBibliotecas = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dse_dlls");
-
-            // Nombre de la biblioteca que se intenta cargar
-            string nombreBiblioteca = new AssemblyName(args.Name).Name + ".dll";
-
-            // Ruta completa a la biblioteca
-            string rutaBiblioteca = Path.Combine(carpetaBibliotecas, nombreBiblioteca);
-
-            if (File.Exists(rutaBiblioteca))
-            {
-                return Assembly.LoadFrom(rutaBiblioteca);
-            }
-
-            return null;
-        }
-
     }
 }

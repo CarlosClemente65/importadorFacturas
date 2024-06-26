@@ -46,8 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Metodos\ingresosAlcasar.cs" />
-    <Compile Include="Metodos\procesoAlcasar.cs" />
+    <Compile Include="Metodos\facturasEmitidas.cs" />
+    <Compile Include="Metodos\procesoAlcasal.cs" />
     <Compile Include="Procesos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,4 +70,14 @@
     <Folder Include="dse_dlls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)dse_dlls" mkdir "$(TargetDir)dse_dlls"
+xcopy "$(TargetDir)*.dll" "$(TargetDir)dse_dlls\" /Y /I
+del "$(TargetDir)*.dll"
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -34,9 +34,8 @@ namespace importadorFacturas
 
                 foreach(var fila in filas)
                 {
+                    //Procesa cada columna en la fila y almacena el valor en la lista datosFilas
                     var datosFilas = new Dictionary<int, string>();
-
-                    //Saltamos la fila de inicio que sera la cabecera de los datos
                     foreach(var columna in cabecera)
                     {
                         var cell = fila.Cell(columna);
@@ -54,6 +53,7 @@ namespace importadorFacturas
             //Metodo para grabar el fichero de salida en csv
             var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
+                //Se almacena sin cabecera y con el separador de punto y coma
                 HasHeaderRecord = false,
                 Delimiter = ";"
             };
