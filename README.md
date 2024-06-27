@@ -4,8 +4,11 @@
 ### Desarrollado por Carlos Clemente (06-2024)
 
 ### Control de versiones
- - Version 1.0 - Primera version funcional
- - Version 1.1 - Añadida funcionalidad para agrupar por fechas (tipo E01)
+ - Version 1.0 - Primera version funcional.
+ - Version 1.1 - Añadida funcionalidad para agrupar por fechas (tipo E01).
+ - Version 1.2 - Añadidos campos en facturas emitidas para recargo de IVA y retencion. 
+				 Revision procesoAlcasal para ajustes de varios campos.
+				 Añadida funcionalidad para obtener fichero de errores en el proceso.
 <br>
 
 **Instrucciones:**
