@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Metodos\facturasEmitidas.cs" />
     <Compile Include="Metodos\procesoAlcasal.cs" />
+    <Compile Include="Metodos\Utilidades.cs" />
     <Compile Include="Procesos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -69,7 +69,7 @@ namespace importadorFacturas
                     Delimiter = ";"
                 };
 
-                using (var writer = new StreamWriter(ficheroSalida, false, System.Text.Encoding.UTF8))
+                using (var writer = new StreamWriter(ficheroSalida, false, System.Text.Encoding.Default))
                 {
                     using (var csv = new CsvWriter(writer, csvConfig))
                     {

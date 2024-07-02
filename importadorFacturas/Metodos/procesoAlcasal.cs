@@ -1,4 +1,5 @@
-﻿using System;
+﻿using importadorFacturas.Metodos;
+using System;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -6,6 +7,7 @@ namespace importadorFacturas
 {
     public class procesoAlcasal
     {
+        Utilidades util = new Utilidades();
         public StringBuilder emitidasAlcasar(string ficheroEntrada)
         {
             //Metodo para procesar los datos del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
@@ -103,17 +105,17 @@ namespace importadorFacturas
 
                             case 5:
                                 //Nombre factura
-                                if (columna.Value != "N/D") ingreso.nombreFactura = columna.Value.ToUpper();
+                                if (columna.Value != "N/D") ingreso.nombreFactura = util.quitaRaros(columna.Value.ToUpper());
                                 break;
 
                             case 6:
                                 //Apellidos factura
-                                if (columna.Value != "N/D") ingreso.apellidoFactura = columna.Value.ToUpper();
+                                if (columna.Value != "N/D") ingreso.apellidoFactura = util.quitaRaros(columna.Value.ToUpper());
                                 break;
 
                             case 7:
                                 //Direccion factura
-                                if (columna.Value != "N/D") ingreso.direccionFactura = columna.Value.ToUpper().Replace(";", ",");
+                                if (columna.Value != "N/D") ingreso.direccionFactura = util.quitaRaros(columna.Value.ToUpper().Replace(";", ","));
                                 break;
 
                             case 8:
