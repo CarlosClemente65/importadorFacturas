@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration;
-using CsvHelper;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System;
+using static importadorFacturas.Facturas;
 
 namespace importadorFacturas
 {
@@ -55,7 +55,7 @@ namespace importadorFacturas
             return datosExcel;
         }
 
-        public StringBuilder grabarCsv<T>(string ficheroSalida, List<T> datos)
+        public StringBuilder grabarCsv<T>(string ficheroSalida, List<T> datos, string[]camposAexportar)
         {
             var resultado = new StringBuilder();
 
@@ -69,11 +69,40 @@ namespace importadorFacturas
                     Delimiter = ";"
                 };
 
-                using (var writer = new StreamWriter(ficheroSalida, false, System.Text.Encoding.Default))
+                //var encoding = new System.Text.UTF8Encoding(false);
+                using (var writer = new StreamWriter(ficheroSalida, false, Encoding.Default))
                 {
-                    using (var csv = new CsvWriter(writer, csvConfig))
+                    foreach(var dato  in datos)
                     {
-                        csv.WriteRecords(datos);
+                        var fila = new List<string>();
+
+                        // Filtrar las propiedades que están en el array propiedadesExportables y ordenar por el atributo OrdenCsv
+                        var propiedades = typeof(T).GetProperties()
+                            .Where(prop => camposAexportar.Contains(prop.Name)) // Filtra por el nombre de propiedad
+                            .Where(prop => prop.GetCustomAttributes(typeof(OrdenCsvAttribute), false).Any()) // Asegura que la propiedad tenga el atributo
+                            .OrderBy(prop => ((OrdenCsvAttribute)prop.GetCustomAttributes(typeof(OrdenCsvAttribute), false).First()).Orden); // Ordena por el valor del atributo
+
+
+                        // Recorre las propiedades y añade solo las que tienen valor
+                        foreach(var propiedad in propiedades)
+                        {
+                            var valor = propiedad.GetValue(dato);
+                            //Añade el valor de la propiedad a la fila
+                            if(valor != null)
+                            {
+                                fila.Add(valor.ToString());
+                            }
+                            else
+                            {
+                                fila.Add(""); // Si no tiene valor, se añade una celda vacía
+                            }
+                        }
+
+                        // Escribe la fila al archivo
+                        if(fila.Count > 0)
+                        {
+                            writer.WriteLine(string.Join(csvConfig.Delimiter, fila));
+                        }
                     }
                 }
                 return resultado;
