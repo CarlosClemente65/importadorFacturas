@@ -1,10 +1,6 @@
-﻿using CsvHelper;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using System;
+﻿using importadorFacturas.Metodos;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 
@@ -12,13 +8,16 @@ namespace importadorFacturas
 {
     internal class Program
     {
+        static string ficheroEntrada = string.Empty;
+        static string ficheroSalida = string.Empty;
+        static string ficheroErrores = string.Empty;
+        static string tipoProceso = string.Empty;
+
+        //Instanciacion de las utilidades para acceso a los metodos
+        public static Utilidades utiles = new Utilidades();
         static void Main(string[] args)
         {
-            string ficheroEntrada = string.Empty;
-            string ficheroSalida = string.Empty;
-            string tipoProceso = string.Empty;
-            
-            if (args.Length == 0)
+            if(args.Length == 0)
             {
                 return;
             }
@@ -28,17 +27,17 @@ namespace importadorFacturas
             tipoProceso = args[0];
 
             ficheroEntrada = args[1];
-            if (!File.Exists(ficheroEntrada)) return;
+            if(!File.Exists(ficheroEntrada)) return;
 
             ficheroSalida = Path.ChangeExtension(ficheroEntrada, "csv");
-            if (args.Length > 2)
+            if(args.Length > 2)
             {
                 ficheroSalida = args[2];
-                if (File.Exists(ficheroSalida)) File.Delete(ficheroSalida);
             }
+            utiles.ControlFicheros(ficheroSalida);
 
-            string ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
-            if (File.Exists(ficheroErrores)) File.Delete(ficheroErrores);
+            ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
+            utiles.ControlFicheros(ficheroErrores);
 
             procesarFichero(tipoProceso, ficheroEntrada, ficheroSalida);
 
@@ -47,15 +46,21 @@ namespace importadorFacturas
 
         private static void procesarFichero(string tipoProceso, string ficheroEntrada, string ficheroSalida)
         {
-            StringBuilder resultado = new StringBuilder();
             //Metodo para leer el fichero Excel y procesar los datos segun el tipo pasado por parametro
+            //Nota: el tipo de proceso debe ser una letra (E para emitidas y R para recibidas) seguido de dos numeros (hasta 99 importaciones diferentes de cada tipo)
 
-            //Nota: el tipo de proceso debe ser una letra (E para ventas y R para compras) seguido de dos numeros (hasta 99 importaciones diferentes)
+            //Variable que recoge el texto devuelto en el metodo si se ha producido algun error en el procesado
+            StringBuilder resultado = new StringBuilder();
 
             Procesos proceso = new Procesos();
 
-            switch (tipoProceso)
+            switch(tipoProceso)
             {
+                case "E00":
+                    //Facturas emitidas con formato 5 IVAs de diagram (pendiente de desarrollo)
+
+                    break;
+
                 case "E01":
                     //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
 
@@ -66,20 +71,54 @@ namespace importadorFacturas
                     resultado = metodo.emitidasAlcasar(ficheroEntrada);
 
                     //Carga los datos procesados para pasarlos al csv
-                    List<facturasEmitidas> datosProcesados = facturasEmitidas.obtenerDatos();
-                    if (datosProcesados.Count > 0)
+                    List<EmitidasE01> datosProcesados = EmitidasE01.ObtenerDatos();
+                    if(datosProcesados.Count > 0)
                     {
-                        resultado = proceso.grabarCsv(ficheroSalida, datosProcesados);
+                        //Relacion de nombres de propiedades que se van a incluir en el fichero de salida
+                        string[] PropiedadesAexportar = new string[]
+                        {
+                            "fechaFactura",
+                            "serieFactura",
+                            "numeroFactura",
+                            "referenciaFactura",
+                            "baseFactura1",
+                            "porcentajeIva1",
+                            "cuotaIva1",
+                            "porcentajeRecargo1",
+                            "cuotaRecargo1",
+                            "baseIrpf",
+                            "porcentajeIrpf",
+                            "cuotaIrpf",
+                            "totalFactura",
+                            "primerNumero",
+                            "ultimoNumero",
+                            "contadorFacturas",
+                            "nifFactura",
+                            "apellidoFactura",
+                            "nombreFactura",
+                            "direccionFactura",
+                            "codPostalFactura"
+                        };
+                        resultado = proceso.grabarCsv(ficheroSalida, datosProcesados, PropiedadesAexportar);
                     }
 
+                    break;
+
+                case "R00":
+                    //Facturas recibidas con formato 5 IVAs de diagram (pendiente de desarrollo)
+
+                    break;
+
+                default:
+                    //Si no se pasa un tipo de proceso correcto, se graba el fichero de errores.
+                    utiles.GrabarFichero(ficheroErrores, "El tipo de proceso no es correcto");
                     break;
             }
 
             //Grabar el registro de errores si se ha producido alguno
-            if (resultado.Length > 0)
+            if(resultado.Length > 0)
             {
-                string rutaLog = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
-                File.WriteAllText(rutaLog, resultado.ToString(), Encoding.UTF8);
+                utiles.GrabarFichero(ficheroErrores, resultado.ToString());
             }
         }
     }
