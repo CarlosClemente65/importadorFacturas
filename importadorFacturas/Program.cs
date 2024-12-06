@@ -58,7 +58,11 @@ namespace importadorFacturas
             {
                 case "E00":
                     //Facturas emitidas con formato 5 IVAs de diagram (pendiente de desarrollo)
-
+                    //Inicializa campos
+                    ProcesoDiagram procesoDiagram = new ProcesoDiagram();
+                    /*
+                     * TO_DO. Pendiente desarrollar (hacer similar al E01)
+                     */
                     break;
 
                 case "E01":
@@ -74,32 +78,9 @@ namespace importadorFacturas
                     List<EmitidasE01> datosProcesados = EmitidasE01.ObtenerDatos();
                     if(datosProcesados.Count > 0)
                     {
-                        //Relacion de nombres de propiedades que se van a incluir en el fichero de salida
-                        string[] PropiedadesAexportar = new string[]
-                        {
-                            "fechaFactura",
-                            "serieFactura",
-                            "numeroFactura",
-                            "referenciaFactura",
-                            "baseFactura1",
-                            "porcentajeIva1",
-                            "cuotaIva1",
-                            "porcentajeRecargo1",
-                            "cuotaRecargo1",
-                            "baseIrpf",
-                            "porcentajeIrpf",
-                            "cuotaIrpf",
-                            "totalFactura",
-                            "primerNumero",
-                            "ultimoNumero",
-                            "contadorFacturas",
-                            "nifFactura",
-                            "apellidoFactura",
-                            "nombreFactura",
-                            "direccionFactura",
-                            "codPostalFactura"
-                        };
-                        resultado = proceso.grabarCsv(ficheroSalida, datosProcesados, PropiedadesAexportar);
+                        //Array de propiedades a exportar de este tipo
+                        string []camposAexportar = EmitidasE01.PropiedadesAexportar;
+                        resultado = proceso.grabarCsv(ficheroSalida, datosProcesados, camposAexportar);
                     }
 
                     break;
@@ -111,7 +92,7 @@ namespace importadorFacturas
 
                 default:
                     //Si no se pasa un tipo de proceso correcto, se graba el fichero de errores.
-                    utiles.GrabarFichero(ficheroErrores, "El tipo de proceso no es correcto");
+                    utiles.GrabarFichero(ficheroErrores, $"El tipo de proceso {tipoProceso} no es correcto");
                     break;
             }
 

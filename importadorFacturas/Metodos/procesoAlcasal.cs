@@ -7,20 +7,51 @@ namespace importadorFacturas
 {
     public class EmitidasE01 : Facturas
     {
+
         //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv
-        [OrdenCsv(351)]
+        [OrdenCsv(301)]
         public string primerNumero { get; set; }
 
-        [OrdenCsv(352)]
+        [OrdenCsv(302)]
         public string ultimoNumero { get; set; }
 
-        [OrdenCsv(353)]
+        [OrdenCsv(303)]
         public int contadorFacturas { get; set; }
 
         //Lista que recoge todas las facturas que luego se exportaran
         public static List<EmitidasE01> ListaIngresosE01 { get; set; } = new List<EmitidasE01>();
 
+        //Relacion de propiedades que se incluiran en el fichero de salida
+        public static string[] PropiedadesAexportar;
 
+        public EmitidasE01()
+        {
+            //Constructor de la clase que asigna los nombres de las propiedades que se van a incluir en el fichero de salida
+            PropiedadesAexportar = new string[]
+            {
+                            "fechaFactura",
+                            "serieFactura",
+                            "numeroFactura",
+                            "referenciaFactura",
+                            "baseFactura1",
+                            "porcentajeIva1",
+                            "cuotaIva1",
+                            "porcentajeRecargo1",
+                            "cuotaRecargo1",
+                            "baseIrpf",
+                            "porcentajeIrpf",
+                            "cuotaIrpf",
+                            "totalFactura",
+                            "primerNumero",
+                            "ultimoNumero",
+                            "contadorFacturas",
+                            "nifFactura",
+                            "apellidoFactura",
+                            "nombreFactura",
+                            "direccionFactura",
+                            "codPostalFactura"
+            };
+        }
 
         public static List<EmitidasE01> ObtenerDatos()
         {
