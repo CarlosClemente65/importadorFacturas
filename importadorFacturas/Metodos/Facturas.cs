@@ -214,19 +214,31 @@ namespace importadorFacturas
 
         public static List<Facturas> ListaFacturas { get; set; }
 
-        public static Dictionary<int, string> mapeoColumnas;
+        public static Dictionary<int, string> MapeoColumnas;
+
+        public static string[] ColumnasAexportar { get; set; }
 
         public Facturas()
         {
             //Constructor de la clase que crea una nueva lista de facturas y asigna los defectos de varios campos
-            ListaFacturas = new List<Facturas>();
+
 
             //Defectos de los campos
             facturaDeducible = 'S';
             paisFactura = "ES";
 
+        }
+
+
+        public static List<Facturas> obtenerDatos()
+        {
+            return ListaFacturas;
+        }
+
+        public static void MapeoFacturas()
+        {
             //Asigna a cada columna la propiedad que le corresponde (estan en el mismo orden que la plantilla de Excel con los campos)
-            mapeoColumnas = new Dictionary<int, string>
+            MapeoColumnas = new Dictionary<int, string>
             {
                 {1, "fechaFactura" },
                 {2, "serieFactura" },
@@ -294,12 +306,6 @@ namespace importadorFacturas
                 {64, "porcentajeRecargo9" },
                 {65, "cuotaRecargo9" }
             };
-        }
-
-
-        public static List<Facturas> obtenerDatos()
-        {
-            return ListaFacturas;
         }
 
 

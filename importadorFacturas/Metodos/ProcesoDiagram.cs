@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace importadorFacturas.Metodos
@@ -13,11 +14,17 @@ namespace importadorFacturas.Metodos
             StringBuilder resultado = new StringBuilder();
 
             Procesos proceso = new Procesos();
-            int filaInicio = 1; //Hay que pasar la fila de la cabecera para contar las columnas
+            int filaInicio = 3; //Hay que pasar la fila de la cabecera para contar las columnas
             int columnaInicio = 1; //Los datos empiezan en la columna 1
-            int columnaFinal = 66; //Para no tener que procesar todas las columnas se lee hasta la 66 que tiene el total factura
+            int columnaFinal = 65; //Para no tener que procesar todas las columnas se lee hasta la 66 que tiene el total factura
 
             var datosExcel = proceso.leerExcel(ficheroEntrada, filaInicio, columnaInicio, columnaFinal);
+
+            //Facturas.MapeoFacturas();
+
+            Facturas.MapeoColumnas = Procesos.LeerCsv(Program.ficheroColumnas, out string[] propiedades);
+            Facturas.ColumnasAexportar = propiedades;
+            Facturas.ListaFacturas = new List<Facturas>();
 
             var numFila = 0; //Controla la fila en la que se ha podido producir un error
             var numColumna = 0;//Controla la columna en la que se ha podido producir un error
@@ -27,12 +34,14 @@ namespace importadorFacturas.Metodos
             {
                 foreach(var fila in datosExcel)
                 {
-                    //Instanciacion de la clase para cada linea
                     var factura = new Facturas();
+                    numFila++;
+                    //Instanciacion de la clase para cada linea
 
                     //Asignar valores a las propiedades
-                    foreach(var columna in Facturas.mapeoColumnas)
+                    foreach(var columna in Facturas.MapeoColumnas)
                     {
+                        numColumna++;
                         // columna.Key es el índice de la columna
                         // columna.Value es el nombre de la propiedad
                         if(fila.TryGetValue(columna.Key, out var valorCelda))
@@ -42,8 +51,25 @@ namespace importadorFacturas.Metodos
 
                             if(propiedad != null && propiedad.CanWrite)
                             {
-                                // Convertir el valor al tipo de la propiedad y asignarlo
-                                var valorPropiedad = Convert.ChangeType(valorCelda, propiedad.PropertyType);
+                                // Verificar si el valor es null antes de convertir y asignar
+                                object valorPropiedad = null;
+
+                                if(!string.IsNullOrEmpty(valorCelda))
+                                {
+                                    //Comprobar si el valorCelda es un numero
+                                    bool esNumero = double.TryParse(valorCelda, out double numero);
+
+                                    //Si no es un numero, intenta convertirlo a una fecha
+                                    if(!esNumero && DateTime.TryParse(valorCelda, out DateTime fecha))
+                                    {
+                                        valorPropiedad = fecha.ToString("dd.MM.yyyy");
+                                    }
+                                    else
+                                    {
+                                        // Convertir el valor al tipo de la propiedad y asignarlo
+                                        valorPropiedad = Convert.ChangeType(valorCelda, propiedad.PropertyType);
+                                    }
+                                }
                                 propiedad.SetValue(factura, valorPropiedad);
                             }
                         }

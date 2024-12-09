@@ -8,10 +8,11 @@ namespace importadorFacturas
 {
     internal class Program
     {
-        static string ficheroEntrada = string.Empty;
-        static string ficheroSalida = string.Empty;
-        static string ficheroErrores = string.Empty;
-        static string tipoProceso = string.Empty;
+        public static string ficheroEntrada = string.Empty;
+        public static string ficheroColumnas = string.Empty;
+        public static string ficheroSalida = string.Empty;
+        public static string ficheroErrores = "errores.txt";
+        public static string tipoProceso = string.Empty;
 
         //Instanciacion de las utilidades para acceso a los metodos
         public static Utilidades utiles = new Utilidades();
@@ -22,25 +23,41 @@ namespace importadorFacturas
                 return;
             }
 
-            //Se pueden pasar 3 parametros: el primero es el tipo de proceso que se puede usar para futuras importaciones, el segundo es el fichero excel a leer, y el tercero es el fichero de salida aunque este es opcional
+            //Se pueden pasar 4 parametros: el primero es el tipo de proceso que se puede usar para futuras importaciones, el segundo es el fichero excel a leer, el tercero es el fichero de salida aunque este es opcional y el cuarto es la configuracion de columnas del excel
 
             tipoProceso = args[0];
 
             ficheroEntrada = args[1];
-            if(!File.Exists(ficheroEntrada)) return;
-
-            ficheroSalida = Path.ChangeExtension(ficheroEntrada, "csv");
-            if(args.Length > 2)
+            if(!File.Exists(ficheroEntrada))
             {
-                ficheroSalida = args[2];
+                File.WriteAllText(ficheroErrores, "No existe el fichero de entrada");
+                return;
             }
-            utiles.ControlFicheros(ficheroSalida);
-
+            ficheroSalida = Path.ChangeExtension(ficheroEntrada, "csv");
             ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
             utiles.ControlFicheros(ficheroErrores);
 
-            procesarFichero(tipoProceso, ficheroEntrada, ficheroSalida);
+            int argumentos = args.Length;
 
+            switch(argumentos)
+            {
+                case 3:
+                    ficheroSalida = args[2];
+                    utiles.ControlFicheros(ficheroSalida);
+                    break;
+
+                case 4:
+                    ficheroColumnas = args[3];
+                    if(!File.Exists(ficheroColumnas))
+                    {
+                        File.WriteAllText(ficheroErrores, "No existe el fichero de configuracion de columnas");
+                        return;
+                    }
+
+                    break;
+            }
+
+            procesarFichero(tipoProceso, ficheroEntrada, ficheroSalida);
         }
 
 
@@ -60,9 +77,14 @@ namespace importadorFacturas
                     //Facturas emitidas con formato 5 IVAs de diagram (pendiente de desarrollo)
                     //Inicializa campos
                     ProcesoDiagram procesoDiagram = new ProcesoDiagram();
-                    /*
-                     * TO_DO. Pendiente desarrollar (hacer similar al E01)
-                     */
+                    resultado = procesoDiagram.EmitidasDiagram(ficheroEntrada);
+                    List<Facturas> facturasDiagram = Facturas.obtenerDatos();
+                    if(facturasDiagram.Count > 0)
+                    {
+                        //Array de propiedades a exportar de este tipo
+                        string[] camposAexportar = Facturas.ColumnasAexportar;
+                        resultado = proceso.grabarCsv(ficheroSalida, facturasDiagram, camposAexportar);
+                    }
                     break;
 
                 case "E01":
@@ -75,12 +97,12 @@ namespace importadorFacturas
                     resultado = metodo.emitidasAlcasar(ficheroEntrada);
 
                     //Carga los datos procesados para pasarlos al csv
-                    List<EmitidasE01> datosProcesados = EmitidasE01.ObtenerDatos();
-                    if(datosProcesados.Count > 0)
+                    List<EmitidasE01> facturasAlcasal = EmitidasE01.ObtenerDatos();
+                    if(facturasAlcasal.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
-                        string []camposAexportar = EmitidasE01.PropiedadesAexportar;
-                        resultado = proceso.grabarCsv(ficheroSalida, datosProcesados, camposAexportar);
+                        string[] camposAexportar = EmitidasE01.PropiedadesAexportar;
+                        resultado = proceso.grabarCsv(ficheroSalida, facturasAlcasal, camposAexportar);
                     }
 
                     break;
