@@ -126,7 +126,7 @@ namespace importadorFacturas
                             return;
                         }
 
-                        if(string.IsNullOrEmpty(ficheroSalida)) ficheroSalida = Path.ChangeExtension(ficheroEntrada, "csv");
+                        if(string.IsNullOrEmpty(ficheroSalida)) ficheroSalida =$"salida_{Path.GetFileNameWithoutExtension(ficheroEntrada)}.csv";
                         ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
                         utiles.ControlFicheros(ficheroErrores);
 
