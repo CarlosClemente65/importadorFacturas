@@ -1,4 +1,4 @@
-﻿using importadorFacturas.Metodos;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -13,9 +13,10 @@ namespace importadorFacturas
         public static string ficheroSalida = string.Empty;
         public static string ficheroErrores = "errores.txt";
         public static string tipoProceso = string.Empty;
+        public static int filaInicio = 1;
 
         //Instanciacion de las utilidades para acceso a los metodos
-        public static Utilidades utiles = new Utilidades();
+        public static Metodos.Utilidades utiles = new Metodos.Utilidades();
         static void Main(string[] args)
         {
             if(args.Length == 0)
@@ -23,48 +24,25 @@ namespace importadorFacturas
                 return;
             }
 
-            //Se pueden pasar 4 parametros: el primero es el tipo de proceso que se puede usar para futuras importaciones, el segundo es el fichero excel a leer, el tercero es el fichero de salida aunque este es opcional y el cuarto es la configuracion de columnas del excel
+            /* Parametros:
+             * entrada = fichero de entrada
+             * salida = fichero de salida (opcional)
+             * columnas = fichero con la configuracion de columnas que tiene el fichero de entrada (solo para el proceso de Diagram)
+             * proceso = tipo de proceso a ejecutar
+             * fila = fila de la cabecera con los nombres de las columnas. Nota: tiene que haber una fila que tenga todas las columnas rellenas para luego poder procesar bien los datos
+             * */
 
-            tipoProceso = args[0];
+            ProcesarArgumentos(args);
 
-            ficheroEntrada = args[1];
-            if(!File.Exists(ficheroEntrada))
-            {
-                File.WriteAllText(ficheroErrores, "No existe el fichero de entrada");
-                return;
-            }
-            ficheroSalida = Path.ChangeExtension(ficheroEntrada, "csv");
-            ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
-            utiles.ControlFicheros(ficheroErrores);
-
-            int argumentos = args.Length;
-
-            switch(argumentos)
-            {
-                case 3:
-                    ficheroSalida = args[2];
-                    utiles.ControlFicheros(ficheroSalida);
-                    break;
-
-                case 4:
-                    ficheroColumnas = args[3];
-                    if(!File.Exists(ficheroColumnas))
-                    {
-                        File.WriteAllText(ficheroErrores, "No existe el fichero de configuracion de columnas");
-                        return;
-                    }
-
-                    break;
-            }
-
-            procesarFichero(tipoProceso, ficheroEntrada, ficheroSalida);
+            procesarFichero();
         }
 
 
-        private static void procesarFichero(string tipoProceso, string ficheroEntrada, string ficheroSalida)
+
+        //Metodo para leer el fichero Excel y procesar los datos segun el tipo pasado por parametro
+        private static void procesarFichero()
         {
-            //Metodo para leer el fichero Excel y procesar los datos segun el tipo pasado por parametro
-            //Nota: el tipo de proceso debe ser una letra (E para emitidas y R para recibidas) seguido de dos numeros (hasta 99 importaciones diferentes de cada tipo)
+            //Nota: el tipo de proceso debe ser una letra (E para emitidas y R para recibidas) seguido de dos numeros dejando como reservados para Diagram el '00' (hasta 99 importaciones diferentes de cada tipo)
 
             //Variable que recoge el texto devuelto en el metodo si se ha producido algun error en el procesado
             StringBuilder resultado = new StringBuilder();
@@ -73,36 +51,35 @@ namespace importadorFacturas
 
             switch(tipoProceso)
             {
+                //Facturas emitidas con formato diagram
                 case "E00":
-                    //Facturas emitidas con formato 5 IVAs de diagram (pendiente de desarrollo)
                     //Inicializa campos
-                    ProcesoDiagram procesoDiagram = new ProcesoDiagram();
+                    Metodos.ProcesoDiagram procesoDiagram = new Metodos.ProcesoDiagram();
                     resultado = procesoDiagram.EmitidasDiagram(ficheroEntrada);
-                    List<Facturas> facturasDiagram = Facturas.obtenerDatos();
+                    List<Facturas> facturasDiagram = Facturas.ObtenerDatos();
                     if(facturasDiagram.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
                         string[] camposAexportar = Facturas.ColumnasAexportar;
-                        resultado = proceso.grabarCsv(ficheroSalida, facturasDiagram, camposAexportar);
+                        resultado = proceso.GrabarCsv(ficheroSalida, facturasDiagram, camposAexportar);
                     }
                     break;
 
+                //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
                 case "E01":
-                    //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
-
                     //Inicializa campos
                     procesoAlcasal metodo = new procesoAlcasal();
 
                     //Procesar los datos del fichero de Excel
-                    resultado = metodo.emitidasAlcasar(ficheroEntrada);
+                    resultado = metodo.EmitidasAlcasar(ficheroEntrada);
 
                     //Carga los datos procesados para pasarlos al csv
                     List<EmitidasE01> facturasAlcasal = EmitidasE01.ObtenerDatos();
                     if(facturasAlcasal.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = EmitidasE01.PropiedadesAexportar;
-                        resultado = proceso.grabarCsv(ficheroSalida, facturasAlcasal, camposAexportar);
+                        string[] camposAexportar = Facturas.ColumnasAexportar;//EmitidasE01.PropiedadesAexportar;
+                        resultado = proceso.GrabarCsv(ficheroSalida, facturasAlcasal, camposAexportar);
                     }
 
                     break;
@@ -122,6 +99,62 @@ namespace importadorFacturas
             if(resultado.Length > 0)
             {
                 utiles.GrabarFichero(ficheroErrores, resultado.ToString());
+            }
+        }
+
+        private static void ProcesarArgumentos(string[] argumentos)
+        {
+            foreach(string argumento in argumentos)
+            {
+                var partes = argumento.Split('=');
+                string nombre = string.Empty;
+                string valor = string.Empty;
+
+                if(partes.Length == 2)
+                {
+                    nombre = partes[0];
+                    valor = partes[1];
+                }
+
+                switch(nombre)
+                {
+                    case "entrada":
+                        ficheroEntrada = valor;
+                        if(!File.Exists(ficheroEntrada))
+                        {
+                            File.WriteAllText(ficheroErrores, "No existe el fichero de entrada");
+                            return;
+                        }
+
+                        if(string.IsNullOrEmpty(ficheroSalida)) ficheroSalida = Path.ChangeExtension(ficheroEntrada, "csv");
+                        ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
+                        utiles.ControlFicheros(ficheroErrores);
+
+                        break;
+
+                    case "salida":
+                        ficheroSalida = valor;
+                        utiles.ControlFicheros(ficheroSalida);
+                        break;
+
+                    case "columnas":
+                        ficheroColumnas = valor;
+                        if(!File.Exists(ficheroColumnas))
+                        {
+                            File.WriteAllText(ficheroErrores, "No existe el fichero de configuracion de columnas");
+                            return;
+                        }
+                        break;
+
+                    case "proceso":
+                        tipoProceso = valor;
+                        break;
+
+                    case "fila":
+                        filaInicio = Convert.ToInt32(valor);
+                        break;
+
+                }
             }
         }
     }

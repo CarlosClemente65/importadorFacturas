@@ -6,42 +6,45 @@ namespace importadorFacturas.Metodos
 {
     public class ProcesoDiagram
     {
+        //Metodo para procesar los datos de las emitidas de Diagram
         public StringBuilder EmitidasDiagram(string ficheroEntrada)
         {
-            //Metodo para procesar los datos de las emitidas de Diagram
-
             //Devuelve el resultado si hay algun error
             StringBuilder resultado = new StringBuilder();
 
             Procesos proceso = new Procesos();
-            int filaInicio = 3; //Hay que pasar la fila de la cabecera para contar las columnas
-            int columnaInicio = 1; //Los datos empiezan en la columna 1
-            int columnaFinal = 65; //Para no tener que procesar todas las columnas se lee hasta la 66 que tiene el total factura
 
-            var datosExcel = proceso.leerExcel(ficheroEntrada, filaInicio, columnaInicio, columnaFinal);
+            //Carga los campos por defecto a exporta
+            Facturas.MapeoFacturas();
 
-            //Facturas.MapeoFacturas();
+            //Lee el fichero con la configuracion de columnas
+            proceso.LeerConfiguracionColumnas(Program.ficheroColumnas);
 
-            Facturas.MapeoColumnas = Procesos.LeerCsv(Program.ficheroColumnas, out string[] propiedades);
-            Facturas.ColumnasAexportar = propiedades;
+            //Instancia una nueva lista de facturas
             Facturas.ListaFacturas = new List<Facturas>();
+
+            //Carga los datos del excel para procesarlos
+            var datosExcel = proceso.LeerExcel(ficheroEntrada);
 
             var numFila = 0; //Controla la fila en la que se ha podido producir un error
             var numColumna = 0;//Controla la columna en la que se ha podido producir un error
+            int numeroFactura = 1;
 
-            //Proceso de los datos leidos
+            //Procesado de los datos leidos
             try
             {
+                //Procesa cada fila
                 foreach(var fila in datosExcel)
                 {
+                    //Instancia una nueva factura
                     var factura = new Facturas();
-                    numFila++;
-                    //Instanciacion de la clase para cada linea
 
-                    //Asignar valores a las propiedades
-                    foreach(var columna in Facturas.MapeoColumnas)
+                    //Asigna el numero de contador a la factura
+                    factura.contador = numeroFactura;
+
+                    //Procesa cada columna y asigna los valores a las propiedades de la clase
+                    foreach(var columna in Facturas.mapeoColumnas)
                     {
-                        numColumna++;
                         // columna.Key es el índice de la columna
                         // columna.Value es el nombre de la propiedad
                         if(fila.TryGetValue(columna.Key, out var valorCelda))
@@ -56,7 +59,7 @@ namespace importadorFacturas.Metodos
 
                                 if(!string.IsNullOrEmpty(valorCelda))
                                 {
-                                    //Comprobar si el valorCelda es un numero
+                                    //Comprobar si el valorCelda es un numero para evitar algun error al confundir numeros con fechas.
                                     bool esNumero = double.TryParse(valorCelda, out double numero);
 
                                     //Si no es un numero, intenta convertirlo a una fecha
@@ -75,8 +78,9 @@ namespace importadorFacturas.Metodos
                         }
                     }
 
-                    //Añade la linea de la factura con sus campos a la lista de facturas
+                    //Añade la linea de la factura con sus campos a la lista de facturas y aumenta el contador
                     Facturas.ListaFacturas.Add(factura);
+                    numeroFactura++;
                 }
                 return resultado;
             }
