@@ -15,108 +15,106 @@ namespace importadorFacturas
         public string fechaFactura { get; set; }
 
         [OrdenCsv(30)]
-        public string serieFactura { get; set; }
+        public string fechaOperacion { get; set; }
 
         [OrdenCsv(40)]
-        public string numeroFactura { get; set; }
+        public string periodoFactura { get; set; }
 
         [OrdenCsv(50)]
-        public string nifFactura { get; set; }
+        public string serieFactura { get; set; }
 
         [OrdenCsv(60)]
-        public string nombreFactura { get; set; }
+        public string numeroFactura { get; set; }
 
         [OrdenCsv(70)]
-        public decimal baseFactura1 { get; set; }
-
-        [OrdenCsv(80)]
-        public float porcentajeIva1 { get; set; }
-
-        [OrdenCsv(90)]
-        public decimal cuotaIva1 { get; set; }
-
-
-        //Campos opcionales
-        [OrdenCsv(100)]
         public string referenciaFactura { get; set; }
 
+        [OrdenCsv(80)]
+        public string nifFactura { get; set; }
+
+        [OrdenCsv(90)]
+        public string nombreFactura { get; set; }
+
+        [OrdenCsv(100)]
+        public string direccionFactura { get; set; }
+
         [OrdenCsv(110)]
-        public int periodoFactura { get; set; }
+        public string codPostalFactura { get; set; }
 
         [OrdenCsv(120)]
-        public string cuentaContable { get; set; }
+        public string paisFactura { get; set; }
 
         [OrdenCsv(130)]
-        public string cuentaContrapartida { get; set; }
+        public string cuentaContable { get; set; }
 
         [OrdenCsv(140)]
-        public string codigoConcepto { get; set; }
+        public string cuentaContrapartida { get; set; }
 
         [OrdenCsv(150)]
-        public string fechaOperacion { get; set; }
+        public string codigoConcepto { get; set; }
 
         [OrdenCsv(160)]
         public char facturaDeducible { get; set; }
 
         [OrdenCsv(170)]
-        public string direccionFactura { get; set; }
+        public decimal baseFactura1 { get; set; } //Base al 21%
 
         [OrdenCsv(180)]
-        public string codPostalFactura { get; set; }
+        public float porcentajeIva1 { get; set; } //Porcentaje fijo del 21% (en el constructor)
 
         [OrdenCsv(190)]
-        public string paisFactura { get; set; }
+        public decimal cuotaIva1 { get; set; }
 
         [OrdenCsv(200)]
-        public float porcentajeRecargo1 { get; set; }
+        public float porcentajeRecargo1 { get; set; } //Porcentaje fijo del 5,2% (en el constructor)
 
         [OrdenCsv(210)]
         public decimal cuotaRecargo1 { get; set; }
 
         [OrdenCsv(220)]
-        public decimal baseFactura2 { get; set; }
+        public decimal baseFactura2 { get; set; } //Base al 10%
 
         [OrdenCsv(230)]
-        public float porcentajeIva2 { get; set; }
+        public float porcentajeIva2 { get; set; }//Porcentaje fijo del 10% (en el constructor)
 
         [OrdenCsv(240)]
         public decimal cuotaIva2 { get; set; }
 
         [OrdenCsv(250)]
-        public float porcentajeRecargo2 { get; set; }
+        public float porcentajeRecargo2 { get; set; }//Porcentaje fijo del 1,4% (en el constructor)
 
         [OrdenCsv(260)]
         public decimal cuotaRecargo2 { get; set; }
 
         [OrdenCsv(270)]
-        public decimal baseFactura3 { get; set; }
+        public decimal baseFactura3 { get; set; } //Base al 4%
 
         [OrdenCsv(280)]
-        public float porcentajeIva3 { get; set; }
+        public float porcentajeIva3 { get; set; }//Porcentaje fijo del 4% (en el constructor)
 
         [OrdenCsv(290)]
         public decimal cuotaIva3 { get; set; }
 
         [OrdenCsv(300)]
-        public float porcentajeRecargo3 { get; set; }
+        public float porcentajeRecargo3 { get; set; }//Porcentaje fijo del 0,5% (en el constructor)
 
         [OrdenCsv(310)]
         public decimal cuotaRecargo3 { get; set; }
 
         [OrdenCsv(320)]
-        public decimal baseFactura4 { get; set; }
+        public decimal baseFactura4 { get; set; }//Base exenta
 
         [OrdenCsv(330)]
-        public float porcentajeIva4 { get; set; }
+        public float porcentajeIva4 { get; set; }//Porcentaje fijo del 0% (en el constructor)
 
         [OrdenCsv(340)]
-        public decimal cuotaIva4 { get; set; }
+        public decimal cuotaIva4 { get; set; } //Se fija a cero por ser base exenta (en el constructor)
 
         [OrdenCsv(350)]
-        public float porcentajeRecargo4 { get; set; }
+        public float porcentajeRecargo4 { get; set; }//Porcentaje fijo del 0% (en el constructor)
 
         [OrdenCsv(360)]
-        public decimal cuotaRecargo4 { get; set; }
+        public decimal cuotaRecargo4 { get; set; }//Se fija a cero por ser base exenta (en el constructor)
 
         [OrdenCsv(370)]
         public decimal baseFactura5 { get; set; }
@@ -215,13 +213,23 @@ namespace importadorFacturas
         //Constructor de la clase con los defectos de los campos
         public Facturas()
         {
+            porcentajeIva1 = 21.0f;
+            porcentajeIva2 = 10.0f;
+            porcentajeIva3 = 4.0f;
+            porcentajeIva4 = 0.0f;
+            cuotaIva4 = 0.0M;
+            porcentajeRecargo1 = 5.20f;
+            porcentajeRecargo2 = 1.40f;
+            porcentajeRecargo3 = 0.50f;
+            porcentajeRecargo4 = 0.0f;
+            cuotaRecargo4 = 0.0M;
             facturaDeducible = 'S';
             paisFactura = "ES";
         }
 
 
         //Metodo para obtener la lista de facturas procesadas
-        public static List<Facturas> ObtenerDatos()
+        public static List<Facturas> ObtenerFacturas()
         {
             return ListaFacturas;
         }
@@ -233,23 +241,23 @@ namespace importadorFacturas
             mapeoColumnas = new Dictionary<int, string>
             {
                 {1, "fechaFactura" },
-                {2, "serieFactura" },
-                {3, "numeroFactura" },
-                {4, "nifFactura" },
-                {5, "nombreFactura" },
-                {6, "baseFactura1" },
-                {7, "porcentajeIva1" },
-                {8, "cuotaIva1" },
-                {9, "referenciaFactura" },
-                {10, "periodoFactura" },
-                {11, "cuentaContable" },
-                {12, "cuentaContrapartida" },
-                {13, "codigoConcepto" },
-                {14, "fechaOperacion" },
+                {2, "fechaOperacion" },
+                {3, "periodoFactura" },
+                {4, "serieFactura" },
+                {5, "numeroFactura" },
+                {6, "referenciaFactura" },
+                {7, "nifFactura" },
+                {8, "nombreFactura" },
+                {9, "direccionFactura" },
+                {10, "codPostalFactura" },
+                {11, "paisFactura" },
+                {12, "cuentaContable" },
+                {13, "cuentaContrapartida" },
+                {14, "codigoConcepto" },
                 {15, "facturaDeducible" },
-                {16, "direccionFactura" },
-                {17, "codPostalFactura" },
-                {18, "paisFactura" },
+                {16, "baseFactura1" },
+                {17, "porcentajeIva1" },
+                {18, "cuotaIva1" },
                 {19, "porcentajeRecargo1" },
                 {20, "cuotaRecargo1" },
                 {21, "baseFactura2" },

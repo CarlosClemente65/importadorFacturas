@@ -54,39 +54,48 @@ namespace importadorFacturas
                 //Facturas emitidas con formato diagram
                 case "E00":
                     //Inicializa campos
-                    Metodos.ProcesoDiagram procesoDiagram = new Metodos.ProcesoDiagram();
-                    resultado = procesoDiagram.EmitidasDiagram(ficheroEntrada);
-                    List<Facturas> facturasDiagram = Facturas.ObtenerDatos();
-                    if(facturasDiagram.Count > 0)
+                    Metodos.ProcesoDiagram procesoE00 = new Metodos.ProcesoDiagram();
+                    resultado = procesoE00.ProcesarFacturas(ficheroEntrada);
+                    List<Facturas> facturasE00 = Facturas.ObtenerFacturas();
+                    if(facturasE00.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
                         string[] camposAexportar = Facturas.ColumnasAexportar;
-                        resultado = proceso.GrabarCsv(ficheroSalida, facturasDiagram, camposAexportar);
+                        resultado = proceso.GrabarCsv(ficheroSalida, facturasE00, camposAexportar);
                     }
                     break;
 
                 //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
                 case "E01":
                     //Inicializa campos
-                    procesoAlcasal metodo = new procesoAlcasal();
+                    procesoAlcasal procesoE01 = new procesoAlcasal();
 
                     //Procesar los datos del fichero de Excel
-                    resultado = metodo.EmitidasAlcasar(ficheroEntrada);
+                    resultado = procesoE01.EmitidasAlcasar(ficheroEntrada);
 
                     //Carga los datos procesados para pasarlos al csv
-                    List<EmitidasE01> facturasAlcasal = EmitidasE01.ObtenerDatos();
-                    if(facturasAlcasal.Count > 0)
+                    List<EmitidasE01> facturasE01 = EmitidasE01.ObtenerFacturasE01();
+                    if(facturasE01.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
                         string[] camposAexportar = Facturas.ColumnasAexportar;//EmitidasE01.PropiedadesAexportar;
-                        resultado = proceso.GrabarCsv(ficheroSalida, facturasAlcasal, camposAexportar);
+                        resultado = proceso.GrabarCsv(ficheroSalida, facturasE01, camposAexportar);
                     }
 
                     break;
 
+                //Facturas recibidas con formato diagram
                 case "R00":
-                    //Facturas recibidas con formato 5 IVAs de diagram (pendiente de desarrollo)
-
+                    //Inicializa campos
+                    Metodos.ProcesoDiagram procesoR00 = new Metodos.ProcesoDiagram();
+                    resultado = procesoR00.ProcesarFacturas(ficheroEntrada);
+                    List<Facturas> facturasR00 = Facturas.ObtenerFacturas();
+                    if(facturasR00.Count > 0)
+                    {
+                        //Array de propiedades a exportar de este tipo
+                        string[] camposAexportar = Facturas.ColumnasAexportar;
+                        resultado = proceso.GrabarCsv(ficheroSalida, facturasR00, camposAexportar);
+                    }
                     break;
 
                 default:
@@ -126,7 +135,7 @@ namespace importadorFacturas
                             return;
                         }
 
-                        if(string.IsNullOrEmpty(ficheroSalida)) ficheroSalida =$"salida_{Path.GetFileNameWithoutExtension(ficheroEntrada)}.csv";
+                        if(string.IsNullOrEmpty(ficheroSalida)) ficheroSalida = $"salida_{Path.GetFileNameWithoutExtension(ficheroEntrada)}.csv";
                         ficheroErrores = Path.Combine(Path.GetDirectoryName(ficheroEntrada), "errores.txt");
                         utiles.ControlFicheros(ficheroErrores);
 

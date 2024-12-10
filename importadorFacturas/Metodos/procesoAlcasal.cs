@@ -10,8 +10,6 @@ namespace importadorFacturas
         //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv
 
         //Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden
-        [OrdenCsv(41)]
-        public new string referenciaFactura { get; set; } //Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
 
         [OrdenCsv(651)]
         public string primerNumero { get; set; } //No existe en la clase base por lo que no necesita el 'new'
@@ -47,7 +45,7 @@ namespace importadorFacturas
 
         }
 
-        public static List<EmitidasE01> ObtenerDatos()
+        public static List<EmitidasE01> ObtenerFacturasE01()
         {
             return ListaIngresosE01;
         }
@@ -214,7 +212,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.baseFactura1 = valorBase;
+                                    ingreso.baseFactura2 = valorBase;
                                 }
                                 break;
 
@@ -233,7 +231,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.porcentajeIva1 = valorPorcentaje;
+                                    ingreso.porcentajeIva2 = valorPorcentaje;
                                 }
                                 break;
 
@@ -255,7 +253,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.cuotaIva1 = valorCuota;
+                                    ingreso.cuotaIva2 = valorCuota;
                                 }
                                 break;
 
@@ -313,9 +311,9 @@ namespace importadorFacturas
                 {
                     fechaFactura = agrupacion.fechaFraAgrupada,
                     serieFactura = agrupacion.serieFraAgrupada,
-                    baseFactura1 = agrupacion.baseAgrupada,
-                    porcentajeIva1 = agrupacion.porcentajeAgrupado,
-                    cuotaIva1 = agrupacion.cuotaAgrupada,
+                    baseFactura2 = agrupacion.baseAgrupada,
+                    porcentajeIva2 = agrupacion.porcentajeAgrupado,
+                    cuotaIva2 = agrupacion.cuotaAgrupada,
                     totalFactura = agrupacion.totalAgrupada,
                     primerNumero = agrupacion.primerNumero,
                     ultimoNumero = agrupacion.ultimoNumero,
@@ -335,23 +333,23 @@ namespace importadorFacturas
                 {2, "serieFactura" },
                 {3, "numeroFactura" },
                 {4, "referenciaFactura" },
-                {5, "baseFactura1" },
-                {6, "porcentajeIva1" },
-                {8, "cuotaIva1" },
-                {9, "porcentajeRecargo1" },
-                {10,"cuotaRecargo1" },
-                {11,"baseIrpf" },
-                {12,"porcentajeIrpf" },
-                {13,"cuotaIrpf" },
-                {14,"totalFactura" },
-                {15,"primerNumero" },
-                {16,"ultimoNumero" },
-                {17,"contadorFacturas" },
-                {18,"nifFactura" },
-                {19,"apellidoFactura" },
-                {20,"nombreFactura" },
-                {21,"direccionFactura" },
-                {22,"codPostalFactura" }
+                {5, "baseFactura2" },
+                {6, "porcentajeIva2" },
+                {7, "cuotaIva2" },
+                {8, "porcentajeRecargo2" },
+                {9,"cuotaRecargo2" },
+                {10,"baseIrpf" },
+                {11,"porcentajeIrpf" },
+                {12,"cuotaIrpf" },
+                {13,"totalFactura" },
+                {14,"primerNumero" },
+                {15,"ultimoNumero" },
+                {16,"contadorFacturas" },
+                {17,"nifFactura" },
+                {18,"apellidoFactura" },
+                {19,"nombreFactura" },
+                {20,"direccionFactura" },
+                {21,"codPostalFactura" }
             };
 
             Facturas.ColumnasAexportar = new List<string>(Facturas.mapeoColumnas.Values).ToArray();

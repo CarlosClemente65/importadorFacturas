@@ -6,8 +6,8 @@ namespace importadorFacturas.Metodos
 {
     public class ProcesoDiagram
     {
-        //Metodo para procesar los datos de las emitidas de Diagram
-        public StringBuilder EmitidasDiagram(string ficheroEntrada)
+        //Metodo para procesar los datos de las facturas de Diagram
+        public StringBuilder ProcesarFacturas(string ficheroEntrada)
         {
             //Devuelve el resultado si hay algun error
             StringBuilder resultado = new StringBuilder();
