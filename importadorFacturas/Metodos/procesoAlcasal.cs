@@ -1,5 +1,4 @@
-﻿using importadorFacturas.Metodos;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,22 +6,46 @@ namespace importadorFacturas
 {
     public class EmitidasE01 : Facturas
     {
+
         //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv
-        [OrdenCsv(351)]
-        public string primerNumero { get; set; }
 
-        [OrdenCsv(352)]
-        public string ultimoNumero { get; set; }
+        //Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden
 
-        [OrdenCsv(353)]
-        public int contadorFacturas { get; set; }
+        [OrdenCsv(651)]
+        public string primerNumero { get; set; } //No existe en la clase base por lo que no necesita el 'new'
+
+        [OrdenCsv(652)]
+        public string ultimoNumero { get; set; }//No existe en la clase base por lo que no necesita el 'new'
+
+        [OrdenCsv(653)]
+        public int contadorFacturas { get; set; }//No existe en la clase base por lo que no necesita el 'new'
+
+        [OrdenCsv(654)]
+        public new string nifFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
+
+        [OrdenCsv(655)]
+        public string apellidoFactura { get; set; }//No existe en la clase base por lo que no necesita el 'new'
+
+        [OrdenCsv(656)]
+        public new string nombreFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
+
+        [OrdenCsv(657)]
+        public new string direccionFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
+
+        [OrdenCsv(658)]
+        public new string codPostalFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
+
 
         //Lista que recoge todas las facturas que luego se exportaran
         public static List<EmitidasE01> ListaIngresosE01 { get; set; } = new List<EmitidasE01>();
 
+        public EmitidasE01()
+        {
+            //Constructor de la clase que asigna los nombres de las propiedades que se van a incluir en el fichero de salida. Nota: lo dejo por si fuera necesario algun dia inicializar alguna propiedad aunque ahora no es necesario.
 
+        }
 
-        public static List<EmitidasE01> ObtenerDatos()
+        public static List<EmitidasE01> ObtenerFacturasE01()
         {
             return ListaIngresosE01;
         }
@@ -30,14 +53,12 @@ namespace importadorFacturas
 
     public class procesoAlcasal
     {
-        public StringBuilder emitidasAlcasar(string ficheroEntrada)
+        //Metodo para procesar los datos del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
+        public StringBuilder EmitidasAlcasar(string ficheroEntrada)
         {
-            //Metodo para procesar los datos del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
-
             Procesos proceso = new Procesos();
-            int filaInicio = 1; //Hay que pasar la fila de la cabecera para contar las columnas
-            int columnaInicio = 1; //Los datos empiezan en la columna 1
-            int columnaFinal = 14; //Para no tener que procesar todas las columnas se lee hasta la 14 que tiene el total factura
+
+            Program.filaInicio = 1; //La primera fila debe ser la de de la de la cabecera para contar las columnas
 
             //Devuelve el resultado si hay algun error
             StringBuilder resultado = new StringBuilder();
@@ -46,51 +67,67 @@ namespace importadorFacturas
             facturasAgrupadas agrupacionT = new facturasAgrupadas();
             facturasAgrupadas agrupacionTR = new facturasAgrupadas();
 
-            var datosExcel = proceso.leerExcel(ficheroEntrada, filaInicio, columnaInicio, columnaFinal);
+            //Carga las columnas a procesar y a exportar
+            MapeoColumnas();
 
-            var numFila = 0; //Controla la fila en la que se ha podido producir un error
-            var numColumna = 0;//Controla la columna en la que se ha podido producir un error
+            //Carga los datos del fichero excel
+            var datosExcel = proceso.LeerExcel(ficheroEntrada);
 
-            //Proceso de los datos leidos
+            var numFila = 0; //Permite controlar la fila en la que se ha podido producir un error
+            var numColumna = 0;//Permite controla la columna en la que se ha podido producir un error
+
             try
             {
+                //Procesado de las filas
                 foreach(var fila in datosExcel)
                 {
-                    numFila++;
-                    //Instanciacion de la clase para cada linea
+                    numFila++; //Se incrementa en uno para empezar por el numero 1
+
+                    //Se crea una instancia de la clase para cada linea
                     var ingreso = new EmitidasE01();
 
-                    //Se ponen en false antes de procesar cada linea y poder sumarlas si se corresponde con la serie T o TR
+                    //Se ponen las agrupaciones de facturas en false antes de procesar cada linea y poder sumarlas si se corresponde con la serie T o TR
                     agrupacionT.agrupar = false;
                     agrupacionTR.agrupar = false;
 
-                    //Asignar valores a las propiedades
+                    //Procesado de las columnas de cada fila
                     foreach(var columna in fila)
                     {
-                        numColumna++;
-                        //Procesado de las columnas
+                        numColumna++; //Se incrementa en uno para empezar por el numero 1
+
+                        //Asignacion de valores a propiedades segun el numero de columna
                         switch(columna.Key)
                         {
+                            //Fecha factura
                             case 2:
-                                //Fecha factura
+                                //Convierte el valor a formato fecha para poder compararla
                                 DateTime fechaFra = Convert.ToDateTime(columna.Value).Date;
 
                                 //Controla si llega una fecha posterior a la que pueda tener la agrupacion para grabar un registro con lo que haya acumulado hasta esa fecha
                                 if(!string.IsNullOrEmpty(agrupacionT.fechaFraAgrupada) && fechaFra > Convert.ToDateTime(agrupacionT.fechaFraAgrupada).Date)
                                 {
-                                    grabarRegistroAgrupado(agrupacionT);
-                                }
-                                if(!string.IsNullOrEmpty(agrupacionTR.fechaFraAgrupada) && fechaFra > Convert.ToDateTime(agrupacionTR.fechaFraAgrupada).Date)
-                                {
-                                    grabarRegistroAgrupado(agrupacionTR);
+                                    GrabarRegistroAgrupado(agrupacionT);
                                 }
 
-                                ingreso.fechaFactura = columna.Value.Substring(0, 10);
+                                if(!string.IsNullOrEmpty(agrupacionTR.fechaFraAgrupada) && fechaFra > Convert.ToDateTime(agrupacionTR.fechaFraAgrupada).Date)
+                                {
+                                    GrabarRegistroAgrupado(agrupacionTR);
+                                }
+
+                                //Convierte el valor de la columna a un formato de fecha con tipo de cadena
+                                if(DateTime.TryParse(columna.Value, out DateTime fecha))
+                                {
+                                    ingreso.fechaFactura = fecha.ToString("dd.MM.yyyy");
+                                }
+                                else
+                                {
+                                    ingreso.fechaFactura = columna.Value.Substring(0, 10);
+                                }
 
                                 break;
 
+                            //Numero factura
                             case 3:
-                                //Numero factura
                                 string numFactura = columna.Value;
 
                                 if(numFactura.StartsWith("F") && numFactura.Substring(0, 2) != "FR")
@@ -120,31 +157,32 @@ namespace importadorFacturas
 
                                 break;
 
+                            //Nif factura
                             case 4:
-                                //Nif factura
                                 if(columna.Value != "N/D") ingreso.nifFactura = columna.Value.ToUpper().Replace(" ", "").Replace("-", "");
                                 break;
 
+                            //Nombre factura
                             case 5:
-                                //Nombre factura
-                                if(columna.Value != "N/D") ingreso.nombreFactura = Program.utiles.quitaRaros(columna.Value.ToUpper());
+                                if(columna.Value != "N/D") ingreso.nombreFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
                                 break;
 
+                            //Apellidos factura
                             case 6:
-                                //Apellidos factura
-                                if(columna.Value != "N/D") ingreso.apellidoFactura = Program.utiles.quitaRaros(columna.Value.ToUpper());
+                                if(columna.Value != "N/D") ingreso.apellidoFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
                                 break;
 
+                            //Direccion factura
                             case 7:
-                                //Direccion factura
-                                if(columna.Value != "N/D") ingreso.direccionFactura = Program.utiles.quitaRaros(columna.Value.ToUpper().Replace(";", ","));
+                                if(columna.Value != "N/D") ingreso.direccionFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper().Replace(";", ","));
                                 break;
 
+                            //Codigo postal factura
                             case 8:
-                                //Codigo postal factura
                                 string cp = columna.Value;
                                 if(cp != "N/D")
                                 {
+                                    //Añade ceros a la izquierda si el codigo postal tiene menos de 5 digitos
                                     if(cp.Length < 5)
                                     {
                                         ingreso.codPostalFactura = cp.PadLeft(5, '0');
@@ -156,10 +194,14 @@ namespace importadorFacturas
                                 }
                                 break;
 
+                            //Base factura
                             case 11:
-                                //Base factura
                                 decimal valorBase = decimal.Parse(columna.Value);
+
+                                //Se redondea a dos decimales por si en el origen hubieran mas
                                 valorBase = Math.Round(valorBase, 2);
+
+                                //Suma la base segun si es no agrupada o de las agrupaciones T o TR
                                 if(agrupacionT.agrupar)
                                 {
                                     agrupacionT.baseAgrupada += valorBase;
@@ -170,13 +212,15 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.baseFactura1 = valorBase;
+                                    ingreso.baseFactura2 = valorBase;
                                 }
                                 break;
 
+                            //Porcentaje IVA
                             case 12:
-                                //Porcentaje IVA
                                 float valorPorcentaje = float.Parse(columna.Value);
+
+                                //Toma el primer porcentaje en el caso de ser la agrupacion T o TR
                                 if(agrupacionT.agrupar)
                                 {
                                     if(agrupacionT.porcentajeAgrupado == 0.0f) agrupacionT.porcentajeAgrupado = valorPorcentaje;
@@ -187,14 +231,18 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.porcentajeIva1 = valorPorcentaje;
+                                    ingreso.porcentajeIva2 = valorPorcentaje;
                                 }
                                 break;
 
+                            //Cuota IVA
                             case 13:
-                                //Cuota IVA
                                 decimal valorCuota = decimal.Parse(columna.Value);
+
+                                //Redondea la cuota a dos decimales por si en el origen hay mas
                                 valorCuota = Math.Round(valorCuota, 2);
+
+                                //Suma la cuota segun si es no agrupada o de las agrupaciones T o TR
                                 if(agrupacionT.agrupar)
                                 {
                                     agrupacionT.cuotaAgrupada += valorCuota;
@@ -205,14 +253,18 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.cuotaIva1 = valorCuota;
+                                    ingreso.cuotaIva2 = valorCuota;
                                 }
                                 break;
 
+                            //Total factura
                             case 14:
-                                //Total factura
                                 decimal valorTotal = decimal.Parse(columna.Value);
+
+                                //Redondea el total a dos decimales por si en el origen hay mas
                                 valorTotal = Math.Round(valorTotal, 2);
+
+                                //Suma el total segun si es no agrupado o de las agrupaciones T o TR
                                 if(agrupacionT.agrupar)
                                 {
                                     agrupacionT.totalAgrupada += valorTotal;
@@ -234,12 +286,12 @@ namespace importadorFacturas
                     if(!agrupacionT.agrupar && !agrupacionTR.agrupar) EmitidasE01.ListaIngresosE01.Add(ingreso);
 
                     //Se añade el registro si las facturas agrupadas llegan a 9999
-                    if(agrupacionT.cantidadFacturas == 9999) grabarRegistroAgrupado(agrupacionT);
-                    if(agrupacionTR.cantidadFacturas == 9999) grabarRegistroAgrupado(agrupacionTR);
+                    if(agrupacionT.cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupacionT);
+                    if(agrupacionTR.cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupacionTR);
                 }
 
-                grabarRegistroAgrupado(agrupacionT);
-                grabarRegistroAgrupado(agrupacionTR);
+                GrabarRegistroAgrupado(agrupacionT);
+                GrabarRegistroAgrupado(agrupacionTR);
                 return resultado;
             }
             catch(Exception ex)
@@ -250,18 +302,18 @@ namespace importadorFacturas
             }
         }
 
-        private void grabarRegistroAgrupado(facturasAgrupadas agrupacion)
+        //Metodo para generar el registro en la clase cuando se agrupan facturas
+        private void GrabarRegistroAgrupado(facturasAgrupadas agrupacion)
         {
-            //Metodo para generar el registro en la clase cuando se agrupan facturas
             if(agrupacion.cantidadFacturas > 0)
             {
                 EmitidasE01.ListaIngresosE01.Add(new EmitidasE01
                 {
                     fechaFactura = agrupacion.fechaFraAgrupada,
                     serieFactura = agrupacion.serieFraAgrupada,
-                    baseFactura1 = agrupacion.baseAgrupada,
-                    porcentajeIva1 = agrupacion.porcentajeAgrupado,
-                    cuotaIva1 = agrupacion.cuotaAgrupada,
+                    baseFactura2 = agrupacion.baseAgrupada,
+                    porcentajeIva2 = agrupacion.porcentajeAgrupado,
+                    cuotaIva2 = agrupacion.cuotaAgrupada,
                     totalFactura = agrupacion.totalAgrupada,
                     primerNumero = agrupacion.primerNumero,
                     ultimoNumero = agrupacion.ultimoNumero,
@@ -271,11 +323,42 @@ namespace importadorFacturas
                 agrupacion.Reiniciar();
             }
         }
+
+        //Metodo para generar el mapeo de columnas que se usara para la generacion de la salida
+        private void MapeoColumnas()
+        {
+            Facturas.mapeoColumnas = new Dictionary<int, string>
+            {
+                {1, "fechaFactura" },
+                {2, "serieFactura" },
+                {3, "numeroFactura" },
+                {4, "referenciaFactura" },
+                {5, "baseFactura2" },
+                {6, "porcentajeIva2" },
+                {7, "cuotaIva2" },
+                {8, "porcentajeRecargo2" },
+                {9,"cuotaRecargo2" },
+                {10,"baseIrpf" },
+                {11,"porcentajeIrpf" },
+                {12,"cuotaIrpf" },
+                {13,"totalFactura" },
+                {14,"primerNumero" },
+                {15,"ultimoNumero" },
+                {16,"contadorFacturas" },
+                {17,"nifFactura" },
+                {18,"apellidoFactura" },
+                {19,"nombreFactura" },
+                {20,"direccionFactura" },
+                {21,"codPostalFactura" }
+            };
+
+            Facturas.ColumnasAexportar = new List<string>(Facturas.mapeoColumnas.Values).ToArray();
+        }
     }
 
+    //Clase que representa las propiedades de las facturas agrupadas que acumulan los importes.
     public class facturasAgrupadas
     {
-        //Clase que representa las propiedades de las facturas agrupadas que acumulan los importes.
         public bool agrupar;
         public string fechaFraAgrupada;
         public string serieFraAgrupada;
@@ -288,9 +371,10 @@ namespace importadorFacturas
         public int cantidadFacturas;
         public string tipoFactura;
 
+
+        //Constructor de la clase que inicializa las propiedades
         public facturasAgrupadas()
         {
-            //Constructor de la clase que inicializa las propiedades
             agrupar = false;
             fechaFraAgrupada = string.Empty;
             serieFraAgrupada = string.Empty;
@@ -303,9 +387,10 @@ namespace importadorFacturas
             cantidadFacturas = 0;
         }
 
+
+        //Metodo para controlar la primera factura que aparezca para agrupar, asi como la ultima y el numero de facturas que se han agrupado
         public void AgregarFactura(string numFactura, EmitidasE01 ingreso)
         {
-            //Metodo para controlar la primera factura que aparezca para agrupar, asi como la ultima y el numero de facturas que se han agrupado
             agrupar = true;
             if(string.IsNullOrEmpty(serieFraAgrupada)) serieFraAgrupada = numFactura.Substring(0, numFactura.StartsWith("TR") ? 4 : 3).Replace("T", "L");
             if(string.IsNullOrEmpty(fechaFraAgrupada)) fechaFraAgrupada = ingreso.fechaFactura;
@@ -314,9 +399,9 @@ namespace importadorFacturas
             cantidadFacturas++;
         }
 
+        //Metodo para reiniciar la clase cuando hay un cambio de fecha
         public void Reiniciar()
         {
-            //Metodo para reiniciar la clase cuando hay un cambio de fecha
             agrupar = false;
             fechaFraAgrupada = string.Empty;
             serieFraAgrupada = string.Empty;
