@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada a un ensamblado.
-[assembly: AssemblyTitle("DseFacturasToCsv")]
-[assembly: AssemblyDescription("Transforma un excel a un csv manipulando datos para importar a contabilidad")]
+[assembly: AssemblyTitle("Dseimfacex")]
+[assembly: AssemblyDescription("Importador a contabilidad de un listado de facturas en Excel")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Diagram Software Europa S.L.")]
-[assembly: AssemblyProduct("DseFacturasToCsv")]
+[assembly: AssemblyProduct("DseImfacex")]
 [assembly: AssemblyCopyright("© Diagram Software Europa 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

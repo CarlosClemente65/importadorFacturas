@@ -9,7 +9,7 @@ namespace importadorFacturas
     internal class Program
     {
         public static string ficheroEntrada = string.Empty;
-        public static string ficheroColumnas = string.Empty;
+        public static string ficheroConfiguracion = string.Empty;
         public static string ficheroSalida = string.Empty;
         public static string ficheroErrores = "errores.txt";
         public static string tipoProceso = string.Empty;
@@ -27,7 +27,7 @@ namespace importadorFacturas
             /* Parametros:
              * entrada = fichero de entrada
              * salida = fichero de salida (opcional)
-             * columnas = fichero con la configuracion de columnas que tiene el fichero de entrada (solo para el proceso de Diagram)
+             * configuracion = fichero con la configuracion de columnas que tiene el fichero de entrada (solo para el proceso de Diagram)
              * proceso = tipo de proceso a ejecutar
              * fila = fila de la cabecera con los nombres de las columnas. Nota: tiene que haber una fila que tenga todas las columnas rellenas para luego poder procesar bien los datos
              * */
@@ -115,18 +115,12 @@ namespace importadorFacturas
         {
             foreach(string argumento in argumentos)
             {
-                var partes = argumento.Split('=');
-                string nombre = string.Empty;
-                string valor = string.Empty;
-
-                if(partes.Length == 2)
-                {
-                    nombre = partes[0];
-                    valor = partes[1];
-                }
+                //Separa el argumento y su valor
+                (string nombre, string valor) = utiles.DivideCadena(argumento, '=');
 
                 switch(nombre)
                 {
+                    //Fichero entrada
                     case "entrada":
                         ficheroEntrada = valor;
                         if(!File.Exists(ficheroEntrada))
@@ -141,24 +135,28 @@ namespace importadorFacturas
 
                         break;
 
+                    //Fichero salida
                     case "salida":
                         ficheroSalida = valor;
                         utiles.ControlFicheros(ficheroSalida);
                         break;
 
-                    case "columnas":
-                        ficheroColumnas = valor;
-                        if(!File.Exists(ficheroColumnas))
+                    //Fichero configuracion
+                    case "configuracion":
+                        ficheroConfiguracion = valor;
+                        if(!File.Exists(ficheroConfiguracion))
                         {
                             File.WriteAllText(ficheroErrores, "No existe el fichero de configuracion de columnas");
                             return;
                         }
                         break;
 
+                    //Tipo de proceso
                     case "proceso":
                         tipoProceso = valor;
                         break;
 
+                    //Fila de cabecera de columnas
                     case "fila":
                         filaInicio = Convert.ToInt32(valor);
                         break;

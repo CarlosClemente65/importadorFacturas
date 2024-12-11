@@ -18,7 +18,7 @@ namespace importadorFacturas.Metodos
             Facturas.MapeoFacturas();
 
             //Lee el fichero con la configuracion de columnas
-            proceso.LeerConfiguracionColumnas(Program.ficheroColumnas);
+            proceso.LeerConfiguracionColumnas(Program.ficheroConfiguracion);
 
             //Instancia una nueva lista de facturas
             Facturas.ListaFacturas = new List<Facturas>();
