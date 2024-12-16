@@ -11,7 +11,7 @@ namespace importadorFacturas
 {
     public class Procesos
     {
-       Metodos.Utilidades utiles = new Metodos.Utilidades();
+       //Metodos.Utilidades utiles = new Metodos.Utilidades();
 
         //Metodo para hacer la lectura del Excel y pasarlo a una lista
         public List<Dictionary<int, string>> LeerExcel(string fichero, int hojaExcel = 1)
@@ -133,7 +133,7 @@ namespace importadorFacturas
                 if(string.IsNullOrWhiteSpace(linea)) continue; //Salta líneas vacías
                 
                 //Divide la cadena por el primer punto y coma que encuentra
-                (string letraColumna, string propiedad) = utiles.DivideCadena(linea, ';');
+                (string letraColumna, string propiedad) = Program.utiles.DivideCadena(linea, ';');
 
                 // Convertir la letra de columna a número
                 int numeroColumna = LetraAColumna(letraColumna);

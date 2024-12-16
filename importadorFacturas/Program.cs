@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UtilesDiagram;
 
 
 namespace importadorFacturas
@@ -16,7 +17,7 @@ namespace importadorFacturas
         public static int filaInicio = 1;
 
         //Instanciacion de las utilidades para acceso a los metodos
-        public static Metodos.Utilidades utiles = new Metodos.Utilidades();
+        public static UtilidadesDiagram utiles = new UtilidadesDiagram();
         static void Main(string[] args)
         {
             if(args.Length == 0)
