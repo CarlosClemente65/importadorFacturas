@@ -11,28 +11,28 @@ namespace importadorFacturas
 {
     public class Procesos
     {
-       //Metodos.Utilidades utiles = new Metodos.Utilidades();
-
         //Metodo para hacer la lectura del Excel y pasarlo a una lista
-        public List<Dictionary<int, string>> LeerExcel(string fichero, int hojaExcel = 1)
+        public List<Dictionary<int, string>> LeerExcel(Configuracion parametros)
         {
-            //Recibe por parametro el fichero excel a leer, asi como la fila y columna desde la que empezar a leer los datos. La hoja de excel se puede pasar por parametro, si no se pondra por defecto 1
+            //Recibe por parametro el fichero excel a leer y la hoja de excel se puede pasar por parametro, si no se pondra por defecto 1
             //La fila debe incluir la cabecera para el procesado posterior (luego se omite en la salida)
 
-            int filaInicio = Program.filaInicio;
-            //int columnaInicio = Program.columnaInicio;
+            //La fila de inicio se pasa por parametro y se almacena en una propiedad de la clase 'Program'
+            int filaInicio = parametros.FilaInicio;
+            int hojaExcel = parametros.HojaExcel;
+            string ficheroExcel = parametros.FicheroEntrada;
 
             var datosExcel = new List<Dictionary<int, string>>();
 
             //Se ajusta el numero de la fila y columna de inicio ya que ClosedXML usa base 0
             filaInicio--;
 
-            using(var libro = new XLWorkbook(fichero))
+            using(var libro = new XLWorkbook(ficheroExcel))
             {
                 var hoja = libro.Worksheet(hojaExcel);
 
                 //Obtiene la cabecera para determinar el numero de columnas
-                var cabecera2 = new List<int>(Facturas.mapeoColumnas.Keys);
+                //var cabecera2 = new List<int>(Facturas.mapeoColumnas.Keys);
 
                 var cabecera = hoja.Row(filaInicio + 1)
                                     .Cells()

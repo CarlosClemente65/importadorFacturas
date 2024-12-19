@@ -217,14 +217,15 @@ namespace importadorFacturas
             porcentajeIva2 = 10.0f;
             porcentajeIva3 = 4.0f;
             porcentajeIva4 = 0.0f;
-            cuotaIva4 = 0.0M;
+            cuotaIva4 = 0M;
             porcentajeRecargo1 = 5.20f;
             porcentajeRecargo2 = 1.40f;
             porcentajeRecargo3 = 0.50f;
             porcentajeRecargo4 = 0.0f;
-            cuotaRecargo4 = 0.0M;
+            cuotaRecargo4 = 0M;
             facturaDeducible = 'S';
             paisFactura = "ES";
+            fechaOperacion = string.Empty;
         }
 
 
