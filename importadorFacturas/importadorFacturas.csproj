@@ -51,8 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuracion.cs" />
     <Compile Include="Metodos\Facturas.cs" />
-    <Compile Include="Metodos\procesoAlcasal.cs" />
+    <Compile Include="Metodos\ProcesoAlcasal.cs" />
     <Compile Include="Metodos\ProcesoDiagram.cs" />
     <Compile Include="Procesos.cs" />
     <Compile Include="Program.cs" />

@@ -51,14 +51,12 @@ namespace importadorFacturas
         }
     }
 
-    public class procesoAlcasal
+    public class ProcesoAlcasal
     {
         //Metodo para procesar los datos del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
-        public StringBuilder EmitidasAlcasar(string ficheroEntrada)
+        public StringBuilder EmitidasAlcasar(Configuracion parametros)
         {
-            Procesos proceso = new Procesos();
-
-            Program.filaInicio = 1; //La primera fila debe ser la de de la de la cabecera para contar las columnas
+            //parametros.FilaInicio = 1; //La primera fila debe ser la de de la de la cabecera para contar las columnas
 
             //Devuelve el resultado si hay algun error
             StringBuilder resultado = new StringBuilder();
@@ -71,7 +69,7 @@ namespace importadorFacturas
             MapeoColumnas();
 
             //Carga los datos del fichero excel
-            var datosExcel = proceso.LeerExcel(ficheroEntrada);
+            var datosExcel = Program.proceso.LeerExcel(parametros);
 
             var numFila = 0; //Permite controlar la fila en la que se ha podido producir un error
             var numColumna = 0;//Permite controla la columna en la que se ha podido producir un error
@@ -84,7 +82,7 @@ namespace importadorFacturas
                     numFila++; //Se incrementa en uno para empezar por el numero 1
 
                     //Se crea una instancia de la clase para cada linea
-                    var ingreso = new EmitidasE01();
+                    var factura = new EmitidasE01();
 
                     //Se ponen las agrupaciones de facturas en false antes de procesar cada linea y poder sumarlas si se corresponde con la serie T o TR
                     agrupacionT.agrupar = false;
@@ -93,10 +91,10 @@ namespace importadorFacturas
                     //Procesado de las columnas de cada fila
                     foreach(var columna in fila)
                     {
-                        numColumna++; //Se incrementa en uno para empezar por el numero 1
+                        numColumna = columna.Key; //Se asigna el numero de columna
 
                         //Asignacion de valores a propiedades segun el numero de columna
-                        switch(columna.Key)
+                        switch(numColumna)
                         {
                             //Fecha factura
                             case 2:
@@ -117,11 +115,11 @@ namespace importadorFacturas
                                 //Convierte el valor de la columna a un formato de fecha con tipo de cadena
                                 if(DateTime.TryParse(columna.Value, out DateTime fecha))
                                 {
-                                    ingreso.fechaFactura = fecha.ToString("dd.MM.yyyy");
+                                    factura.fechaFactura = fecha.ToString("dd.MM.yyyy");
                                 }
                                 else
                                 {
-                                    ingreso.fechaFactura = columna.Value.Substring(0, 10);
+                                    factura.fechaFactura = columna.Value.Substring(0, 10);
                                 }
 
                                 break;
@@ -132,49 +130,49 @@ namespace importadorFacturas
 
                                 if(numFactura.StartsWith("F") && numFactura.Substring(0, 2) != "FR")
                                 {
-                                    ingreso.serieFactura = numFactura.Substring(0, 3);
-                                    ingreso.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
+                                    factura.serieFactura = numFactura.Substring(0, 3);
+                                    factura.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
                                 }
                                 if(numFactura.StartsWith("FR"))
                                 {
-                                    ingreso.serieFactura = numFactura.Substring(0, 4);
-                                    ingreso.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
+                                    factura.serieFactura = numFactura.Substring(0, 4);
+                                    factura.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
                                 }
                                 if(numFactura.StartsWith("T") && numFactura.Substring(0, 2) != "TR")
                                 {
                                     //Se manda al metodo para controlar la primera y ultima factura de la agrupacion
-                                    agrupacionT.AgregarFactura(numFactura, ingreso);
+                                    agrupacionT.AgregarFactura(numFactura, factura);
                                 }
 
                                 if(numFactura.StartsWith("TR"))
                                 {
                                     //Se manda al metodo para controlar la primera y ultima factura de la agrupacion
-                                    agrupacionTR.AgregarFactura(numFactura, ingreso);
+                                    agrupacionTR.AgregarFactura(numFactura, factura);
                                 }
 
                                 //Referencia factura. Como no viene en el Excel, se pone segun el numero de factura
-                                ingreso.referenciaFactura = numFactura;
+                                factura.referenciaFactura = numFactura;
 
                                 break;
 
                             //Nif factura
                             case 4:
-                                if(columna.Value != "N/D") ingreso.nifFactura = columna.Value.ToUpper().Replace(" ", "").Replace("-", "");
+                                if(columna.Value != "N/D") factura.nifFactura = columna.Value.ToUpper().Replace(" ", "").Replace("-", "");
                                 break;
 
                             //Nombre factura
                             case 5:
-                                if(columna.Value != "N/D") ingreso.nombreFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
+                                if(columna.Value != "N/D") factura.nombreFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
                                 break;
 
                             //Apellidos factura
                             case 6:
-                                if(columna.Value != "N/D") ingreso.apellidoFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
+                                if(columna.Value != "N/D") factura.apellidoFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
                                 break;
 
                             //Direccion factura
                             case 7:
-                                if(columna.Value != "N/D") ingreso.direccionFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper().Replace(";", ","));
+                                if(columna.Value != "N/D") factura.direccionFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper().Replace(";", ","));
                                 break;
 
                             //Codigo postal factura
@@ -185,11 +183,11 @@ namespace importadorFacturas
                                     //Añade ceros a la izquierda si el codigo postal tiene menos de 5 digitos
                                     if(cp.Length < 5)
                                     {
-                                        ingreso.codPostalFactura = cp.PadLeft(5, '0');
+                                        factura.codPostalFactura = cp.PadLeft(5, '0');
                                     }
                                     else
                                     {
-                                        ingreso.codPostalFactura = cp;
+                                        factura.codPostalFactura = cp;
                                     }
                                 }
                                 break;
@@ -212,7 +210,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.baseFactura2 = valorBase;
+                                    factura.baseFactura2 = valorBase;
                                 }
                                 break;
 
@@ -231,7 +229,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.porcentajeIva2 = valorPorcentaje;
+                                    factura.porcentajeIva2 = valorPorcentaje;
                                 }
                                 break;
 
@@ -253,7 +251,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.cuotaIva2 = valorCuota;
+                                    factura.cuotaIva2 = valorCuota;
                                 }
                                 break;
 
@@ -275,15 +273,14 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    ingreso.totalFactura = valorTotal;
+                                    factura.totalFactura = valorTotal;
                                 }
                                 break;
                         }
-
                     }
 
                     //Se añade el registro solo si no es un registro agrupado
-                    if(!agrupacionT.agrupar && !agrupacionTR.agrupar) EmitidasE01.ListaIngresosE01.Add(ingreso);
+                    if(!agrupacionT.agrupar && !agrupacionTR.agrupar) EmitidasE01.ListaIngresosE01.Add(factura);
 
                     //Se añade el registro si las facturas agrupadas llegan a 9999
                     if(agrupacionT.cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupacionT);
@@ -392,9 +389,21 @@ namespace importadorFacturas
         public void AgregarFactura(string numFactura, EmitidasE01 ingreso)
         {
             agrupar = true;
-            if(string.IsNullOrEmpty(serieFraAgrupada)) serieFraAgrupada = numFactura.Substring(0, numFactura.StartsWith("TR") ? 4 : 3).Replace("T", "L");
-            if(string.IsNullOrEmpty(fechaFraAgrupada)) fechaFraAgrupada = ingreso.fechaFactura;
-            if(string.IsNullOrEmpty(primerNumero)) primerNumero = numFactura;
+            if(string.IsNullOrEmpty(serieFraAgrupada))
+            {
+                serieFraAgrupada = numFactura.Substring(0, numFactura.StartsWith("TR") ? 4 : 3).Replace("T", "L");
+            }
+
+            if(string.IsNullOrEmpty(fechaFraAgrupada))
+            {
+                fechaFraAgrupada = ingreso.fechaFactura;
+            }
+
+            if(string.IsNullOrEmpty(primerNumero))
+            {
+                primerNumero = numFactura;
+            }
+
             ultimoNumero = numFactura;
             cantidadFacturas++;
         }
