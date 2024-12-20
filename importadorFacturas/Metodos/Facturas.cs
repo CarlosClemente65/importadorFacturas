@@ -205,11 +205,11 @@ namespace importadorFacturas
 
         public static List<Facturas> ListaFacturas { get; set; }
 
-        public static Dictionary<int, string> mapeoColumnas;
+        public static Dictionary<int, string> MapeoColumnas;
 
-        public static string[] ColumnasAexportar { get; set; }
+        public static List<string> ColumnasAexportar { get; set; }
 
-        
+
         //Constructor de la clase con los defectos de los campos
         public Facturas()
         {
@@ -226,6 +226,8 @@ namespace importadorFacturas
             facturaDeducible = 'S';
             paisFactura = "ES";
             fechaOperacion = string.Empty;
+
+
         }
 
 
@@ -239,76 +241,78 @@ namespace importadorFacturas
         public static void MapeoFacturas()
         {
             //Asigna a cada columna la propiedad que le corresponde (estan en el mismo orden que la plantilla de Excel con los campos)
-            mapeoColumnas = new Dictionary<int, string>
+            if(MapeoColumnas == null)
             {
-                {1, "fechaFactura" },
-                {2, "fechaOperacion" },
-                {3, "periodoFactura" },
-                {4, "serieFactura" },
-                {5, "numeroFactura" },
-                {6, "referenciaFactura" },
-                {7, "nifFactura" },
-                {8, "nombreFactura" },
-                {9, "direccionFactura" },
-                {10, "codPostalFactura" },
-                {11, "paisFactura" },
-                {12, "cuentaContable" },
-                {13, "cuentaContrapartida" },
-                {14, "codigoConcepto" },
-                {15, "facturaDeducible" },
-                {16, "baseFactura1" },
-                {17, "porcentajeIva1" },
-                {18, "cuotaIva1" },
-                {19, "porcentajeRecargo1" },
-                {20, "cuotaRecargo1" },
-                {21, "baseFactura2" },
-                {22, "porcentajeIva2" },
-                {23, "cuotaIva2" },
-                {24, "porcentajeRecargo2" },
-                {25, "cuotaRecargo2" },
-                {26, "baseFactura3" },
-                {27, "porcentajeIva3" },
-                {28, "cuotaIva3" },
-                {29, "porcentajeRecargo3" },
-                {30, "cuotaRecargo3" },
-                {31, "baseFactura4" },
-                {32, "porcentajeIva4" },
-                {33, "cuotaIva4" },
-                {34, "porcentajeRecargo4" },
-                {35, "cuotaRecargo4" },
-                {36, "baseFactura5" },
-                {37, "porcentajeIva5" },
-                {38, "cuotaIva5" },
-                {39, "porcentajeRecargo5" },
-                {40, "cuotaRecargo5" },
-                {41, "baseFactura6" },
-                {42, "porcentajeIva6"},
-                {43, "cuotaIva6" },
-                {44, "porcentajeRecargo6" },
-                {45, "cuotaRecargo6" },
-                {46, "baseFactura7" },
-                {47, "porcentajeIva7" },
-                {48, "cuotaIva7" },
-                {49, "porcentajeRecargo7" },
-                {50, "cuotaRecargo7" },
-                {51, "baseFactura8" },
-                {52, "porcentajeIva8" },
-                {53, "cuotaIva8" },
-                {54, "porcentajeRecargo8" },
-                {55, "cuotaRecargo8" },
-                {56, "baseFactura9" },
-                {57, "porcentajeIva9" },
-                {58, "cuotaIva9" },
-                {59, "porcentajeRecargo9" },
-                {60, "cuotaRecargo9" },
-                {61, "baseIrpf" },
-                {62, "porcentajeIrpf" },
-                {63, "cuotaIrpf" },
-                {64, "totalFactura" }
-            };
+                MapeoColumnas = new Dictionary<int, string>
+                {
+                    {1, "fechaFactura" },
+                    {2, "fechaOperacion" },
+                    {3, "periodoFactura" },
+                    {4, "serieFactura" },
+                    {5, "numeroFactura" },
+                    {6, "referenciaFactura" },
+                    {7, "nifFactura" },
+                    {8, "nombreFactura" },
+                    {9, "direccionFactura" },
+                    {10, "codPostalFactura" },
+                    {11, "paisFactura" },
+                    {12, "cuentaContable" },
+                    {13, "cuentaContrapartida" },
+                    {14, "codigoConcepto" },
+                    {15, "facturaDeducible" },
+                    {16, "baseFactura1" },
+                    {17, "porcentajeIva1" },
+                    {18, "cuotaIva1" },
+                    {19, "porcentajeRecargo1" },
+                    {20, "cuotaRecargo1" },
+                    {21, "baseFactura2" },
+                    {22, "porcentajeIva2" },
+                    {23, "cuotaIva2" },
+                    {24, "porcentajeRecargo2" },
+                    {25, "cuotaRecargo2" },
+                    {26, "baseFactura3" },
+                    {27, "porcentajeIva3" },
+                    {28, "cuotaIva3" },
+                    {29, "porcentajeRecargo3" },
+                    {30, "cuotaRecargo3" },
+                    {31, "baseFactura4" },
+                    {32, "porcentajeIva4" },
+                    {33, "cuotaIva4" },
+                    {34, "porcentajeRecargo4" },
+                    {35, "cuotaRecargo4" },
+                    {36, "baseFactura5" },
+                    {37, "porcentajeIva5" },
+                    {38, "cuotaIva5" },
+                    {39, "porcentajeRecargo5" },
+                    {40, "cuotaRecargo5" },
+                    {41, "baseFactura6" },
+                    {42, "porcentajeIva6"},
+                    {43, "cuotaIva6" },
+                    {44, "porcentajeRecargo6" },
+                    {45, "cuotaRecargo6" },
+                    {46, "baseFactura7" },
+                    {47, "porcentajeIva7" },
+                    {48, "cuotaIva7" },
+                    {49, "porcentajeRecargo7" },
+                    {50, "cuotaRecargo7" },
+                    {51, "baseFactura8" },
+                    {52, "porcentajeIva8" },
+                    {53, "cuotaIva8" },
+                    {54, "porcentajeRecargo8" },
+                    {55, "cuotaRecargo8" },
+                    {56, "baseFactura9" },
+                    {57, "porcentajeIva9" },
+                    {58, "cuotaIva9" },
+                    {59, "porcentajeRecargo9" },
+                    {60, "cuotaRecargo9" },
+                    {61, "baseIrpf" },
+                    {62, "porcentajeIrpf" },
+                    {63, "cuotaIrpf" },
+                    {64, "totalFactura" }
+                };
+                ColumnasAexportar.AddRange(MapeoColumnas.Values);
+            }
 
-            //Se añade el campo 'contador' para que se incluya en el fichero de salida
-            ColumnasAexportar = new List<string> { "contador" }.Concat(mapeoColumnas.Values).ToArray();
         }
 
 

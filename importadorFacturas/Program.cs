@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using DocumentFormat.OpenXml.Bibliography;
 using UtilesDiagram;
 
 
@@ -10,8 +8,6 @@ namespace importadorFacturas
 {
     internal class Program
     {
-        public static Configuracion Parametros = new Configuracion();
-
         public static Configuracion.TiposProceso TiposProceso { get; private set; }
 
         //Instanciacion de las utilidades para acceso a los metodos
@@ -21,29 +17,32 @@ namespace importadorFacturas
 
         static void Main(string[] args)
         {
+            //Controla que se pase como argumento el guion
             if(args.Length == 0)
             {
                 return;
             }
 
-            /* Parametros:
-             * entrada = fichero de entrada
-             * salida = fichero de salida (opcional)
-             * configuracion = fichero con la configuracion de columnas que tiene el fichero de entrada (solo para el proceso de Diagram)
-             * proceso = tipo de proceso a ejecutar
-             * fila = fila de la cabecera con los nombres de las columnas. Nota: tiene que haber una fila que tenga todas las columnas rellenas para luego poder procesar bien los datos
-             * */
-
-            if(!ProcesarArgumentos(args))
+            string ficheroGuion = args[0];
+            
+            //Controla que exista el fichero con el guion
+            if(!File.Exists(ficheroGuion))
             {
-                procesarFichero(Parametros);
+                utiles.GrabarFichero(Configuracion.FicheroErrores, $"Error. No existe el fichero {ficheroGuion}");
+                return;
+            }
+
+            //Si no se han producido errores al cargar el guion, se procesa el fichero.
+            if(proceso.CargarGuion(ficheroGuion))
+            {
+                procesarFichero();
             }
         }
 
 
 
         //Metodo para leer el fichero Excel y procesar los datos segun el tipo pasado por parametro
-        private static void procesarFichero(Configuracion parametros)
+        private static void procesarFichero()
         {
             //Nota: el tipo de proceso debe ser una letra (E para emitidas y R para recibidas) seguido de dos numeros dejando como reservados para Diagram el '00' (hasta 99 importaciones diferentes de cada tipo)
 
@@ -52,19 +51,19 @@ namespace importadorFacturas
 
             Procesos proceso = new Procesos();
 
-            switch(Parametros.TipoProceso)
+            switch(Configuracion.TipoProceso)
             {
                 //Facturas emitidas con formato diagram
                 case "E00":
                     //Inicializa campos
                     Metodos.ProcesoDiagram procesoE00 = new Metodos.ProcesoDiagram();
-                    resultado = procesoE00.ProcesarFacturas(parametros);
+                    resultado = procesoE00.ProcesarFacturas();
                     List<Facturas> facturasE00 = Facturas.ObtenerFacturas();
                     if(facturasE00.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = Facturas.ColumnasAexportar;
-                        resultado = proceso.GrabarCsv(Parametros.FicheroSalida, facturasE00, camposAexportar);
+                        string[] camposAexportar = Facturas.ColumnasAexportar.ToArray();
+                        resultado = proceso.GrabarCsv(facturasE00, camposAexportar);
                     }
                     break;
 
@@ -74,15 +73,15 @@ namespace importadorFacturas
                     ProcesoAlcasal procesoE01 = new ProcesoAlcasal();
 
                     //Procesar los datos del fichero de Excel
-                    resultado = procesoE01.EmitidasAlcasar(Parametros);
+                    resultado = procesoE01.EmitidasAlcasar();
 
                     //Carga los datos procesados para pasarlos al csv
                     List<EmitidasE01> facturasE01 = EmitidasE01.ObtenerFacturasE01();
                     if(facturasE01.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = Facturas.ColumnasAexportar;
-                        resultado = proceso.GrabarCsv(Parametros.FicheroSalida, facturasE01, camposAexportar);
+                        string[] camposAexportar = Facturas.ColumnasAexportar.ToArray();
+                        resultado = proceso.GrabarCsv(facturasE01, camposAexportar);
                     }
 
                     break;
@@ -91,134 +90,27 @@ namespace importadorFacturas
                 case "R00":
                     //Inicializa campos
                     Metodos.ProcesoDiagram procesoR00 = new Metodos.ProcesoDiagram();
-                    resultado = procesoR00.ProcesarFacturas(parametros);
+                    resultado = procesoR00.ProcesarFacturas();
                     List<Facturas> facturasR00 = Facturas.ObtenerFacturas();
                     if(facturasR00.Count > 0)
                     {
                         //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = Facturas.ColumnasAexportar;
-                        resultado = proceso.GrabarCsv(Parametros.FicheroSalida, facturasR00, camposAexportar);
+                        string[] camposAexportar = Facturas.ColumnasAexportar.ToArray();
+                        resultado = proceso.GrabarCsv(facturasR00, camposAexportar);
                     }
                     break;
 
                 default:
                     //Si no se pasa un tipo de proceso correcto, se graba el fichero de errores.
-                    utiles.GrabarFichero(Parametros.FicheroErrores, $"El tipo de proceso {Parametros.TipoProceso} no es correcto");
+                    utiles.GrabarFichero(Configuracion.FicheroErrores, $"El tipo de proceso {Configuracion.TipoProceso} no es correcto");
                     break;
             }
 
             //Grabar el registro de errores si se ha producido alguno
             if(resultado.Length > 0)
             {
-                utiles.GrabarFichero(Parametros.FicheroErrores, resultado.ToString());
+                utiles.GrabarFichero(Configuracion.FicheroErrores, resultado.ToString());
             }
-        }
-
-        private static bool ProcesarArgumentos(string[] argumentos)
-        {
-            bool errores = false;
-            foreach(string argumento in argumentos)
-            {
-                //Separa el argumento y su valor
-                (string nombre, string valor) = utiles.DivideCadena(argumento, '=');
-
-                string chequeo = string.Empty;
-                switch(nombre)
-                {
-                    //Fichero entrada
-                    case "entrada":
-                        chequeo = ChequeoFichero(valor);
-
-                        if(!string.IsNullOrEmpty(chequeo))
-                        {
-                            utiles.GrabarFichero(Parametros.FicheroErrores, chequeo);
-                            return true;
-                        }
-                        Parametros.FicheroEntrada = valor;
-
-                        if(string.IsNullOrEmpty(Parametros.FicheroSalida))
-                        {
-                            Parametros.FicheroSalida = $"salida_{Path.GetFileNameWithoutExtension(Parametros.FicheroEntrada)}.csv";
-                            utiles.ControlFicheros(Parametros.FicheroSalida);
-                        }
-
-                        Parametros.FicheroErrores = Path.Combine(Path.GetDirectoryName(Parametros.FicheroEntrada), "errores.txt");
-                        utiles.ControlFicheros(Parametros.FicheroErrores);
-
-                        break;
-
-                    //Fichero salida
-                    case "salida":
-                        Parametros.FicheroSalida = valor;
-                        utiles.ControlFicheros(Parametros.FicheroSalida);
-                        break;
-
-                    //Fichero configuracion
-                    case "configuracion":
-                        chequeo = ChequeoFichero(valor);
-
-                        if(!string.IsNullOrEmpty(chequeo))
-                        {
-                            utiles.GrabarFichero(Parametros.FicheroErrores, chequeo);
-                            return true;
-                        }
-                        Parametros.FicheroConfiguracion = valor;
-                        break;
-
-                    //Tipo de proceso
-                    case "proceso":
-                        //Se valida que el tipo de proceso sea alguno de los definidos en la clase 'Configuracion'
-                        if(Enum.TryParse<Configuracion.TiposProceso>(valor, out Configuracion.TiposProceso _tipoProceso))
-                        {
-                            Parametros.TipoProceso = _tipoProceso.ToString();
-                        }
-                        else
-                        {
-                            utiles.GrabarFichero(Parametros.FicheroErrores, $"Error. Tipo de proceso {valor} incorrecto");
-                            return true;
-                        }
-                        break;
-
-                    //Fila de cabecera de columnas
-                    case "fila":
-                        //Se valida que la fila sea un numero mayor que 0
-                        if(int.TryParse(valor, out int _fila) && _fila > 0)
-                        {
-                            Parametros.FilaInicio = _fila;
-                        }
-                        else
-                        {
-                            utiles.GrabarFichero(Parametros.FicheroErrores, $"Error. Fila {valor} incorrecta");
-                            return true;
-                        }
-                        break;
-
-                    //Hoja en la que estan los datos (opcional)
-                    case "hoja":
-                        //Se valida que la hoja sea un numero mayor que 0
-                        if(int.TryParse(valor, out int _hoja) && _hoja > 0)
-                        {
-                            Parametros.HojaExcel = _hoja;
-                        }
-                        else
-                        {
-                            utiles.GrabarFichero(Parametros.FicheroErrores, $"Error. Hoja {valor} incorrecta");
-                            return true;
-                        }
-                        break;
-                }
-            }
-            return errores;
-        }
-
-        private static string ChequeoFichero(string fichero)
-        {
-            string resultado = string.Empty;
-            if(!File.Exists(fichero))
-            {
-                resultado = $"Error. No existe el fichero {fichero}";
-            }
-            return resultado;
         }
     }
 }

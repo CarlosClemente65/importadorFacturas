@@ -12,22 +12,19 @@ namespace importadorFacturas.Metodos
         private static readonly Dictionary<string, PropertyInfo> propiedadesClaseFacturas = typeof(Facturas).GetProperties().Where(p => p.CanWrite).ToDictionary(p => p.Name, p => p);
 
         //Metodo para procesar los datos de las facturas de Diagram
-        public StringBuilder ProcesarFacturas(Configuracion parametros)
+        public StringBuilder ProcesarFacturas()
         {
             //Almacena en resultado si hay algun error
             StringBuilder resultado = new StringBuilder();
 
-            //Carga los campos por defecto a exporta
+            //Carga los campos por defecto a exportar
             Facturas.MapeoFacturas();
-
-            //Lee el fichero con la configuracion de columnas
-            Program.proceso.LeerConfiguracionColumnas(parametros.FicheroConfiguracion);
 
             //Instancia una nueva lista de facturas
             Facturas.ListaFacturas = new List<Facturas>();
 
             //Carga los datos del excel para procesarlos
-            var datosExcel = Program.proceso.LeerExcel(parametros);
+            var datosExcel = Program.proceso.LeerExcel();
 
             var numFila = 0; //Controla la fila en la que se ha podido producir un error
             var numColumna = 0;//Controla la columna en la que se ha podido producir un error
@@ -47,7 +44,7 @@ namespace importadorFacturas.Metodos
                     factura.contador = numeroFactura;
 
                     //Procesa cada columna y asigna los valores a las propiedades de la clase
-                    foreach(var columna in Facturas.mapeoColumnas)
+                    foreach(var columna in Facturas.MapeoColumnas)
                     {
                         // columna.Value es el nombre de la propiedad de la clase 'Facturas'
                         // columna.Key es el índice de la columna
