@@ -205,24 +205,24 @@ namespace importadorFacturas
 
         public static List<Facturas> ListaFacturas { get; set; }
 
-        public static Dictionary<int, string> mapeoColumnas;
+        public static Dictionary<int, string> MapeoColumnas;
 
-        public static string[] ColumnasAexportar { get; set; }
+        public static List<string> ColumnasAexportar { get; set; }
 
-        
+
         //Constructor de la clase con los defectos de los campos
         public Facturas()
         {
             porcentajeIva1 = 21.0f;
             porcentajeIva2 = 10.0f;
             porcentajeIva3 = 4.0f;
-            porcentajeIva4 = 0.0f;
-            cuotaIva4 = 0M;
+            porcentajeIva4 = 0.0f; //Se corresponde a la base exenta
+            cuotaIva4 = 0M; //Se corresponde a la base exenta
             porcentajeRecargo1 = 5.20f;
             porcentajeRecargo2 = 1.40f;
             porcentajeRecargo3 = 0.50f;
-            porcentajeRecargo4 = 0.0f;
-            cuotaRecargo4 = 0M;
+            porcentajeRecargo4 = 0.0f; //Se corresponde a la base exenta
+            cuotaRecargo4 = 0M; //Se corresponde a la base exenta
             facturaDeducible = 'S';
             paisFactura = "ES";
             fechaOperacion = string.Empty;
@@ -238,8 +238,8 @@ namespace importadorFacturas
         //Metodo para mapear las columnas con sus nombres de propiedad
         public static void MapeoFacturas()
         {
-            //Asigna a cada columna la propiedad que le corresponde (estan en el mismo orden que la plantilla de Excel con los campos)
-            mapeoColumnas = new Dictionary<int, string>
+            //Asigna a cada columna la propiedad que le corresponde para luego generar la salida (es el defecto que tendra la salida en csv
+            MapeoColumnas = new Dictionary<int, string>
             {
                 {1, "fechaFactura" },
                 {2, "fechaOperacion" },
@@ -306,11 +306,7 @@ namespace importadorFacturas
                 {63, "cuotaIrpf" },
                 {64, "totalFactura" }
             };
-
-            //Se añade el campo 'contador' para que se incluya en el fichero de salida
-            ColumnasAexportar = new List<string> { "contador" }.Concat(mapeoColumnas.Values).ToArray();
         }
-
 
         //Personalizacion de los atributos de las propiedades para poner el numero de orden en el que luego incluirlos en el fichero de salida
         [AttributeUsage(AttributeTargets.Property)]

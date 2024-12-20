@@ -1,3 +1,9 @@
+[parametros]
+entrada=emitidasDiagram.xlsx
+salida=salida_emitidasDiaram.csv
+proceso=E00
+fila=4
+[columnas]
 G;fechaFactura
 C;periodoFactura
 D;serieFactura
@@ -32,4 +38,3 @@ BJ;baseIrpf
 BK;porcentajeIrpf
 BL;cuotaIrpf
 BM;totalFactura
- 

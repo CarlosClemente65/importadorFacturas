@@ -1,3 +1,9 @@
+[parametros]
+entrada=recibidasAlcasal.xlsx
+salida=salida_recibidasAlcasal.csv
+proceso=R00
+fila=1
+[columnas]
 F;fechaFactura
 B;nifFactura
 A;nombreFactura
