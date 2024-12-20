@@ -30,21 +30,17 @@ namespace importadorFacturas
 
             //La fila de inicio se pasa por parametro y se almacena en una propiedad de la clase 'Program'
             int filaInicio = Configuracion.FilaInicio;
-            int hojaExcel = Configuracion.HojaExcel;
-            string ficheroExcel = Configuracion.FicheroEntrada;
 
             var datosExcel = new List<Dictionary<int, string>>();
 
             //Se ajusta el numero de la fila y columna de inicio ya que ClosedXML usa base 0
             filaInicio--;
 
-            using(var libro = new XLWorkbook(ficheroExcel))
+            using(var libro = new XLWorkbook(Configuracion.FicheroEntrada))
             {
-                var hoja = libro.Worksheet(hojaExcel);
+                var hoja = libro.Worksheet(Configuracion.HojaExcel);
 
-                //Obtiene la cabecera para determinar el numero de columnas
-                //var cabecera2 = new List<int>(Facturas.mapeoColumnas.Keys);
-
+                //Carga las columnas de la fila de cabecera para procesarlas
                 var cabecera = hoja.Row(filaInicio + 1)
                                     .Cells()
                                     .Select(c => c.Address.ColumnNumber)
@@ -55,7 +51,7 @@ namespace importadorFacturas
 
                 foreach(var fila in filas)
                 {
-                    //Procesa cada columna en la fila y almacena el valor en la lista datosFilas
+                    //Procesa cada columna en la fila y almacena el valor en la lista datosExcel
                     var datosFilas = new Dictionary<int, string>();
                     foreach(var columna in cabecera)
                     {
@@ -72,7 +68,6 @@ namespace importadorFacturas
         //Metodo para grabar el fichero de salida en formato csv
         public StringBuilder GrabarCsv<T>(List<T> datos, string[] camposAexportar)
         {
-            string ficheroSalida = Configuracion.FicheroSalida;
             //Variable que recoje los posibles errores
             var resultado = new StringBuilder();
 
@@ -86,7 +81,7 @@ namespace importadorFacturas
                     Delimiter = ";"
                 };
 
-                using(var writer = new StreamWriter(ficheroSalida, false, Encoding.Default))
+                using(var writer = new StreamWriter(Configuracion.FicheroSalida, false, Encoding.Default))
                 {
                     //Procesado de cada fila
                     foreach(var dato in datos)
@@ -154,15 +149,18 @@ namespace importadorFacturas
                 bool procesaParametros = false;
                 bool procesaColumnas = false;
 
+                //Procesa todas las lineas validas
                 while((linea = contenidoGuion.ReadLine()) != null)
                 {
                     linea = linea.Trim();
 
+                    //No procesa las lineas vacias
                     if(string.IsNullOrWhiteSpace(linea))
                     {
                         continue;
                     }
 
+                    //Controla si es la zona de parametros
                     if(linea.Equals("[parametros]", StringComparison.OrdinalIgnoreCase))
                     {
                         procesaParametros = true;
@@ -170,6 +168,7 @@ namespace importadorFacturas
                         continue;
                     }
 
+                    //Controla si es la zona de columnas
                     if(linea.Equals("[columnas]", StringComparison.OrdinalIgnoreCase))
                     {
                         procesaParametros = false;
@@ -177,6 +176,7 @@ namespace importadorFacturas
                         continue;
                     }
 
+                    //Se añade la linea segun si esta en la zona de parametros o de columnas
                     if(procesaParametros)
                     {
                         Configuracion.parametros.Add(linea);
@@ -188,27 +188,22 @@ namespace importadorFacturas
                 }
             }
 
-            if(ProcesarParametros()) //Si no ha habido errores procesa las columnas
+            //Carga los parametros a las propiedades de la clase 'Configuracion'
+            if(ProcesarParametros()) 
             {
+                //Si no ha habido errores procesa las columnas
                 LeerConfiguracionColumnas(Configuracion.columnas);
                 return true; //Se devuelve true porque no ha habido errores
             }
 
-            return false; //Si en el procesado de parametros ha habido algun error
+            return false; //Si en el procesado de parametros ha habido algun error devuelve false
 
         }
 
+        //Metodo para procesar los parametros del guion
         private bool ProcesarParametros()
         {
-            /* Parametros:
-             * entrada=fichero de entrada
-             * salida=fichero de salida (opcional)
-             * proceso=tipo de proceso a ejecutar
-             * fila=fila de la cabecera con los nombres de las columnas. Nota: tiene que haber una fila que tenga todas las columnas rellenas para luego poder procesar bien los datos
-             * hoja=hoja en la que estan los datos (opcional)
-             * */
-
-            //Almacena los errores que se puedan producir
+            //Variable para almacenar los errores
             string chequeo = string.Empty;
 
             //Procesa las lineas
@@ -221,7 +216,7 @@ namespace importadorFacturas
                 {
                     //Fichero entrada
                     case "entrada":
-                        chequeo = ChequeoFichero(valor);
+                        chequeo = ChequeoFichero(valor); //Devuelve los errores que se hayan producido
 
                         if(!string.IsNullOrEmpty(chequeo))
                         {
@@ -230,11 +225,14 @@ namespace importadorFacturas
                         }
                         Configuracion.FicheroEntrada = valor;
 
+                        //Graba el defecto del fichero de salida segun el nombre del fichero de entrada
                         if(string.IsNullOrEmpty(Configuracion.FicheroSalida))
                         {
                             Configuracion.FicheroSalida = $"salida_{Path.GetFileNameWithoutExtension(Configuracion.FicheroEntrada)}.csv";
                             Program.utiles.ControlFicheros(Configuracion.FicheroSalida);
                         }
+
+                        //Graba el defecto del fichero de errores segun el nombre del fichero de entrada
                         Configuracion.FicheroErrores = Path.Combine(Path.GetDirectoryName(Configuracion.FicheroEntrada), "errores.txt");
                         Program.utiles.ControlFicheros(Configuracion.FicheroErrores);
 
@@ -248,7 +246,7 @@ namespace importadorFacturas
 
                     //Tipo de proceso
                     case "proceso":
-                        //Se valida que el tipo de proceso sea alguno de los definidos en la clase 'Configuracion'
+                        //Se valida que el tipo de proceso sea alguno de los definidos en 'Configuracion.TiposProceso'
                         if(Enum.TryParse<Configuracion.TiposProceso>(valor, out Configuracion.TiposProceso _tipoProceso))
                         {
                             Configuracion.TipoProceso = _tipoProceso.ToString();
@@ -301,11 +299,15 @@ namespace importadorFacturas
                 return;
             }
 
-            //Inicializa la lista de propiedades y el mapeo de columnas
-            var listaPropiedades = new List<string>();
+            //Genera la lista de las columnas a exportar segun el defecto
+            Facturas.MapeoFacturas();
+            Facturas.ColumnasAexportar = new List<string> { "contador" };
+            Facturas.ColumnasAexportar.AddRange(Facturas.MapeoColumnas.Values);
+
+            //Crea una nueva instancia para cargar las columnas que vienen en la configuracion
             Facturas.MapeoColumnas = new Dictionary<int, string>();
 
-            //Leer el archivo línea por línea
+            //Procesa las lineas
             foreach(var linea in lineas)
             {
                 //Divide la cadena por el primer punto y coma que encuentra
@@ -315,14 +317,9 @@ namespace importadorFacturas
                 int numeroColumna = LetraAColumna(letraColumna);
                 if(numeroColumna <= 0) continue; // Saltar letras inválidas
 
-                // Almacenar en el diccionario y la lista de propiedades
+                // Almacenar en el diccionario el numero de columna y el nombre del campo
                 Facturas.MapeoColumnas[numeroColumna] = propiedad;
-                listaPropiedades.Add(propiedad);
             }
-
-            //Se añade el campo 'contador' para que se incluya en el fichero de salida
-            Facturas.ColumnasAexportar = new List<string> { "contador" };
-            Facturas.ColumnasAexportar.AddRange(listaPropiedades);
         }
     }
 }

@@ -5,12 +5,9 @@ using System.Text;
 
 namespace importadorFacturas
 {
-    public class EmitidasE01 : Facturas
+    public class EmitidasE01 : Facturas //Hereda de 'Facturas' para tener todos los campos necesarios
     {
-
-        //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv
-
-        //Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden
+        //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv. Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden
 
         [OrdenCsv(651)]
         public string primerNumero { get; set; } //No existe en la clase base por lo que no necesita el 'new'
@@ -57,9 +54,7 @@ namespace importadorFacturas
         //Metodo para procesar los datos del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
         public StringBuilder EmitidasAlcasar()
         {
-            //parametros.FilaInicio = 1; //La primera fila debe ser la de de la de la cabecera para contar las columnas
-
-            //Devuelve el resultado si hay algun error
+            //Almacena los errores si se producen
             StringBuilder resultado = new StringBuilder();
 
             //Instanciacion de las clases para las facturas agrupadas (tipos T y TR)
@@ -82,7 +77,7 @@ namespace importadorFacturas
                 {
                     numFila++; //Se incrementa en uno para empezar por el numero 1
 
-                    //Se crea una instancia de la clase para cada linea
+                    //Se crea una nueva factura para cada linea
                     var factura = new EmitidasE01();
 
                     //Se ponen las agrupaciones de facturas en false antes de procesar cada linea y poder sumarlas si se corresponde con la serie T o TR

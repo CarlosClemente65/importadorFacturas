@@ -49,8 +49,6 @@ namespace importadorFacturas
             //Variable que recoge el texto devuelto en el metodo si se ha producido algun error en el procesado
             StringBuilder resultado = new StringBuilder();
 
-            Procesos proceso = new Procesos();
-
             switch(Configuracion.TipoProceso)
             {
                 //Facturas emitidas con formato diagram
@@ -61,9 +59,7 @@ namespace importadorFacturas
                     List<Facturas> facturasE00 = Facturas.ObtenerFacturas();
                     if(facturasE00.Count > 0)
                     {
-                        //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = Facturas.ColumnasAexportar.ToArray();
-                        resultado = proceso.GrabarCsv(facturasE00, camposAexportar);
+                        resultado = proceso.GrabarCsv(facturasE00, Facturas.ColumnasAexportar.ToArray());
                     }
                     break;
 
@@ -79,9 +75,7 @@ namespace importadorFacturas
                     List<EmitidasE01> facturasE01 = EmitidasE01.ObtenerFacturasE01();
                     if(facturasE01.Count > 0)
                     {
-                        //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = Facturas.ColumnasAexportar.ToArray();
-                        resultado = proceso.GrabarCsv(facturasE01, camposAexportar);
+                        resultado = proceso.GrabarCsv(facturasE01, Facturas.ColumnasAexportar.ToArray());
                     }
 
                     break;
@@ -94,9 +88,7 @@ namespace importadorFacturas
                     List<Facturas> facturasR00 = Facturas.ObtenerFacturas();
                     if(facturasR00.Count > 0)
                     {
-                        //Array de propiedades a exportar de este tipo
-                        string[] camposAexportar = Facturas.ColumnasAexportar.ToArray();
-                        resultado = proceso.GrabarCsv(facturasR00, camposAexportar);
+                        resultado = proceso.GrabarCsv(facturasR00, Facturas.ColumnasAexportar.ToArray());
                     }
                     break;
 

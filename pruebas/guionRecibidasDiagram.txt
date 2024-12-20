@@ -1,3 +1,9 @@
+[parametros]
+entrada=recibidasDiagram.xlsx
+salida=salida_recibidasDiagram.csv
+proceso=R00
+fila=7
+[columnas]
 A;fechaFactura
 C;numeroFactura
 D;nifFactura
