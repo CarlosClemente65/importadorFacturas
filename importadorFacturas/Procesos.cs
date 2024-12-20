@@ -189,7 +189,7 @@ namespace importadorFacturas
             }
 
             //Carga los parametros a las propiedades de la clase 'Configuracion'
-            if(ProcesarParametros()) 
+            if(ProcesarParametros())
             {
                 //Si no ha habido errores procesa las columnas
                 LeerConfiguracionColumnas(Configuracion.columnas);
@@ -310,8 +310,8 @@ namespace importadorFacturas
             //Procesa las lineas
             foreach(var linea in lineas)
             {
-                //Divide la cadena por el primer punto y coma que encuentra
-                (string letraColumna, string propiedad) = Program.utiles.DivideCadena(linea, ';');
+                //Divide la cadena por el simbolo igual 
+                (string letraColumna, string propiedad) = Program.utiles.DivideCadena(linea, '=');
 
                 // Convertir la letra de columna a número
                 int numeroColumna = LetraAColumna(letraColumna);
