@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UtilesDiagram;
+using UtilidadesDiagram;
 
 
 namespace importadorFacturas
@@ -9,9 +9,6 @@ namespace importadorFacturas
     internal class Program
     {
         public static Configuracion.TiposProceso TiposProceso { get; private set; }
-
-        //Instanciacion de las utilidades para acceso a los metodos
-        public static UtilidadesDiagram utiles = new UtilidadesDiagram();
 
         public static Procesos proceso = new Procesos();
 
@@ -28,7 +25,7 @@ namespace importadorFacturas
             //Controla que exista el fichero con el guion
             if(!File.Exists(ficheroGuion))
             {
-                utiles.GrabarFichero(Configuracion.FicheroErrores, $"Error. No existe el fichero {ficheroGuion}");
+                Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. No existe el fichero {ficheroGuion}");
                 return;
             }
 
@@ -94,14 +91,14 @@ namespace importadorFacturas
 
                 default:
                     //Si no se pasa un tipo de proceso correcto, se graba el fichero de errores.
-                    utiles.GrabarFichero(Configuracion.FicheroErrores, $"El tipo de proceso {Configuracion.TipoProceso} no es correcto");
+                    Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"El tipo de proceso {Configuracion.TipoProceso} no es correcto");
                     break;
             }
 
             //Grabar el registro de errores si se ha producido alguno
             if(resultado.Length > 0)
             {
-                utiles.GrabarFichero(Configuracion.FicheroErrores, resultado.ToString());
+                Utilidades.GrabarFichero(Configuracion.FicheroErrores, resultado.ToString());
             }
         }
     }

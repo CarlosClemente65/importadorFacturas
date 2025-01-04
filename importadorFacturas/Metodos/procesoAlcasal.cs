@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UtilidadesDiagram;
 
 namespace importadorFacturas
 {
@@ -158,17 +159,17 @@ namespace importadorFacturas
 
                             //Nombre factura
                             case 5:
-                                if(columna.Value != "N/D") factura.nombreFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
+                                if(columna.Value != "N/D") factura.nombreFactura = Utilidades.QuitaRaros(columna.Value.ToUpper());
                                 break;
 
                             //Apellidos factura
                             case 6:
-                                if(columna.Value != "N/D") factura.apellidoFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper());
+                                if(columna.Value != "N/D") factura.apellidoFactura = Utilidades.QuitaRaros(columna.Value.ToUpper());
                                 break;
 
                             //Direccion factura
                             case 7:
-                                if(columna.Value != "N/D") factura.direccionFactura = Program.utiles.QuitaRaros(columna.Value.ToUpper().Replace(";", ","));
+                                if(columna.Value != "N/D") factura.direccionFactura = Utilidades.QuitaRaros(columna.Value.ToUpper().Replace(";", ","));
                                 break;
 
                             //Codigo postal factura
