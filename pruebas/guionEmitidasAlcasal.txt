@@ -1,4 +1,4 @@
 [parametros]
 entrada=160724.xlsx
-xxsalida=salida_050524.csv
+salida=salida_160724.csv
 proceso=E01

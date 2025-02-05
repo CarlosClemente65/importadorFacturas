@@ -203,6 +203,9 @@ namespace importadorFacturas
         [OrdenCsv(650)]
         public decimal totalFactura { get; set; }
 
+        [OrdenCsv(660)]
+        public string ficheroFactura { get; set; }
+
         public static List<Facturas> ListaFacturas { get; set; }
 
         public static Dictionary<int, string> MapeoColumnas;
@@ -304,7 +307,8 @@ namespace importadorFacturas
                 {61, "baseIrpf" },
                 {62, "porcentajeIrpf" },
                 {63, "cuotaIrpf" },
-                {64, "totalFactura" }
+                {64, "totalFactura" },
+                {65, "ficheroFactura" }
             };
         }
 

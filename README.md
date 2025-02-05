@@ -1,7 +1,7 @@
-# DseImfacex v1.4.1.0
+# DseImfacex v1.5.1.0
 ## Programa para importar un listado de facturas desde un excel personalizando las columnas de datos
 
-### Desarrollado por Carlos Clemente (12-2024)
+### Desarrollado por Carlos Clemente (01-2025)
 
 ### Control de versiones
  - Version 1.0	- Primera version funcional.
@@ -12,6 +12,8 @@
  - Version 1.3	- Añadida funcionalidad para importar facturas emitidas desde un Excel indicando en que columna esta cada campo
 				- Modificado el pase de parametros en la ejecucion
  - Version 1.4	- Modificado para pasar un guion con los parametros y configuracion de columnas
+ - Version 1.5	- Incluida biblioteca 'UtilidadesDiagram' como estatica
+				- Añadida propiedad 'ficheroFactura' a la clase 'Facturas'
 <br>
 
 **Instrucciones:**
@@ -37,11 +39,11 @@ dseimfacex guion.txt
 	* proceso=E00
 	* fila=4
 	* [columnas]
-	* G;fechaFactura
-	* C;periodoFactura
-	* D;serieFactura
-	* E;numeroFactura
-	* H;nifFactura
+	* G=fechaFactura
+	* C=periodoFactura
+	* D=serieFactura
+	* E=numeroFactura
+	* H=nifFactura
 <br>
 
 **Parametros de ejecucion:** 

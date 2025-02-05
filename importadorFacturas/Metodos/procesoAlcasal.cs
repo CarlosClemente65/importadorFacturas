@@ -8,30 +8,30 @@ namespace importadorFacturas
 {
     public class EmitidasE01 : Facturas //Hereda de 'Facturas' para tener todos los campos necesarios
     {
-        //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv. Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden
+        //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv (empieza por 1000 para dejar esos numeros reservados para futuros campos de la clase base. Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden
 
-        [OrdenCsv(651)]
+        [OrdenCsv(1010)]
         public string primerNumero { get; set; } //No existe en la clase base por lo que no necesita el 'new'
 
-        [OrdenCsv(652)]
+        [OrdenCsv(1020)]
         public string ultimoNumero { get; set; }//No existe en la clase base por lo que no necesita el 'new'
 
-        [OrdenCsv(653)]
+        [OrdenCsv(1030)]
         public int contadorFacturas { get; set; }//No existe en la clase base por lo que no necesita el 'new'
 
-        [OrdenCsv(654)]
+        [OrdenCsv(1040)]
         public new string nifFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
 
-        [OrdenCsv(655)]
+        [OrdenCsv(1050)]
         public string apellidoFactura { get; set; }//No existe en la clase base por lo que no necesita el 'new'
 
-        [OrdenCsv(656)]
+        [OrdenCsv(1060)]
         public new string nombreFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
 
-        [OrdenCsv(657)]
+        [OrdenCsv(1070)]
         public new string direccionFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
 
-        [OrdenCsv(658)]
+        [OrdenCsv(1080)]
         public new string codPostalFactura { get; set; }//Para sustituir a la propiedad de la clase base se crea una nueva propiedad con el 'new'
 
 
