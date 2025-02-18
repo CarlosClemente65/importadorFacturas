@@ -346,7 +346,7 @@ namespace importadorFacturas
         }
 
         //Permite chequear si hay alguna cuota de IVA que no esta bien calculada
-        public string ChequeoCuotaIva<T>(T factura, Func<T, decimal> obtenerBase, Func<T, float> obtenerPorentaje, Func<T, decimal> obtenerCuota, string tipoIva, int numFila) where T : Facturas
+        public string ChequeoCuotaIva<T>(T factura, Func<T, decimal> obtenerBase, Func<T, float> obtenerPorentaje, Func<T, decimal> obtenerCuota, int numFila) where T : Facturas
         {
             string resultado = string.Empty;
             //Almacena los valores de las propiedades segun la base, porcentaje y cuota pasada al metodo
@@ -359,7 +359,7 @@ namespace importadorFacturas
             //Si la cuota calculada difiere en mas o menos 5 centimos, genera el error en la factura.
             if(Math.Abs(cuotaIva - cuotaCalculada) > 0.05m)
             {
-                resultado = $"\t- La cuota de IVA del {tipoIva} no es correcta: Base = {baseFactura} Cuota = {cuotaIva}";
+                resultado = $"\t- La cuota de IVA calculada al {porcentajeIva}% no es correcta. Cuota calculada: {cuotaCalculada} - Cuota del fichero: {cuotaIva}";
             }
 
             return resultado;
@@ -395,14 +395,14 @@ namespace importadorFacturas
                         totalFacturaCalculado += baseFactura + cuotaIva + cuotaRecargo; //Se acumula cada campo al total de factura calculado
 
                         // Llamamos al método de chequeo y acumulamos los errores en el StringBuilder
-                        resultadoChequeo = ChequeoCuotaIva(factura, f => baseFactura, f => porcentajeIva, f => cuotaIva, $"{porcentajeIva}%", numLinea);
+                        resultadoChequeo = ChequeoCuotaIva(factura, f => baseFactura, f => porcentajeIva, f => cuotaIva, numLinea);
 
                         // Si hay algún error, lo agregamos al resultado final
                         if(!string.IsNullOrEmpty(resultadoChequeo))
                         {
                             if(!flag) //Permite añadir una cabecera por cada factura
                             {
-                                resultado.AppendLine($"\nDescuadres en la factura de la linea {numLinea} del proveedor {factura.nombreFactura} de fecha {factura.fechaFactura}:");
+                                resultado.AppendLine($"\nDescuadres en la factura de la linea {numLinea} del proveedor {factura.nombreFactura} y fecha {factura.fechaFactura}:");
                                 flag = true;
                             }
                             resultado.AppendLine(resultadoChequeo);
@@ -419,14 +419,14 @@ namespace importadorFacturas
                     //Permite una diferencia en mas/menos 5 centimos
                     if(Math.Abs(cuotaIrpfCalculada - factura.cuotaIrpf) > 0.05m)
                     {
-                        resultado.AppendLine($"\t- La cuota de IRPF calculada no es correcta: Base IRPF = {factura.baseIrpf} -  % retencion = {factura.porcentajeIrpf}% - Cuota IRPF = {factura.cuotaIrpf}");
+                        resultado.AppendLine($"\t- La cuota de IRPF calculada al {factura.porcentajeIrpf}% no es correcta. Cuota calculada: {cuotaIrpfCalculada} - Cuota del fichero: {factura.cuotaIrpf}. Revise si el porcentaje informado es correcto.");
                     }
                 }
 
                 //Chequeo si cuadra el total factura calculado con el pasado en el fichero
                 if(totalFacturaCalculado - factura.cuotaIrpf != factura.totalFactura)
                 {
-                    resultado.AppendLine($"\t- El total de factura calculado no es correcto: Importe calculado = {totalFacturaCalculado} - Importe de la factura = {factura.totalFactura}. Revise si falta alguna base o cuota de IVA");
+                    resultado.AppendLine($"\t- El total de factura calculado no es correcto. Importe calculado: {totalFacturaCalculado} - Importe de la factura: {factura.totalFactura}. Revise si falta alguna base o cuota de IVA");
                 }
                 numLinea++;
                 flag = false;

@@ -11,10 +11,11 @@
 				- Añadida funcionalidad para obtener fichero de errores en el proceso.
  - Version 1.3	- Añadida funcionalidad para importar facturas emitidas desde un Excel indicando en que columna esta cada campo
 				- Modificado el pase de parametros en la ejecucion
- - Version 1.4	- Modificado para pasar un guion con los parametros y configuracion de columnas
+ - Version 1.4	- Añadida funcionalidad para pasar un guion con los parametros y configuracion de columnas
  - Version 1.5	- Incluida biblioteca 'UtilidadesDiagram' como estatica
-				- Añadida propiedad 'ficheroFactura' a la clase 'Facturas'
+				- Añadida propiedad 'ficheroFactura' a la clase 'Facturas' (fichero PDF para archivar en el GAD)
 				- Añadido metodo 'RecibidasAlcasal' para procesar las recibidas de este cliente
+ - Version 1.6	- Añadido metodo 'ChequeoIntegridadFacturas' para comprobar si las facturas son correctas (cuotas de IVA calculadas y total factura)
 <br>
 
 **Instrucciones:**
@@ -29,6 +30,7 @@
  - Las configuracion de columnas deben pasarse en cada linea como 'columna=nombreCampo'
  - El fichero Excel debe tener una fila con una cabecera, que es la que se indica en el parameto 'fila'
  - Se puede indicar de forma opcional el numero de hoja en la que estan los datos (por defecto la 1)
+ - De cada factura se realiza un chequeo de las cuotas de IVA, cuota de IRPF y total factura, generando un fichero con los errores encontrados.
 <br>
 
 **Uso:**
