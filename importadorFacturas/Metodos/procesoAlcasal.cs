@@ -50,10 +50,31 @@ namespace importadorFacturas
         }
     }
 
+    public class RecibidasR01 : Facturas //Hereda de 'Facturas' para tener todos los campos necesarios
+    {
+        //Campos especificos para la importacion de Alcasal. El atributo 'OrdenCsv' sirve para colocar esos campos en el orden que tiene esa exportacion a csv (empieza por 1000 para dejar esos numeros reservados para futuros campos de la clase base. Se generan nuevas propiedades para ocultar la de la clase base y poder modificar el orden//Hereda de 'Facturas' para tener todos los campos necesarios
+
+
+
+        public static List<RecibidasR01> ListaRecibidasR01 { get; set; } = new List<RecibidasR01>();
+
+        public RecibidasR01()
+        {
+            //Constructor de la clase que asigna los nombres de las propiedades que se van a incluir en el fichero de salida. Nota: lo dejo por si fuera necesario algun dia inicializar alguna propiedad aunque ahora no es necesario.
+
+        }
+
+        public static List<RecibidasR01> ObtenerFacturasR01()
+        {
+            return ListaRecibidasR01;
+        }
+
+    }
+
     public class ProcesoAlcasal
     {
-        //Metodo para procesar los datos del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
-        public StringBuilder EmitidasAlcasar()
+        //Metodo para procesar las facturas emitidas del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
+        public StringBuilder EmitidasAlcasal()
         {
             //Almacena los errores si se producen
             StringBuilder resultado = new StringBuilder();
@@ -63,13 +84,13 @@ namespace importadorFacturas
             facturasAgrupadas agrupacionTR = new facturasAgrupadas();
 
             //Carga las columnas a procesar y a exportar
-            MapeoColumnas();
+            MapeoColumnasE01();
 
             //Carga los datos del fichero excel
             var datosExcel = Program.proceso.LeerExcel();
 
             var numFila = 0; //Permite controlar la fila en la que se ha podido producir un error
-            var numColumna = 0;//Permite controla la columna en la que se ha podido producir un error
+            var numColumna = 0;//Permite controlar la columna en la que se ha podido producir un error
 
             try
             {
@@ -296,7 +317,180 @@ namespace importadorFacturas
             }
         }
 
-        //Metodo para generar el registro en la clase cuando se agrupan facturas
+        //Metodo para procesar las facturas recibidas del cliente Alcasal (Raiña Asesores) - tiquet 5863-59
+        public StringBuilder RecibidasAlcasal()
+        {
+            //Almacena los errores si se producen
+            StringBuilder resultado = new StringBuilder();
+
+            //Genera la lista de las columnas a exportar segun el defecto de facturas
+            Facturas.MapeoFacturas();
+            Facturas.ColumnasAexportar = new List<string> { "contador" }; //Se añade una columna para poner el contador de facturas.
+            Facturas.ColumnasAexportar.AddRange(Facturas.MapeoColumnas.Values);
+
+            //Carga los datos del fichero de entrada
+            List<string[]> datosEntrada = Program.proceso.LeerCsv(Configuracion.FicheroEntrada);
+
+            int numFila = 0; //Permite controlar la fila en la que se ha podido producir un error
+            int numColumna = 0; //Permite controlar la columna en la que se ha podido producir un error
+            try
+            {
+                foreach(var fila in datosEntrada.Skip(1)) //Salta la primera linea ya que es la cabecera de datos
+                {
+                    numFila++;
+                    //Instancia de una nueva factura para procesar
+                    var factura = new RecibidasR01();
+
+                    //Añade el contador de facturas
+                    factura.contador = numFila;
+
+                    //Procesado de todas las filas 
+                    for(int columna = 0; columna < fila.Length; columna++)
+                    {
+                        numColumna++;
+                        if(!string.IsNullOrEmpty(fila[columna]))
+                        {
+                            switch(columna + 1) //Se suma 1 porque el array empieza por 0
+                            {
+                                //Nombre proveedor
+                                case 1:
+                                    factura.nombreFactura = Utilidades.QuitaRaros(fila[columna].ToUpper());
+                                    break;
+
+                                //CIF proveedor
+                                case 2:
+                                    factura.nifFactura = fila[columna].ToUpper();
+                                    break;
+
+                                //Nº factura
+                                case 5:
+                                    //Se almacena como 'referenciaFactura' porque son compras; poner automaticamente el numero de factura que corresponda al importar
+                                    factura.referenciaFactura = fila[columna].ToUpper();
+                                    break;
+
+
+                                case 6:
+                                    //Convierte el valor de la columna a un formato de fecha con tipo de cadena
+                                    if(DateTime.TryParse(fila[columna], out DateTime fecha))
+                                    {
+                                        factura.fechaFactura = fecha.ToString("dd.MM.yyyy");
+                                    }
+                                    else
+                                    {
+                                        factura.fechaFactura = fila[columna].Substring(0, 10);
+                                    }
+
+                                    break;
+
+                                //Base al 0%
+                                case 9:
+                                    factura.baseFactura4 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Cuota al 0%
+                                case 10:
+                                    factura.cuotaIva4 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base al 2%
+                                case 11:
+                                    factura.baseFactura5 = decimal.Parse(fila[columna]);
+                                    factura.porcentajeIva5 = 2.0f;
+                                    break;
+
+                                //Cuota al 2%
+                                case 12:
+                                    factura.cuotaIva5 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base al 4%
+                                case 13:
+                                    factura.baseFactura3 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Cuota al 4%
+                                case 14:
+                                    factura.cuotaIva3 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base al 5%
+                                case 15:
+                                    factura.baseFactura6 = decimal.Parse(fila[columna]);
+                                    factura.porcentajeIva6 = 5.0f;
+                                    break;
+
+                                //Cuota al 2%
+                                case 16:
+                                    factura.cuotaIva6 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base al 7,5%
+                                case 17:
+                                    factura.baseFactura7 = decimal.Parse(fila[columna]);
+                                    factura.porcentajeIva7 = 7.5f;
+                                    break;
+
+                                //Cuota al 7,5%
+                                case 18:
+                                    factura.cuotaIva7 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base al 10%
+                                case 19:
+                                    factura.baseFactura2 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Cuota al 10%
+                                case 20:
+                                    factura.cuotaIva2 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base al 21%
+                                case 21:
+                                    factura.baseFactura1 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Cuota al 21%
+                                case 22:
+                                    factura.cuotaIva1 = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Base IRPF
+                                case 24:
+                                    factura.baseIrpf = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Cuota IRPF
+                                case 25:
+                                    factura.cuotaIrpf = decimal.Parse(fila[columna]);
+                                    break;
+
+                                //Porcentaje IRPF
+                                case 26:
+                                    factura.porcentajeIrpf = float.Parse(fila[columna]);
+                                    break;
+
+                            }
+                        }
+                    }
+
+                    RecibidasR01.ListaRecibidasR01.Add(factura);
+
+                }
+            }
+
+            catch(Exception ex)
+            {
+                resultado.AppendLine($"Error al procesar los datos en la fila {numFila} y columna {numColumna}. Revise la estructura");
+                resultado.AppendLine($"{ex.Message}");
+                return resultado;
+            }
+
+            return resultado;
+        }
+
+
+        //Metodo para generar el registro en la clase cuando se agrupan facturas emitidas
         private void GrabarRegistroAgrupado(facturasAgrupadas agrupacion)
         {
             if(agrupacion.cantidadFacturas > 0)
@@ -318,8 +512,8 @@ namespace importadorFacturas
             }
         }
 
-        //Metodo para generar el mapeo de columnas que se usara para la generacion de la salida
-        private void MapeoColumnas()
+        //Metodo para generar el mapeo de columnas que se usara para la generacion de la salida en facturas emitidas
+        private void MapeoColumnasE01()
         {
             Facturas.MapeoColumnas = new Dictionary<int, string>
             {
@@ -348,6 +542,33 @@ namespace importadorFacturas
 
             Facturas.ColumnasAexportar = new List<string>(Facturas.MapeoColumnas.Values).ToList();
         }
+
+        ////Metodo para generar el mapeo de columnas que se usara para la generacion de la salida en facturas recibidas
+        //private void MapeoColumnasR01()
+        //{
+        //    Facturas.MapeoColumnas = new Dictionary<int, string>
+        //    {
+        //        {1,"nombreFactura" },
+        //        {2,"nifFactura" },
+        //        {5, "numeroFactura" },
+        //        {5, "referenciaFactura" },
+        //        {6, "fechaFactura" },
+        //        {8,"totalFactura" },
+        //        {9, "baseFactura4" },
+        //        {10, "porcentajeIva2" },
+        //        {7, "cuotaIva2" },
+        //        {8, "porcentajeRecargo2" },
+        //        {9,"cuotaRecargo2" },
+        //        {10,"baseIrpf" },
+        //        {11,"porcentajeIrpf" },
+        //        {12,"cuotaIrpf" },
+
+        //    };
+
+        //    Facturas.ColumnasAexportar = new List<string>(Facturas.MapeoColumnas.Values).ToList();
+        //}
+
+
     }
 
     //Clase que representa las propiedades de las facturas agrupadas que acumulan los importes.

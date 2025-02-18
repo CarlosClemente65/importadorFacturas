@@ -66,7 +66,7 @@ namespace importadorFacturas
                     ProcesoAlcasal procesoE01 = new ProcesoAlcasal();
 
                     //Procesar los datos del fichero de Excel
-                    resultado = procesoE01.EmitidasAlcasar();
+                    resultado = procesoE01.EmitidasAlcasal();
 
                     //Carga los datos procesados para pasarlos al csv
                     List<EmitidasE01> facturasE01 = EmitidasE01.ObtenerFacturasE01();
@@ -86,6 +86,19 @@ namespace importadorFacturas
                     if(facturasR00.Count > 0)
                     {
                         resultado = proceso.GrabarCsv(facturasR00, Facturas.ColumnasAexportar.ToArray());
+                    }
+                    break;
+
+                //Facturas recibidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-59
+                case "R01":
+                    //Inicializa campos
+                    ProcesoAlcasal procesoR01 = new ProcesoAlcasal();
+                    resultado = procesoR01.RecibidasAlcasal();
+                    List<RecibidasR01> facturasR01 = RecibidasR01.ListaRecibidasR01;
+                    if(facturasR01.Count > 0)
+                    {
+                        //Graba el csv con los datos.
+                        resultado = proceso.GrabarCsv(facturasR01, Facturas.ColumnasAexportar.ToArray());
                     }
                     break;
 
