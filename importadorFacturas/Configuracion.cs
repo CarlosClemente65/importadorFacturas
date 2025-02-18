@@ -23,7 +23,8 @@ namespace importadorFacturas
         {
             E00, //Emitidas de Diagram
             E01, //Emitidas de Alcasal
-            R00 //Recibidas de Diagram
+            R00, //Recibidas de Diagram
+            R01  //Recibidas de Alcasal
         }
     }
 }

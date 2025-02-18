@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System;
 using UtilidadesDiagram;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace importadorFacturas
 {
@@ -320,6 +321,27 @@ namespace importadorFacturas
 
                 // Almacenar en el diccionario el numero de columna y el nombre del campo
                 Facturas.MapeoColumnas[numeroColumna] = propiedad;
+            }
+        }
+
+        public List<string[]> LeerCsv(string ficheroEntrada)
+        {
+            List<string[]> datosEntrada = new List<string[]>();
+
+            try
+            {
+                foreach(string linea in File.ReadLines(ficheroEntrada))
+                {
+                    string[] elementos = linea.Split(';');
+                    datosEntrada.Add(elementos);
+                }
+
+                return datosEntrada;
+            }
+
+            catch(Exception ex)
+            {
+                throw new Exception($"No se ha podido leer el fichero de entrada.\n{ex.Message}");
             }
         }
     }
