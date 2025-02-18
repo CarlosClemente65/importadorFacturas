@@ -1,0 +1,13 @@
+
+Descuadres en la factura de la linea 1 del proveedor ACALACA SELECCION de fecha 31.01.2025:
+	- La cuota de IVA del 21% no es correcta: Base = 27436,05 Cuota = 0
+	- La cuota de IRPF calculada no es correcta: Base IRPF = 1000 -  % retencion = 15 - Cuota IRPF = 190
+	- El total de factura calculado no es correcto: Importe calculado = 27436,05 - Importe de la factura = 33197,62. Revise si falta alguna base o cuota de IVA
+
+Descuadres en la factura de la linea 2 del proveedor EUNASA ACCESORIOS, S.A. de fecha 17.02.2025:
+	- La cuota de IVA del 21% no es correcta: Base = 184,72 Cuota = 0
+	- El total de factura calculado no es correcto: Importe calculado = 184,72 - Importe de la factura = 223,51. Revise si falta alguna base o cuota de IVA
+
+Descuadres en la factura de la linea 3 del proveedor DECOARTE PROYECTOS EN PINTURA S.L de fecha 17.02.2025:
+	- La cuota de IVA del 21% no es correcta: Base = 1750 Cuota = 0
+	- El total de factura calculado no es correcto: Importe calculado = 1750 - Importe de la factura = 2117,5. Revise si falta alguna base o cuota de IVA

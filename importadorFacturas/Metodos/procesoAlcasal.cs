@@ -347,131 +347,196 @@ namespace importadorFacturas
                     //Procesado de todas las filas 
                     for(int columna = 0; columna < fila.Length; columna++)
                     {
+                        string valor = fila[columna];
                         numColumna++;
-                        if(!string.IsNullOrEmpty(fila[columna]))
+                        //if(valor != null)
+                        //{
+                        switch(columna + 1) //Se suma 1 porque el array empieza por 0
                         {
-                            switch(columna + 1) //Se suma 1 porque el array empieza por 0
-                            {
-                                //Nombre proveedor
-                                case 1:
-                                    factura.nombreFactura = Utilidades.QuitaRaros(fila[columna].ToUpper());
-                                    break;
+                            //Nombre proveedor
+                            case 2:
+                                factura.nombreFactura = Utilidades.QuitaRaros(fila[columna].ToUpper());
+                                break;
 
-                                //CIF proveedor
-                                case 2:
-                                    factura.nifFactura = fila[columna].ToUpper();
-                                    break;
+                            //CIF proveedor
+                            case 3:
+                                factura.nifFactura = fila[columna].ToUpper();
+                                break;
 
-                                //Nº factura
-                                case 5:
-                                    //Se almacena como 'referenciaFactura' porque son compras; poner automaticamente el numero de factura que corresponda al importar
-                                    factura.referenciaFactura = fila[columna].ToUpper();
-                                    break;
+                            //Nº factura
+                            case 6:
+                                //Se almacena como 'referenciaFactura' porque son compras; poner automaticamente el numero de factura que corresponda al importar
+                                factura.referenciaFactura = fila[columna].ToUpper();
+                                break;
 
 
-                                case 6:
-                                    //Convierte el valor de la columna a un formato de fecha con tipo de cadena
-                                    if(DateTime.TryParse(fila[columna], out DateTime fecha))
-                                    {
-                                        factura.fechaFactura = fecha.ToString("dd.MM.yyyy");
-                                    }
-                                    else
-                                    {
-                                        factura.fechaFactura = fila[columna].Substring(0, 10);
-                                    }
+                            //Fecha factura
+                            case 7:
+                                //Convierte el valor de la columna a un formato de fecha con tipo de cadena
+                                if(DateTime.TryParse(fila[columna], out DateTime fecha))
+                                {
+                                    factura.fechaFactura = fecha.ToString("dd.MM.yyyy");
+                                }
+                                else
+                                {
+                                    factura.fechaFactura = fila[columna].Substring(0, 10);
+                                }
 
-                                    break;
+                                break;
 
-                                //Base al 0%
-                                case 9:
+                            //Base al 0%
+                            case 9:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura4 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 0%
-                                case 10:
+                            //Cuota al 0%
+                            case 10:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva4 = decimal.Parse(fila[columna]);
-                                    break;
+                                    if(factura.cuotaIva4 != 0)
+                                    {
+                                        resultado.AppendLine($"La factura de la linea {numFila} del proveedor {factura.nombreFactura} y fecha {factura.fechaFactura} tiene un importe en la cuota de IVA del 0%. Revisela");
+                                    }
+                                }
+                                break;
 
-                                //Base al 2%
-                                case 11:
+                            //Base al 2%
+                            case 11:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura5 = decimal.Parse(fila[columna]);
                                     factura.porcentajeIva5 = 2.0f;
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 2%
-                                case 12:
+                            //Cuota al 2%
+                            case 12:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva5 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Base al 4%
-                                case 13:
+                            //Base al 4%
+                            case 13:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura3 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 4%
-                                case 14:
+                            //Cuota al 4%
+                            case 14:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva3 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Base al 5%
-                                case 15:
+                            //Base al 5%
+                            case 15:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura6 = decimal.Parse(fila[columna]);
                                     factura.porcentajeIva6 = 5.0f;
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 2%
-                                case 16:
+                            //Cuota al 5%
+                            case 16:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva6 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Base al 7,5%
-                                case 17:
+                            //Base al 7,5%
+                            case 17:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura7 = decimal.Parse(fila[columna]);
                                     factura.porcentajeIva7 = 7.5f;
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 7,5%
-                                case 18:
+                            //Cuota al 7,5%
+                            case 18:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva7 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Base al 10%
-                                case 19:
+                            //Base al 10%
+                            case 19:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura2 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 10%
-                                case 20:
+                            //Cuota al 10%
+                            case 20:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva2 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Base al 21%
-                                case 21:
+                            //Base al 21%
+                            case 21:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseFactura1 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Cuota al 21%
-                                case 22:
+                            //Cuota al 21%
+                            case 22:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIva1 = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Base IRPF
-                                case 24:
+                            //Base IRPF
+                            case 24:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.baseIrpf = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Cuota IRPF
-                                case 25:
+                            //Cuota IRPF
+                            case 25:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.cuotaIrpf = decimal.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                                //Porcentaje IRPF
-                                case 26:
+                            //Porcentaje IRPF
+                            case 26:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
                                     factura.porcentajeIrpf = float.Parse(fila[columna]);
-                                    break;
+                                }
+                                break;
 
-                            }
+                            //Total factura
+                            case 27:
+                                if(!string.IsNullOrEmpty(valor))
+                                {
+                                    factura.totalFactura = decimal.Parse(fila[columna]);
+                                }
+                                break;
+
                         }
+                        //}
                     }
 
                     RecibidasR01.ListaRecibidasR01.Add(factura);
@@ -487,6 +552,23 @@ namespace importadorFacturas
             }
 
             return resultado;
+        }
+
+        //Permite chequear si hay alguna cuota de IVA que no esta bien calculada
+        private void ChequeoCuotaIva<T>(T factura, Func<T, decimal> obtenerBase, Func<T, float> obtenerPorentaje, Func<T, decimal> obtenerCuota, string tipoIva, StringBuilder resultado, int numFila) where T : Facturas
+        {
+            //Almacena los valores de las propiedades segun la base, porcentaje y cuota pasada al metodo
+            decimal baseFactura = obtenerBase(factura);
+            float porcentajeIva = obtenerPorentaje(factura);
+            decimal cuotaIva = obtenerCuota(factura);
+
+            decimal cuotaCalculada = Math.Round(baseFactura * (decimal)porcentajeIva / 100, 2);
+
+            //Si la cuota calculada difiere en mas o menos 5 centimos, genera el error en la factura.
+            if(Math.Abs(cuotaIva - cuotaCalculada) > 0.05m)
+            {
+                resultado.AppendLine($"Descuadre en la cuota de IVA del {tipoIva} en la factura de la linea {numFila} del proveedor {factura.nombreFactura} y fecha {factura.fechaFactura}. Revisela");
+            }
         }
 
 

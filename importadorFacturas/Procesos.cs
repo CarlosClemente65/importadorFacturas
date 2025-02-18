@@ -344,5 +344,94 @@ namespace importadorFacturas
                 throw new Exception($"No se ha podido leer el fichero de entrada.\n{ex.Message}");
             }
         }
+
+        //Permite chequear si hay alguna cuota de IVA que no esta bien calculada
+        public string ChequeoCuotaIva<T>(T factura, Func<T, decimal> obtenerBase, Func<T, float> obtenerPorentaje, Func<T, decimal> obtenerCuota, string tipoIva, int numFila) where T : Facturas
+        {
+            string resultado = string.Empty;
+            //Almacena los valores de las propiedades segun la base, porcentaje y cuota pasada al metodo
+            decimal baseFactura = obtenerBase(factura);
+            float porcentajeIva = obtenerPorentaje(factura);
+            decimal cuotaIva = obtenerCuota(factura);
+
+            decimal cuotaCalculada = Math.Round(baseFactura * (decimal)porcentajeIva / 100, 2);//Calculo de la cuota que correspnde al tipo pasado
+
+            //Si la cuota calculada difiere en mas o menos 5 centimos, genera el error en la factura.
+            if(Math.Abs(cuotaIva - cuotaCalculada) > 0.05m)
+            {
+                resultado = $"\t- La cuota de IVA del {tipoIva} no es correcta: Base = {baseFactura} Cuota = {cuotaIva}";
+            }
+
+            return resultado;
+        }
+
+        //Metodo para chequear si las bases y cuotas son correctas con los porcentajes de IVA correspondientes
+        public StringBuilder ChequeoIntegridadFacturas<T>(List<T> facturas) where T : Facturas
+        {
+            StringBuilder resultado = new StringBuilder();
+            int numLinea = 1;
+
+            foreach(var factura in facturas)
+            {
+                decimal totalFacturaCalculado = 0; //Acumula el total factura de cada campo
+                string resultadoChequeo = string.Empty;
+                bool flag = false; //Control para poner la cabecera de los chequeos de cada factura.
+
+                for(int i = 1; i <= 10; i++)
+                {
+                    // Usamos reflexión para obtener las propiedades baseFacturaX, porcentajeIvaX y cuotaIvaX
+                    var baseFacturaProp = factura.GetType().GetProperty($"baseFactura{i}");
+                    var porcentajeIvaProp = factura.GetType().GetProperty($"porcentajeIva{i}");
+                    var cuotaIvaProp = factura.GetType().GetProperty($"cuotaIva{i}");
+                    var cuotaRecargoProp = factura.GetType().GetProperty($"cuotaRecargo{i}");
+
+                    if(baseFacturaProp != null && porcentajeIvaProp != null && cuotaIvaProp != null)
+                    {
+                        // Obtener los valores de las propiedades mediante reflexión
+                        decimal baseFactura = (decimal)baseFacturaProp.GetValue(factura);
+                        float porcentajeIva = (float)porcentajeIvaProp.GetValue(factura);
+                        decimal cuotaIva = (decimal)cuotaIvaProp.GetValue(factura);
+                        decimal cuotaRecargo = (decimal)cuotaRecargoProp.GetValue(factura);
+                        totalFacturaCalculado += baseFactura + cuotaIva + cuotaRecargo; //Se acumula cada campo al total de factura calculado
+
+                        // Llamamos al método de chequeo y acumulamos los errores en el StringBuilder
+                        resultadoChequeo = ChequeoCuotaIva(factura, f => baseFactura, f => porcentajeIva, f => cuotaIva, $"{porcentajeIva}%", numLinea);
+
+                        // Si hay algún error, lo agregamos al resultado final
+                        if(!string.IsNullOrEmpty(resultadoChequeo))
+                        {
+                            if(!flag) //Permite añadir una cabecera por cada factura
+                            {
+                                resultado.AppendLine($"\nDescuadres en la factura de la linea {numLinea} del proveedor {factura.nombreFactura} de fecha {factura.fechaFactura}:");
+                                flag = true;
+                            }
+                            resultado.AppendLine(resultadoChequeo);
+                        }
+                    }
+                }
+
+                //Chequeo si cuadra la cuota de IRPF con el porcentaje pasado (solo si se han pasado la base y porcentaje)
+                if(factura.baseIrpf != 0 && factura.porcentajeIrpf != 0)
+                {
+                    //Calcula la cuota de IRPF que corresponde 
+                    decimal cuotaIrpfCalculada = Math.Round(factura.baseIrpf * (decimal)factura.porcentajeIrpf / 100, 2);
+
+                    //Permite una diferencia en mas/menos 5 centimos
+                    if(Math.Abs(cuotaIrpfCalculada - factura.cuotaIrpf) > 0.05m)
+                    {
+                        resultado.AppendLine($"\t- La cuota de IRPF calculada no es correcta: Base IRPF = {factura.baseIrpf} -  % retencion = {factura.porcentajeIrpf}% - Cuota IRPF = {factura.cuotaIrpf}");
+                    }
+                }
+
+                //Chequeo si cuadra el total factura calculado con el pasado en el fichero
+                if(totalFacturaCalculado - factura.cuotaIrpf != factura.totalFactura)
+                {
+                    resultado.AppendLine($"\t- El total de factura calculado no es correcto: Importe calculado = {totalFacturaCalculado} - Importe de la factura = {factura.totalFactura}. Revise si falta alguna base o cuota de IVA");
+                }
+                numLinea++;
+                flag = false;
+            }
+            return resultado;
+        }
     }
 }

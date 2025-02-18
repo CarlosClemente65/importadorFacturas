@@ -1,0 +1,4 @@
+[parametros]
+entrada=recibidasAlcasal_2.csv
+salida=salida_recibidasAlcasal_2.csv
+proceso=R01

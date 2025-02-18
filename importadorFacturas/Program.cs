@@ -21,7 +21,7 @@ namespace importadorFacturas
             }
 
             string ficheroGuion = args[0];
-            
+
             //Controla que exista el fichero con el guion
             if(!File.Exists(ficheroGuion))
             {
@@ -52,11 +52,14 @@ namespace importadorFacturas
                 case "E00":
                     //Inicializa campos
                     Metodos.ProcesoDiagram procesoE00 = new Metodos.ProcesoDiagram();
-                    resultado = procesoE00.ProcesarFacturas();
+                    resultado.Append(procesoE00.ProcesarFacturas());
                     List<Facturas> facturasE00 = Facturas.ObtenerFacturas();
                     if(facturasE00.Count > 0)
                     {
-                        resultado = proceso.GrabarCsv(facturasE00, Facturas.ColumnasAexportar.ToArray());
+                        //Chequeo de integridad de las facturas (bases con cuotas y total factura)
+                        resultado.Append(Program.proceso.ChequeoIntegridadFacturas(facturasE00));
+
+                        resultado.Append(proceso.GrabarCsv(facturasE00, Facturas.ColumnasAexportar.ToArray()));
                     }
                     break;
 
@@ -66,13 +69,13 @@ namespace importadorFacturas
                     ProcesoAlcasal procesoE01 = new ProcesoAlcasal();
 
                     //Procesar los datos del fichero de Excel
-                    resultado = procesoE01.EmitidasAlcasal();
+                    resultado.Append(procesoE01.EmitidasAlcasal());
 
                     //Carga los datos procesados para pasarlos al csv
                     List<EmitidasE01> facturasE01 = EmitidasE01.ObtenerFacturasE01();
                     if(facturasE01.Count > 0)
                     {
-                        resultado = proceso.GrabarCsv(facturasE01, Facturas.ColumnasAexportar.ToArray());
+                        resultado.Append(proceso.GrabarCsv(facturasE01, Facturas.ColumnasAexportar.ToArray()));
                     }
 
                     break;
@@ -85,7 +88,11 @@ namespace importadorFacturas
                     List<Facturas> facturasR00 = Facturas.ObtenerFacturas();
                     if(facturasR00.Count > 0)
                     {
-                        resultado = proceso.GrabarCsv(facturasR00, Facturas.ColumnasAexportar.ToArray());
+                        //Chequeo de integridad de las facturas (bases con cuotas y total factura)
+                        resultado.Append(Program.proceso.ChequeoIntegridadFacturas(facturasR00));
+                        
+                        //Graba el csv con los datos.
+                        resultado.Append(proceso.GrabarCsv(facturasR00, Facturas.ColumnasAexportar.ToArray()));
                     }
                     break;
 
@@ -93,18 +100,23 @@ namespace importadorFacturas
                 case "R01":
                     //Inicializa campos
                     ProcesoAlcasal procesoR01 = new ProcesoAlcasal();
-                    resultado = procesoR01.RecibidasAlcasal();
+                    resultado.Append(procesoR01.RecibidasAlcasal());
+
                     List<RecibidasR01> facturasR01 = RecibidasR01.ListaRecibidasR01;
                     if(facturasR01.Count > 0)
                     {
+                        //Chequeo de integridad de las facturas (bases con cuotas y total factura)
+                        resultado.Append(Program.proceso.ChequeoIntegridadFacturas(facturasR01));
+
                         //Graba el csv con los datos.
-                        resultado = proceso.GrabarCsv(facturasR01, Facturas.ColumnasAexportar.ToArray());
+                        resultado.Append(proceso.GrabarCsv(facturasR01, Facturas.ColumnasAexportar.ToArray()));
                     }
                     break;
 
                 default:
                     //Si no se pasa un tipo de proceso correcto, se graba el fichero de errores.
-                    Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"El tipo de proceso {Configuracion.TipoProceso} no es correcto");
+                    resultado.Append($"El tipo de proceso {Configuracion.TipoProceso} no es correcto");
+                    //Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"El tipo de proceso {Configuracion.TipoProceso} no es correcto");
                     break;
             }
 
