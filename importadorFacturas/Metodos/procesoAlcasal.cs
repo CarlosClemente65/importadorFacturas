@@ -41,6 +41,7 @@ namespace importadorFacturas
         public EmitidasE01()
         {
             //Constructor de la clase que asigna los nombres de las propiedades que se van a incluir en el fichero de salida. Nota: lo dejo por si fuera necesario algun dia inicializar alguna propiedad aunque ahora no es necesario.
+            porcentajeRecargo2 = 0.0f; //Se inicializa a 0 porque en la clase 'Facturas esta inicializada con 1.4 y aqui no hay recargo.
 
         }
 
@@ -247,7 +248,7 @@ namespace importadorFacturas
                                 }
                                 else
                                 {
-                                    factura.porcentajeIva2 = valorPorcentaje;
+                                    factura.porcentajeIva2 = valorPorcentaje * 100; //Se multiplica por 100 porque en el origen viene como decimal
                                 }
                                 break;
 
@@ -582,7 +583,7 @@ namespace importadorFacturas
                     fechaFactura = agrupacion.fechaFraAgrupada,
                     serieFactura = agrupacion.serieFraAgrupada,
                     baseFactura2 = agrupacion.baseAgrupada,
-                    porcentajeIva2 = agrupacion.porcentajeAgrupado,
+                    porcentajeIva2 = agrupacion.porcentajeAgrupado * 100, //Se multiplica por 100 porque en el origen viene como decimal
                     cuotaIva2 = agrupacion.cuotaAgrupada,
                     totalFactura = agrupacion.totalAgrupada,
                     primerNumero = agrupacion.primerNumero,

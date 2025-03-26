@@ -1,4 +1,4 @@
 [parametros]
-entrada=recibidasAlcasal_2.csv
-salida=salida_recibidasAlcasal_2.csv
+entrada=C:\Programacion\c#\importadorFacturas\pruebas\recibidasAlcasal_2.csv
+salida=C:\Programacion\c#\importadorFacturas\pruebas\salida_recibidasAlcasal_2.csv
 proceso=R01
