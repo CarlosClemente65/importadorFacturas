@@ -400,6 +400,10 @@ namespace importadorFacturas
                         // Si hay algún error, lo agregamos al resultado final
                         if(!string.IsNullOrEmpty(resultadoChequeo))
                         {
+                            if (resultado.Length == 0)
+                            {
+                                resultado.AppendLine("*** ERRORES PRODUCIDOS AL PROCESAR EL FICHERO DE ENTRADA ***");
+                            }
                             if(!flag) //Permite añadir una cabecera por cada factura
                             {
                                 resultado.AppendLine($"\nDescuadres en la factura de la linea {numLinea} del proveedor {factura.nombreFactura} y fecha {factura.fechaFactura}:");

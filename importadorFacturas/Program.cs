@@ -65,6 +65,13 @@ namespace importadorFacturas
 
                 //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
                 case "E01":
+                    //Controla que el fichero pasado sea correcto
+                    if(Path.GetExtension(Configuracion.FicheroEntrada) != "xlsx")
+                    {
+                        resultado.Append("El fichero pasado no es correcto. Debe ser en formato Excel");
+                        break;
+                    }
+
                     //Inicializa campos
                     ProcesoAlcasal procesoE01 = new ProcesoAlcasal();
 
@@ -98,6 +105,12 @@ namespace importadorFacturas
 
                 //Facturas recibidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-59
                 case "R01":
+                    //Controla que el fichero pasado sea correcto
+                    if(Path.GetExtension(Configuracion.FicheroEntrada) != "csv")
+                    {
+                        resultado.Append("El fichero pasado no es correcto. Debe ser en formato .CSV");
+                        break;
+                    }
                     //Inicializa campos
                     ProcesoAlcasal procesoR01 = new ProcesoAlcasal();
                     resultado.Append(procesoR01.RecibidasAlcasal());
