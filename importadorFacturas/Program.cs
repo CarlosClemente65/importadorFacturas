@@ -66,7 +66,8 @@ namespace importadorFacturas
                 //Facuras emitidas de Alcasal (cliente de Raiña Asesores) tiquet 5863-37
                 case "E01":
                     //Controla que el fichero pasado sea correcto
-                    if(Path.GetExtension(Configuracion.FicheroEntrada) != "xlsx")
+                    string extension = Path.GetExtension(Configuracion.FicheroEntrada);
+                    if(extension != ".xlsx")
                     {
                         resultado.Append("El fichero pasado no es correcto. Debe ser en formato Excel");
                         break;

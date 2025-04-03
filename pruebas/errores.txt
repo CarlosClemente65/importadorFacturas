@@ -1,1 +1,0 @@
-Error. No existe el fichero C:\Borrar\alcasal\emitidasAlcasal.csv
