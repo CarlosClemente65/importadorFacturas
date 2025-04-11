@@ -1,0 +1,4 @@
+[parametros]
+entrada=D:\Programacion\C#\importadorFacturas\AlcasalNuevo\emitidasEspaña.xlsx
+salida=D:\Programacion\C#\importadorFacturas\AlcasalNuevo\salida_emitidasEspaña.csv
+proceso=E01

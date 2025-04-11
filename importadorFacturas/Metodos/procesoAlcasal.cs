@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UtilidadesDiagram;
 
 namespace importadorFacturas
@@ -72,6 +73,7 @@ namespace importadorFacturas
 
     }
 
+
     public class ProcesoAlcasal
     {
         //Metodo para procesar las facturas emitidas del cliente Alcalsal (Raiña Asesores) - tiquet 5863-37
@@ -80,32 +82,56 @@ namespace importadorFacturas
             //Almacena los errores si se producen
             StringBuilder resultado = new StringBuilder();
 
-            //Instanciacion de las clases para las facturas agrupadas (tipos T y TR)
-            facturasAgrupadas agrupacionT = new facturasAgrupadas();
-            facturasAgrupadas agrupacionTR = new facturasAgrupadas();
-
             //Carga las columnas a procesar y a exportar
             MapeoColumnasE01();
 
             //Carga los datos del fichero excel
             var datosExcel = Program.proceso.LeerExcel();
 
+            //Se ordenan los datos por la fecha y numero de factura para evitar errores en la agrupacion
+            var datosExcelOrdenados = datosExcel
+                .Select(fila => new
+                {
+                    Fila = fila,
+                    Fecha = DateTime.Parse(fila[2]), // Convierte la fecha de string a DateTime
+                    NumeroFactura = int.Parse(fila[3]) // Convierte el número de factura de string a entero
+                })
+                .OrderBy(x => x.Fecha) // Primero ordenamos por fecha
+                .ThenBy(x => x.NumeroFactura) // Luego por número de factura
+                .Select(x => x.Fila) // Seleccionamos solo la fila original
+                .ToList();
+
+
             var numFila = 0; //Permite controlar la fila en la que se ha podido producir un error
             var numColumna = 0;//Permite controlar la columna en la que se ha podido producir un error
 
             try
             {
+                //Se crea un diccionario para almacenar las agrupaciones de las facturas. Si posteriormente se necesitan mas agrupaciones, se pueden añadir al diccionario
+                //Nota: se instancian las agrupaciones y cuando se tengan que usar se hace accediendo al diccionario del siguiente modo: agrupaciones["T"] o el que corresponda (es lo mismo que instanciar con los nombre agrupacionT, agrupacionTR, etc)
+                Dictionary<string, facturasAgrupadas> agrupaciones = new Dictionary<string, facturasAgrupadas>
+                    {
+                        { "T", new facturasAgrupadas() }, //Tiquet anterior 
+                        { "TR", new facturasAgrupadas() }, //Tiquet rectificativo anterior
+                        { "ESTA", new facturasAgrupadas()}, //Tiquet automatico España
+                        { "ESTR", new facturasAgrupadas() }, //Tiquet rectificativo España
+                        { "DETA", new facturasAgrupadas() }, //Tiquet automatico Alemania
+                        { "DETR", new facturasAgrupadas() } //Tiquet rectificativo Alemania
+                    };
+
                 //Procesado de las filas
-                foreach(var fila in datosExcel)
+                foreach(var fila in datosExcelOrdenados)
                 {
                     numFila++; //Se incrementa en uno para empezar por el numero 1
 
                     //Se crea una nueva factura para cada linea
                     var factura = new EmitidasE01();
 
-                    //Se ponen las agrupaciones de facturas en false antes de procesar cada linea y poder sumarlas si se corresponde con la serie T o TR
-                    agrupacionT.agrupar = false;
-                    agrupacionTR.agrupar = false;
+                    // Resetear todas las agrupaciones y asignar el tipo de agrupacion en una nueva instancia
+                    foreach(var tipo in agrupaciones.Keys)
+                    {
+                        agrupaciones[tipo].agrupar = false; //Reinicia la propiedad 'agrupar' para controlar cuando llegue la primera factura de ese tipo
+                    }
 
                     //Procesado de las columnas de cada fila
                     foreach(var columna in fila)
@@ -121,14 +147,12 @@ namespace importadorFacturas
                                 DateTime fechaFra = Convert.ToDateTime(columna.Value).Date;
 
                                 //Controla si llega una fecha posterior a la que pueda tener la agrupacion para grabar un registro con lo que haya acumulado hasta esa fecha
-                                if(!string.IsNullOrEmpty(agrupacionT.fechaFraAgrupada) && fechaFra > Convert.ToDateTime(agrupacionT.fechaFraAgrupada).Date)
+                                foreach(var agrupacion in agrupaciones.Values)
                                 {
-                                    GrabarRegistroAgrupado(agrupacionT);
-                                }
-
-                                if(!string.IsNullOrEmpty(agrupacionTR.fechaFraAgrupada) && fechaFra > Convert.ToDateTime(agrupacionTR.fechaFraAgrupada).Date)
-                                {
-                                    GrabarRegistroAgrupado(agrupacionTR);
+                                    if(!string.IsNullOrEmpty(agrupacion.fechaFraAgrupada) && fechaFra > Convert.ToDateTime(agrupacion.fechaFraAgrupada).Date)
+                                    {
+                                        GrabarRegistroAgrupado(agrupacion); // Grabar el registro y reiniciar
+                                    }
                                 }
 
                                 //Convierte el valor de la columna a un formato de fecha con tipo de cadena
@@ -145,32 +169,77 @@ namespace importadorFacturas
 
                             //Numero factura
                             case 3:
-                                string numFactura = columna.Value;
-
-                                if(numFactura.StartsWith("F") && numFactura.Substring(0, 2) != "FR")
-                                {
-                                    factura.serieFactura = numFactura.Substring(0, 3);
-                                    factura.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
-                                }
-                                if(numFactura.StartsWith("FR"))
-                                {
-                                    factura.serieFactura = numFactura.Substring(0, 4);
-                                    factura.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
-                                }
-                                if(numFactura.StartsWith("T") && numFactura.Substring(0, 2) != "TR")
-                                {
-                                    //Se manda al metodo para controlar la primera y ultima factura de la agrupacion
-                                    agrupacionT.AgregarFactura(numFactura, factura);
-                                }
-
-                                if(numFactura.StartsWith("TR"))
-                                {
-                                    //Se manda al metodo para controlar la primera y ultima factura de la agrupacion
-                                    agrupacionTR.AgregarFactura(numFactura, factura);
-                                }
+                                string numFacturaCompleto = columna.Value;
+                                string serieFactura = ObtenerSerieNumero(numFacturaCompleto).serie; //Se obtiene la serie de la factura
+                                string numeroFactura = ObtenerSerieNumero(numFacturaCompleto).numero; //Se obtiene el numero de la factura
 
                                 //Referencia factura. Como no viene en el Excel, se pone segun el numero de factura
-                                factura.referenciaFactura = numFactura;
+                                factura.referenciaFactura = numFacturaCompleto;
+
+                                switch(serieFactura)
+                                {
+                                    //Las facturas agrupadas se mandan al metodo para controlar la primera y ultima factura de la agrupacion
+
+                                    case "T":
+                                        //Serie Tiquets anterior
+                                        agrupaciones["T"].AgregarFactura("L", numeroFactura, factura); //Cuando la serie es una T se convierte a L para la agrupacion
+                                        break;
+
+                                    case "TR":
+                                        //Serie tiquets rectificativos anterior
+                                        agrupaciones["TR"].AgregarFactura("LR", numeroFactura, factura); //Cuando la serie es una TR se convierte a LR para la agrupacion
+                                        break;
+
+                                    case "ESTA":
+                                        //Serie tiquet automatico España
+                                        agrupaciones["ESTA"].AgregarFactura("LESTA", numeroFactura, factura); //Cuando la serie es una ESTA se convierte a LESTA para la agrupacion
+                                        break;
+
+                                    case "ESTR":
+                                        //Serie tiquet rectificativo España
+                                        agrupaciones["ESTR"].AgregarFactura("LESTR", numeroFactura, factura); //Cuando la serie es una ESTR se convierte a LESTR para la agrupacion
+                                        break;
+
+                                    case "DETA":
+                                        //Serie tiquet automatico Alemania
+                                        agrupaciones["DETA"].AgregarFactura("LDETA", numeroFactura, factura); //Cuando la serie es una DETA se convierte a LDETA para la agrupacion
+                                        break;
+
+                                    case "DETR":
+                                        //Serie tiquet rectificativo Alemania
+                                        agrupaciones["DETR"].AgregarFactura("LDETR", numeroFactura, factura); //Cuando la serie es una DETR se convierte a LDETR para la agrupacion
+                                        break;
+
+                                    default:
+                                        //Resto de facturas se tratan igual
+                                        factura.serieFactura = serieFactura;
+                                        factura.numeroFactura = numeroFactura;
+                                        break;
+                                }
+
+                                ////Codigo anterior. Lo mantengo por si hay que volver a usarlo
+                                //if(numFacturaCompleto.StartsWith("F") && numFacturaCompleto.Substring(0, 2) != "FR")
+                                //{
+                                //    factura.serieFactura = numFacturaCompleto.Substring(0, 3);
+                                //    factura.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
+                                //}
+                                //if(numFacturaCompleto.StartsWith("FR"))
+                                //{
+                                //    factura.serieFactura = numFacturaCompleto.Substring(0, 4);
+                                //    factura.numeroFactura = columna.Value.Substring(columna.Value.Length - 6);
+                                //}
+                                //if(numFacturaCompleto.StartsWith("T") && numFacturaCompleto.Substring(0, 2) != "TR")
+                                //{
+                                //    //Se manda al metodo para controlar la primera y ultima factura de la agrupacion
+                                //    agrupacionT.AgregarFactura(numFacturaCompleto, factura);
+                                //}
+
+                                //if(numFacturaCompleto.StartsWith("TR"))
+                                //{
+                                //    //Se manda al metodo para controlar la primera y ultima factura de la agrupacion
+                                //    agrupacionTR.AgregarFactura(numFacturaCompleto, factura);
+                                //}
+
 
                                 break;
 
@@ -219,13 +288,13 @@ namespace importadorFacturas
                                 valorBase = Math.Round(valorBase, 2);
 
                                 //Suma la base segun si es no agrupada o de las agrupaciones T o TR
-                                if(agrupacionT.agrupar)
+                                if(agrupaciones["T"].agrupar)
                                 {
-                                    agrupacionT.baseAgrupada += valorBase;
+                                    agrupaciones["T"].baseAgrupada += valorBase;
                                 }
-                                else if(agrupacionTR.agrupar)
+                                else if(agrupaciones["TR"].agrupar)
                                 {
-                                    agrupacionTR.baseAgrupada += valorBase;
+                                    agrupaciones["TR"].baseAgrupada += valorBase;
                                 }
                                 else
                                 {
@@ -238,13 +307,13 @@ namespace importadorFacturas
                                 float valorPorcentaje = float.Parse(columna.Value);
 
                                 //Toma el primer porcentaje en el caso de ser la agrupacion T o TR
-                                if(agrupacionT.agrupar)
+                                if(agrupaciones["T"].agrupar)
                                 {
-                                    if(agrupacionT.porcentajeAgrupado == 0.0f) agrupacionT.porcentajeAgrupado = valorPorcentaje;
+                                    if(agrupaciones["T"].porcentajeAgrupado == 0.0f) agrupaciones["T"].porcentajeAgrupado = valorPorcentaje;
                                 }
-                                else if(agrupacionTR.agrupar)
+                                else if(agrupaciones["TR"].agrupar)
                                 {
-                                    if(agrupacionTR.porcentajeAgrupado == 0.0f) agrupacionTR.porcentajeAgrupado = valorPorcentaje;
+                                    if(agrupaciones["TR"].porcentajeAgrupado == 0.0f) agrupaciones["TR"].porcentajeAgrupado = valorPorcentaje;
                                 }
                                 else
                                 {
@@ -260,13 +329,13 @@ namespace importadorFacturas
                                 valorCuota = Math.Round(valorCuota, 2);
 
                                 //Suma la cuota segun si es no agrupada o de las agrupaciones T o TR
-                                if(agrupacionT.agrupar)
+                                if(agrupaciones["T"].agrupar)
                                 {
-                                    agrupacionT.cuotaAgrupada += valorCuota;
+                                    agrupaciones["T"].cuotaAgrupada += valorCuota;
                                 }
-                                else if(agrupacionTR.agrupar)
+                                else if(agrupaciones["TR"].agrupar)
                                 {
-                                    agrupacionTR.cuotaAgrupada += valorCuota;
+                                    agrupaciones["TR"].cuotaAgrupada += valorCuota;
                                 }
                                 else
                                 {
@@ -282,13 +351,13 @@ namespace importadorFacturas
                                 valorTotal = Math.Round(valorTotal, 2);
 
                                 //Suma el total segun si es no agrupado o de las agrupaciones T o TR
-                                if(agrupacionT.agrupar)
+                                if(agrupaciones["T"].agrupar)
                                 {
-                                    agrupacionT.totalAgrupada += valorTotal;
+                                    agrupaciones["T"].totalAgrupada += valorTotal;
                                 }
-                                else if(agrupacionTR.agrupar)
+                                else if(agrupaciones["TR"].agrupar)
                                 {
-                                    agrupacionTR.totalAgrupada += valorTotal;
+                                    agrupaciones["TR"].totalAgrupada += valorTotal;
                                 }
                                 else
                                 {
@@ -299,15 +368,15 @@ namespace importadorFacturas
                     }
 
                     //Se añade el registro solo si no es un registro agrupado
-                    if(!agrupacionT.agrupar && !agrupacionTR.agrupar) EmitidasE01.ListaIngresosE01.Add(factura);
+                    if(!agrupaciones["T"].agrupar && !agrupaciones["TR"].agrupar) EmitidasE01.ListaIngresosE01.Add(factura);
 
                     //Se añade el registro si las facturas agrupadas llegan a 9999
-                    if(agrupacionT.cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupacionT);
-                    if(agrupacionTR.cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupacionTR);
+                    if(agrupaciones["T"].cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupaciones["T"]);
+                    if(agrupaciones["TR"].cantidadFacturas == 9999) GrabarRegistroAgrupado(agrupaciones["TR"]);
                 }
 
-                GrabarRegistroAgrupado(agrupacionT);
-                GrabarRegistroAgrupado(agrupacionTR);
+                GrabarRegistroAgrupado(agrupaciones["T"]);
+                GrabarRegistroAgrupado(agrupaciones["TR"]);
                 return resultado;
             }
             catch(Exception ex)
@@ -652,22 +721,44 @@ namespace importadorFacturas
         //}
 
 
+        //Metodo para obtener la serie y el numero de la factura a partir del numero de factura
+        private (string serie, string numero) ObtenerSerieNumero(string numFactura)
+        {
+            var regex = new Regex(@"([a-zA-Z]+)(\d+)");
+            var match = regex.Match(numFactura);
+
+            if(match.Success)
+            {
+                // Retorna las partes como una tupla
+                return (match.Groups[1].Value, match.Groups[2].Value);
+            }
+            else
+            {
+                // Si no hay coincidencia, retorna valores vacíos
+                return (string.Empty, string.Empty);
+            }
+        }
+    }
+
+    public interface IAgrupacion
+    {
+        string fechaFraAgrupada { get; }
     }
 
     //Clase que representa las propiedades de las facturas agrupadas que acumulan los importes.
-    public class facturasAgrupadas
+    public class facturasAgrupadas : IAgrupacion
     {
-        public bool agrupar;
-        public string fechaFraAgrupada;
-        public string serieFraAgrupada;
-        public decimal baseAgrupada;
-        public float porcentajeAgrupado;
-        public decimal cuotaAgrupada;
-        public decimal totalAgrupada;
-        public string primerNumero;
-        public string ultimoNumero;
-        public int cantidadFacturas;
-        public string tipoFactura;
+        public bool agrupar { get; set; }
+        public string fechaFraAgrupada { get; set; }
+        public string serieFraAgrupada { get; set; }
+        public decimal baseAgrupada { get; set; }
+        public float porcentajeAgrupado { get; set; }
+        public decimal cuotaAgrupada { get; set; }
+        public decimal totalAgrupada { get; set; }
+        public string primerNumero { get; set; }
+        public string ultimoNumero { get; set; }
+        public int cantidadFacturas { get; set; }
+        public string tipoFactura { get; set; }
 
 
         //Constructor de la clase que inicializa las propiedades
@@ -686,7 +777,7 @@ namespace importadorFacturas
         }
 
 
-        //Metodo para controlar la primera factura que aparezca para agrupar, asi como la ultima y el numero de facturas que se han agrupado
+        //Metodo para controlar la primera factura que aparezca para agrupar, asi como la ultima y el numero de facturas que se han agrupado, pasando el numero de factura completo (metodo anterior)
         public void AgregarFactura(string numFactura, EmitidasE01 ingreso)
         {
             agrupar = true;
@@ -706,6 +797,27 @@ namespace importadorFacturas
             }
 
             ultimoNumero = numFactura;
+            cantidadFacturas++;
+        }
+
+        //Sobrecarga del metodo para controlar la primera factura que aparezca para agrupar, asi como la ultima y el numero de facturas que se han agrupado, pasando la serie y numero por separado
+        public void AgregarFactura(string serie, string numero, EmitidasE01 ingreso)
+        {
+            agrupar = true;
+            string numeroCompleto = serie + numero;
+            if(string.IsNullOrEmpty(serieFraAgrupada))
+            {
+                serieFraAgrupada = serie;
+            }
+            if(string.IsNullOrEmpty(fechaFraAgrupada))
+            {
+                fechaFraAgrupada = ingreso.fechaFactura;
+            }
+            if(string.IsNullOrEmpty(primerNumero))
+            {
+                primerNumero = numeroCompleto;
+            }
+            ultimoNumero = numeroCompleto;
             cantidadFacturas++;
         }
 
