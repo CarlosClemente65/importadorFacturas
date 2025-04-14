@@ -20,7 +20,14 @@ namespace importadorFacturas
                 return;
             }
 
-            string ficheroGuion = args[0];
+            string dsclave = args[0];
+            if(dsclave != "ds123456")
+            {
+                Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Clave de ejecucion incorrecta");
+                return;
+            }
+
+            string ficheroGuion = args[1];
 
             //Controla que exista el fichero con el guion
             if(!File.Exists(ficheroGuion))

@@ -1,7 +1,7 @@
-# DseImfacex v1.5.2.0
+# DseImfacex v1.7.1.0
 ## Programa para importar un listado de facturas desde un excel personalizando las columnas de datos
 
-### Desarrollado por Carlos Clemente (01-2025)
+### Desarrollado por Carlos Clemente (04-2025)
 
 ### Control de versiones
  - Version 1.0	- Primera version funcional.
@@ -16,9 +16,11 @@
 				- Añadida propiedad 'ficheroFactura' a la clase 'Facturas' (fichero PDF para archivar en el GAD)
 				- Añadido metodo 'RecibidasAlcasal' para procesar las recibidas de este cliente
  - Version 1.6	- Añadido metodo 'ChequeoIntegridadFacturas' para comprobar si las facturas son correctas (cuotas de IVA calculadas y total factura)
-<br>
+ - Version 1.7	- Modificado metodo 'ProcesoAlcasal' para incluir nuevas series de ingresos del cliente Alcasal
 
-**Instrucciones:**
+<br>
+<b>Instrucciones:</b>
+
  - Partiendo de un listado de facturas en Excel, se hace una transformacion de los datos para generar
    un fichero .csv que pueda importarse en la contagen
  - En la primera version se ha desarrollado para un cliente especifico (proceso E01), pero admite multiples formatos
@@ -33,8 +35,14 @@
  - De cada factura se realiza un chequeo de las cuotas de IVA, cuota de IRPF y total factura, generando un fichero con los errores encontrados.
 <br>
 
-**Uso:**
-dseimfacex guion.txt
+<b>Uso:</b>
+dseimfacex dsclave guion.txt
+
+* <u>Parametros de ejecucion:</u>
+	* dsclave: Clave de ejecucion del programa
+	* guion.txt: Fichero con los datos de ejecucion
+<br>
+```
 * Ejemplo de guion:
 	* [parametros]
 	* entrada=emitidasDiagram.xlsx
@@ -47,13 +55,11 @@ dseimfacex guion.txt
 	* D=serieFactura
 	* E=numeroFactura
 	* H=nifFactura
-<br>
 
-**Parametros de ejecucion:** 
-```
-entrada		Fichero excel de entrada
-salida		Fichero csv en el que se grabara el resultado (opcional)
-proceso		Identifica el tipo de proceso a realizar. Esta formado por una letra y dos numeros ('E'mitidas, 'R'ecibidas)
-			Para la importacion 'estandar' de Diagram sera 'E00' para emitidas y 'R00' para recibidas
-fila		Fila que contiene la cabecera de las columnas
-hoja		(Opcional) Hoja en la que estan los datos, si no se pasa se toma por defecto la 1
+*Contenido campos:
+	entrada		Fichero excel de entrada
+	salida		Fichero csv en el que se grabara el resultado (opcional)
+	proceso		Identifica el tipo de proceso a realizar. Esta formado por una letra y dos numeros ('E'mitidas, 'R'ecibidas)
+				Para la importacion 'estandar' de Diagram sera 'E00' para emitidas y 'R00' para recibidas
+	fila		Fila que contiene la cabecera de las columnas
+	hoja		(Opcional) Hoja en la que estan los datos, si no se pasa se toma por defecto la 1

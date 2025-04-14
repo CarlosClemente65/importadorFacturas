@@ -1,4 +1,4 @@
 [parametros]
-entrada=D:\Programacion\C#\importadorFacturas\pruebas\emitidasAlemania.xlsx
-salida=D:\Programacion\C#\importadorFacturas\pruebas\salida_emitidasAlemania.csv
+entrada=c:\Programacion\C#\importadorFacturas\pruebas\emitidasAlemania.xlsx
+salida=c:\Programacion\C#\importadorFacturas\pruebas\salida_emitidasAlemania.csv
 proceso=E01
