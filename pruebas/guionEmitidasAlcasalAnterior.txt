@@ -1,0 +1,4 @@
+[parametros]
+entrada=c:\Programacion\c#\importadorFacturas\pruebas\emitidasAnterior.xlsx
+salida=c:\Programacion\c#\importadorFacturas\pruebas\salida_emitidasAnterior.csv
+proceso=E01

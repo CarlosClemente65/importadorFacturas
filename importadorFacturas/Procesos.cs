@@ -369,7 +369,7 @@ namespace importadorFacturas
         public StringBuilder ChequeoIntegridadFacturas<T>(List<T> facturas) where T : Facturas
         {
             StringBuilder resultado = new StringBuilder();
-            int numLinea = 1;
+            int numLinea = Configuracion.FilaInicio + 1;
 
             foreach(var factura in facturas)
             {
@@ -400,13 +400,13 @@ namespace importadorFacturas
                         // Si hay algún error, lo agregamos al resultado final
                         if(!string.IsNullOrEmpty(resultadoChequeo))
                         {
-                            if (resultado.Length == 0)
+                            if(resultado.Length == 0)
                             {
                                 resultado.AppendLine("*** ERRORES PRODUCIDOS AL PROCESAR EL FICHERO DE ENTRADA ***");
                             }
                             if(!flag) //Permite añadir una cabecera por cada factura
                             {
-                                resultado.AppendLine($"\nDescuadres en la factura de la linea {numLinea} del proveedor {factura.nombreFactura} y fecha {factura.fechaFactura}:");
+                                resultado.AppendLine($"\nDescuadres en la factura {factura.serieFactura} / {factura.numeroFactura} (linea {numLinea}) de {factura.nombreFactura} y fecha {factura.fechaFactura}:");
                                 flag = true;
                             }
                             resultado.AppendLine(resultadoChequeo);
@@ -423,6 +423,17 @@ namespace importadorFacturas
                     //Permite una diferencia en mas/menos 5 centimos
                     if(Math.Abs(cuotaIrpfCalculada - factura.cuotaIrpf) > 0.05m)
                     {
+                        //Añade una cabecera al fichero si no se ha puesto antes.
+                        if(resultado.Length == 0)
+                        {
+                            resultado.AppendLine("*** ERRORES PRODUCIDOS AL PROCESAR EL FICHERO DE ENTRADA ***");
+                        }
+                        if(!flag) //Permite añadir una cabecera por cada factura
+                        {
+                            resultado.AppendLine($"\nDescuadres en la factura {factura.serieFactura} / {factura.numeroFactura} (linea {numLinea}) de {factura.nombreFactura} y fecha {factura.fechaFactura}:");
+                            flag = true;
+                        }
+
                         resultado.AppendLine($"\t- La cuota de IRPF calculada al {factura.porcentajeIrpf}% no es correcta. Cuota calculada: {cuotaIrpfCalculada} - Cuota del fichero: {factura.cuotaIrpf}. Revise si el porcentaje informado es correcto.");
                     }
                 }
@@ -430,7 +441,17 @@ namespace importadorFacturas
                 //Chequeo si cuadra el total factura calculado con el pasado en el fichero
                 if(totalFacturaCalculado - factura.cuotaIrpf != factura.totalFactura)
                 {
-                    resultado.AppendLine($"\t- El total de factura calculado no es correcto. Importe calculado: {totalFacturaCalculado} - Importe de la factura: {factura.totalFactura}. Revise si falta alguna base o cuota de IVA");
+                    //Añade una cabecera al fichero si no se ha puesto antes.
+                    if(resultado.Length == 0)
+                    {
+                        resultado.AppendLine("*** ERRORES PRODUCIDOS AL PROCESAR EL FICHERO DE ENTRADA ***");
+                    }
+                    if(!flag) //Permite añadir una cabecera por cada factura
+                    {
+                        resultado.AppendLine($"\nDescuadres en la factura {factura.serieFactura} / {factura.numeroFactura} (linea {numLinea}) de {factura.nombreFactura} y fecha {factura.fechaFactura}:");
+                        flag = true;
+                    }
+                    resultado.AppendLine($"\t- El total de factura calculado no es correcto. Importe calculado: {totalFacturaCalculado - factura.cuotaIrpf} - Importe de la factura: {factura.totalFactura}. Revise si falta alguna base o cuota de IVA");
                 }
                 numLinea++;
                 flag = false;
