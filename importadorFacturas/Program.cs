@@ -36,11 +36,35 @@ namespace importadorFacturas
                 return;
             }
 
-            //Si no se han producido errores al cargar el guion, se procesa el fichero.
-            if(proceso.CargarGuion(ficheroGuion))
+            // Carga los datos del guion
+            proceso.CargarGuion(ficheroGuion);
+
+            // Procesa los parametros
+            if(proceso.ProcesarParametros())
             {
-                procesarFichero();
+                // Si no hay errores procesa la configuracion de columnas del excel a importar
+                switch(TiposProceso)
+                {
+                    case Configuracion.TiposProceso.BAL:
+                        // TODO: pendiente de implementar proceso de importacion balance a diario
+                        break;
+
+                    // En los procesos de facturas se mantiene el codigo anterior
+                    case Configuracion.TiposProceso.E00:
+                    case Configuracion.TiposProceso.E01:
+                    case Configuracion.TiposProceso.R00:
+                    case Configuracion.TiposProceso.R01:
+                        // Carga la configuracion de las columnas del excel de facturas
+                        proceso.LeerConfiguracionColumnas(Configuracion.columnas);
+
+                        //
+                        procesarFichero();
+
+                        break;
+
+                }
             }
+
         }
 
 
@@ -131,6 +155,14 @@ namespace importadorFacturas
                         //Graba el csv con los datos.
                         resultado.Append(proceso.GrabarCsv(facturasR01, Facturas.ColumnasAexportar.ToArray()));
                     }
+                    break;
+
+                // Balance sumas y saldo a diario
+                case "BAL":
+                    // Controla que el fichero pasado sea correcto
+
+
+
                     break;
 
                 default:

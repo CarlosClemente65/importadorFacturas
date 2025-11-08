@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada a un ensamblado.
-[assembly: AssemblyTitle("Importador a Contagen listado de facturas en Excel")]
-[assembly: AssemblyDescription("Importador a contabilidad de un listado de facturas en Excel")]
+[assembly: AssemblyTitle("Importador a Contagen de facturas o balance en Excel")]
+[assembly: AssemblyDescription("Importador a contabilidad de facturas o balance en Excel")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Diagram Software Europa S.L.")]
-[assembly: AssemblyProduct("DseImfacex")]
+[assembly: AssemblyProduct("DseImpex")]
 [assembly: AssemblyCopyright("© Diagram Software Europa 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o usar los valores predeterminados de número de compilación y de revisión
 // utilizando el carácter "*", como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.7.1.2")]
-[assembly: AssemblyFileVersion("1.7.1.2")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]

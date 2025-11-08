@@ -129,21 +129,8 @@ namespace importadorFacturas
             }
         }
 
-        //Metodo para convertir cada letra de la configuracion en el numero de columna
-        private int LetraAColumna(string letraColumna)
-        {
-            // Método para convertir letras de columna a número
-            int columna = 0;
-            foreach(char letra in letraColumna.ToUpper())
-            {
-                if(letra < 'A' || letra > 'Z') return -1; // Caracter inválido
-                columna = columna * 26 + (letra - 'A' + 1);
-            }
-            return columna;
-        }
-
         //Metodo para hacer la carga del guion
-        public bool CargarGuion(string ficheroGuion)
+        public void CargarGuion(string ficheroGuion)
         {
             using(var contenidoGuion = new StreamReader(ficheroGuion))
             {
@@ -189,21 +176,10 @@ namespace importadorFacturas
                     }
                 }
             }
-
-            //Carga los parametros a las propiedades de la clase 'Configuracion'
-            if(ProcesarParametros())
-            {
-                //Si no ha habido errores procesa las columnas
-                LeerConfiguracionColumnas(Configuracion.columnas);
-                return true; //Se devuelve true porque no ha habido errores
-            }
-
-            return false; //Si en el procesado de parametros ha habido algun error devuelve false
-
         }
 
         //Metodo para procesar los parametros del guion
-        private bool ProcesarParametros()
+        public bool ProcesarParametros()
         {
             //Variable para almacenar los errores
             string chequeo = string.Empty;
@@ -287,13 +263,27 @@ namespace importadorFacturas
                             return false;
                         }
                         break;
+
+                    // Longitud de cuenta para el proceso de importacion de balance a diario
+                    case "longitud":
+                        // Se valida de que sea mayor de 4 y menor de 12
+                        if(int.TryParse(valor, out int _longitud) && _longitud >= 4 && _longitud <= 12)
+                        {
+                            Configuracion.LongitudCuenta = _longitud;
+                        }
+                        else
+                        {
+                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. Longitud de cuenta incorrecta");
+                            return false;
+                        }
+                            break;
                 }
             }
             return true;
         }
 
-        //Metodo para leer el fichero con la configuracion de columnas
-        private void LeerConfiguracionColumnas(List<string> lineas)
+        //Metodo para leer el fichero con la configuracion de columnas para la importacion de facturas
+        public void LeerConfiguracionColumnas(List<string> lineas)
         {
             //Devuelve el control si no se han pasado las columnas (proceso Alcasal)
             if(lineas.Count == 0)
@@ -458,5 +448,19 @@ namespace importadorFacturas
             }
             return resultado;
         }
+
+        //Metodo para convertir cada letra de la configuracion en el numero de columna
+        private int LetraAColumna(string letraColumna)
+        {
+            // Método para convertir letras de columna a número
+            int columna = 0;
+            foreach(char letra in letraColumna.ToUpper())
+            {
+                if(letra < 'A' || letra > 'Z') return -1; // Caracter inválido
+                columna = columna * 26 + (letra - 'A' + 1);
+            }
+            return columna;
+        }
+
     }
 }

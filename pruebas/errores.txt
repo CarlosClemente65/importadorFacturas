@@ -1,5 +1,0 @@
-*** ERRORES PRODUCIDOS AL PROCESAR EL FICHERO DE ENTRADA ***
-
-Descuadres en la factura C / 5 (linea 12) de APELLIDO APELLIDO, NOMBRE y fecha 06.12.2025:
-	- La cuota de IRPF calculada al 19% no es correcta. Cuota calculada: 142,5 - Cuota del fichero: 141,5. Revise si el porcentaje informado es correcto.
-	- El total de factura calculado no es correcto. Importe calculado: 766,0 - Importe de la factura: 765. Revise si falta alguna base o cuota de IVA
