@@ -12,6 +12,7 @@
 	- entrada (fichero de entrada)
 	- salida (fichero de salida opcional)
 	- proceso = BAL
+	- hoja (hoja en la que estan los datos)
 	- fila (fila que tiene la cabecera del balance)
 	- longitud (largo de las cuentas a procesar ya que puede haber varios niveles)
 	[columnas]
@@ -22,12 +23,13 @@
 	- E = Signo (d/h) - Opcional
 	
 * Pantalla seleccion
-	- Fichero Excel
 	- Diario
+	- Fecha asiento
 	- Departamento
 	- Subdepartamento
 	- Concepto
 	- Descripcion
+	- Fichero Excel
 	- Hoja
 	- Fila inicio
 	- Columnas obligatorias

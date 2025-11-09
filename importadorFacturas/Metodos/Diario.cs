@@ -11,19 +11,24 @@ namespace importadorFacturas.Metodos
     {
         // Propiedades del diario que se generaran en cada columna
         public int Apunte { get; set; }
-        public string Cuenta { get; set; }
+        public string Cuenta { get; set; } = string.Empty;
+        public string Descripcion { get; set; } = string.Empty;
         public char Signo { get; set; }
         public decimal Importe { get; set; }
-        public string CuentaDebe {  get; set; }
-        public string CuentaHaber { get; set; }
+        public string CuentaDebe {  get; set; } = string.Empty;
+        public string CuentaHaber { get; set; } = string.Empty;
+        public decimal ImporteDebe { get; set; }
+        public decimal ImporteHaber { get; set; }
 
 
         // Lista que almacena los apuntes generados
-        public static List<Facturas> ApuntesDiario { get; set; }
+        public static List<Diario> ApuntesDiario { get; set; }
 
 
         // Diccionario con el numero de columna y el nombre del contenido para luego asignarlo a la clase
         public static Dictionary<int, string> MapeoColumnasDiario;
+
+        public static List<string> ColumnasAexportar { get; set; }
 
         public static void MapeoDiario()
         {
@@ -33,37 +38,18 @@ namespace importadorFacturas.Metodos
                 { 1, "Cuenta" },
                 { 2, "Descripcion" },
                 { 3, "ImporteDebe" },
-                { 4, "ImoprteHaber" },
+                { 4, "ImporteHaber" },
                 { 5, "Signo" },
             };
         }
 
 
         // Devuelve la lista de asientos una vez procesados
-        public static List<Facturas> ObtenerDiario()
+        public static List<Diario> ObtenerDiario()
         {
             return ApuntesDiario;
         }
 
 
-    }
-
-
-    // Clase que representa la estructura de datos que finalmente se generara en el fichero de salida para dar de alta las cuentas en la importacion de balances para generar un asiento. 
-    public class Cuentas
-    {
-        public string Cuenta { get; set; }
-
-        public string Descripcion { get; set; }
-
-
-        // Lista que almacena la relacion de cuentas
-        public static List<Cuentas> RelacionCuentas { get; set; }
-
-        // Devuelve la lista de cuentas una vez procesadas
-        public static List<Cuentas> ObtenerCuentas()
-        {
-            return RelacionCuentas;
-        }
     }
 }
