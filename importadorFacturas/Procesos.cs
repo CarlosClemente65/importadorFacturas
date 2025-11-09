@@ -8,6 +8,7 @@ using System.Text;
 using System;
 using UtilidadesDiagram;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using importadorFacturas.Metodos;
 
 namespace importadorFacturas
 {
@@ -48,6 +49,10 @@ namespace importadorFacturas
                                     .Select(c => c.Address.ColumnNumber)
                                     .ToList();
 
+                if (cabecera.Count < 2)
+                {
+                    throw new InvalidOperationException("La fila de cabecera indicada no tiene datos. Debe indicar una fila que tenga los nombres de las columnas");
+                }
                 //Almacena las filas con datos desde la fila de inicio
                 var filas = hoja.RowsUsed().Where(r => r.RowNumber() > filaInicio + 1); //Se suma 1 para saltar la cabecera
 
@@ -129,21 +134,63 @@ namespace importadorFacturas
             }
         }
 
-        //Metodo para convertir cada letra de la configuracion en el numero de columna
-        private int LetraAColumna(string letraColumna)
+        // Metodo para grabar en un csv el procesado del balance a diario
+        public StringBuilder GrabarCsvDiario<T>(List<T> datos, string[] camposAexportar)
         {
-            // Método para convertir letras de columna a número
-            int columna = 0;
-            foreach(char letra in letraColumna.ToUpper())
+            //Variable que recoje los posibles errores
+            var resultado = new StringBuilder();
+
+            try
             {
-                if(letra < 'A' || letra > 'Z') return -1; // Caracter inválido
-                columna = columna * 26 + (letra - 'A' + 1);
+                // Define el separador de campos para el csv
+                string delimitador = ";";
+
+                using(var writer = new StreamWriter(Configuracion.FicheroSalida, false, Encoding.Default))
+                {
+                    // 
+                    var propiedades = camposAexportar
+                        .Select(campo => typeof(T).GetProperty(campo))
+                        .ToArray();
+
+                    //Procesado de cada fila
+                    foreach(var dato in datos)
+                    {
+                        // Crea una lista para cada fila a rellenar con los datos de la clase
+                        var fila1 = propiedades.Select(p => p?.GetValue(dato)?.ToString() ?? "").ToList();
+                        //var fila = new List<string>();
+
+                        //// Procesado de los campos a exportar (no se exporta toda la clase)
+                        //foreach(var campo in camposAexportar)
+                        //{
+                        //    // Obtiene la referencia a la propiedad en el array de camposAexportar
+                        //    var propiedad = typeof(T).GetProperty(campo);
+
+                        //    if(propiedad != null)
+                        //    {
+                        //        // Obtiene el valor de la propiedad del objeto actual
+                        //        var valor = propiedad.GetValue(dato);
+
+                        //        // Añade a la fila el valor del campo
+                        //        fila.Add(valor?.ToString() ?? "");
+                        //    }
+                        //}
+
+                        // Graba la fila una vez procesada
+                        writer.WriteLine(string.Join(delimitador, fila1));
+                    }
+                }
             }
-            return columna;
+            catch(Exception ex)
+            {
+                resultado.AppendLine($"Error al grabar el fichero de salida");
+                resultado.AppendLine(ex.Message);
+            }
+
+            return resultado;
         }
 
         //Metodo para hacer la carga del guion
-        public bool CargarGuion(string ficheroGuion)
+        public void CargarGuion(string ficheroGuion)
         {
             using(var contenidoGuion = new StreamReader(ficheroGuion))
             {
@@ -189,21 +236,10 @@ namespace importadorFacturas
                     }
                 }
             }
-
-            //Carga los parametros a las propiedades de la clase 'Configuracion'
-            if(ProcesarParametros())
-            {
-                //Si no ha habido errores procesa las columnas
-                LeerConfiguracionColumnas(Configuracion.columnas);
-                return true; //Se devuelve true porque no ha habido errores
-            }
-
-            return false; //Si en el procesado de parametros ha habido algun error devuelve false
-
         }
 
         //Metodo para procesar los parametros del guion
-        private bool ProcesarParametros()
+        public bool ProcesarParametros()
         {
             //Variable para almacenar los errores
             string chequeo = string.Empty;
@@ -287,13 +323,27 @@ namespace importadorFacturas
                             return false;
                         }
                         break;
+
+                    // Longitud de cuenta para el proceso de importacion de balance a diario
+                    case "longitud":
+                        // Se valida de que sea mayor de 4 y menor de 12
+                        if(int.TryParse(valor, out int _longitud) && _longitud >= 4 && _longitud <= 12)
+                        {
+                            Configuracion.LongitudCuenta = _longitud;
+                        }
+                        else
+                        {
+                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. Longitud de cuenta incorrecta");
+                            return false;
+                        }
+                        break;
                 }
             }
             return true;
         }
 
-        //Metodo para leer el fichero con la configuracion de columnas
-        private void LeerConfiguracionColumnas(List<string> lineas)
+        //Metodo para leer el fichero con la configuracion de columnas para la importacion de facturas
+        public void LeerConfiguracionColumnas(List<string> lineas)
         {
             //Devuelve el control si no se han pasado las columnas (proceso Alcasal)
             if(lineas.Count == 0)
@@ -321,6 +371,38 @@ namespace importadorFacturas
 
                 // Almacenar en el diccionario el numero de columna y el nombre del campo
                 Facturas.MapeoColumnas[numeroColumna] = propiedad;
+            }
+        }
+
+        //Metodo para leer el fichero con la configuracion de columnas para la importacion del diario
+        public void LeerConfiguracionColumnasDiario(List<string> lineas)
+        {
+            //Devuelve el control si no se han pasado las columnas (proceso Alcasal)
+            if(lineas.Count == 0)
+            {
+                return;
+            }
+
+            //Genera la lista de las columnas a exportar segun el defecto
+            Diario.MapeoDiario();
+            Diario.ColumnasAexportar = new List<string> { "Apunte" };
+            Diario.ColumnasAexportar.AddRange(Diario.MapeoColumnasDiario.Values);
+
+            //Crea una nueva instancia para cargar las columnas que vienen en la configuracion
+            Diario.MapeoColumnasDiario = new Dictionary<int, string>();
+
+            //Procesa las lineas
+            foreach(var linea in lineas)
+            {
+                //Divide la cadena por el simbolo igual 
+                (string letraColumna, string propiedad) = Utilidades.DivideCadena(linea, '=');
+
+                // Convertir la letra de columna a número
+                int numeroColumna = LetraAColumna(letraColumna);
+                if(numeroColumna <= 0) continue; // Saltar letras inválidas
+
+                // Almacenar en el diccionario el numero de columna y el nombre del campo
+                Diario.MapeoColumnasDiario[numeroColumna] = propiedad;
             }
         }
 
@@ -458,5 +540,19 @@ namespace importadorFacturas
             }
             return resultado;
         }
+
+        //Metodo para convertir cada letra de la configuracion en el numero de columna
+        private int LetraAColumna(string letraColumna)
+        {
+            // Método para convertir letras de columna a número
+            int columna = 0;
+            foreach(char letra in letraColumna.ToUpper())
+            {
+                if(letra < 'A' || letra > 'Z') return -1; // Caracter inválido
+                columna = columna * 26 + (letra - 'A' + 1);
+            }
+            return columna;
+        }
+
     }
 }

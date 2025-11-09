@@ -12,6 +12,9 @@ namespace importadorFacturas
         public static int FilaInicio { get; set; } = 1;
         public static int HojaExcel { get; set; } = 1;
 
+        public static int LongitudCuenta { get; set; } // Necesario para la importacion de balance a diario
+
+
         //Lista de parametros
         public static List<string> parametros = new List<string>();
 
@@ -21,10 +24,11 @@ namespace importadorFacturas
         //Detalle de los tipos de proceso validos que estan implementados.
         public enum TiposProceso
         {
-            E00, //Emitidas de Diagram
-            E01, //Emitidas de Alcasal
-            R00, //Recibidas de Diagram
-            R01  //Recibidas de Alcasal
+            E00,    // Emitidas de Diagram
+            E01,    // Emitidas de Alcasal
+            R00,    // Recibidas de Diagram
+            R01,    // Recibidas de Alcasal
+            BAL     // Balance a diario
         }
     }
 }

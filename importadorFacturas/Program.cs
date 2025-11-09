@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using importadorFacturas.Metodos;
 using UtilidadesDiagram;
 
 
@@ -36,11 +37,38 @@ namespace importadorFacturas
                 return;
             }
 
-            //Si no se han producido errores al cargar el guion, se procesa el fichero.
-            if(proceso.CargarGuion(ficheroGuion))
+            // Carga los datos del guion
+            proceso.CargarGuion(ficheroGuion);
+
+            // Procesa los parametros
+            if(proceso.ProcesarParametros())
             {
-                procesarFichero();
+                // Si no hay errores procesa la configuracion de columnas del excel a importar
+                switch(Configuracion.TipoProceso)
+                {
+                    case "BAL":
+                        // Carga la configuracion de las columnas del excel del diario
+                        proceso.LeerConfiguracionColumnasDiario(Configuracion.columnas);
+
+                        procesarFichero();
+                        break;
+
+                    // En los procesos de facturas se mantiene el codigo anterior
+                    case "E00":
+                    case "E01":
+                    case "R00":
+                    case "R01":
+                        // Carga la configuracion de las columnas del excel de facturas
+                        proceso.LeerConfiguracionColumnas(Configuracion.columnas);
+
+                        //
+                        procesarFichero();
+
+                        break;
+
+                }
             }
+
         }
 
 
@@ -131,6 +159,27 @@ namespace importadorFacturas
                         //Graba el csv con los datos.
                         resultado.Append(proceso.GrabarCsv(facturasR01, Facturas.ColumnasAexportar.ToArray()));
                     }
+                    break;
+
+                // Balance sumas y saldo a diario
+                case "BAL":
+                    // Controla que el fichero pasado sea correcto
+                    Metodos.ProcesoDiario procesoDiario = new Metodos.ProcesoDiario();
+
+                    // Almacena los posibles errores al procesar el diario
+                    resultado = procesoDiario.ProcesarDiario();
+                    
+                    // Solo completa el proceso si no hay ningun error al procesar el diario
+                    if(resultado.Length == 0)
+                    {
+                        List<Diario> diario = Diario.ObtenerDiario();
+                        if(diario.Count > 0)
+                        {
+                            //Graba el csv con los datos.
+                            resultado.Append(proceso.GrabarCsvDiario(diario, Diario.ColumnasAexportar.ToArray()));
+                        }
+                    }
+
                     break;
 
                 default:

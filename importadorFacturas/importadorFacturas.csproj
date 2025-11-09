@@ -7,7 +7,7 @@
     <ProjectGuid>{BBD19282-D070-4CF8-89D8-97AFD46F2E24}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>importadorFacturas</RootNamespace>
-    <AssemblyName>dseimfacex</AssemblyName>
+    <AssemblyName>dseimpex</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,9 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuracion.cs" />
+    <Compile Include="Metodos\Diario.cs" />
     <Compile Include="Metodos\Facturas.cs" />
     <Compile Include="Metodos\ProcesoAlcasal.cs" />
     <Compile Include="Metodos\ProcesoDiagram.cs" />
+    <Compile Include="Metodos\ProcesoDiario.cs" />
     <Compile Include="Procesos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

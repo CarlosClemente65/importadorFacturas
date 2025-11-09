@@ -1,6 +1,6 @@
 [parametros]
 entrada=emitidasDiagram.xlsx
-salida=salida_emitidasDiagram.csv
+salida=salida_emitidasDiagram_nuevo.csv
 proceso=E00
 fila=4
 [columnas]

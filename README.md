@@ -1,5 +1,5 @@
 # DseImfacex v1.7.1.0
-## Programa para importar un listado de facturas desde un excel personalizando las columnas de datos
+## Programa para importar un listado de facturas o un balance desde un excel personalizando las columnas de datos
 
 ### Desarrollado por Carlos Clemente (04-2025)
 
@@ -17,6 +17,7 @@
 				- Añadido metodo 'RecibidasAlcasal' para procesar las recibidas de este cliente
  - Version 1.6	- Añadido metodo 'ChequeoIntegridadFacturas' para comprobar si las facturas son correctas (cuotas de IVA calculadas y total factura)
  - Version 1.7	- Modificado metodo 'ProcesoAlcasal' para incluir nuevas series de ingresos del cliente Alcasal
+ - Version 2.0	- Añadida funcionalidad para generar un diario a partir de un balance
 
 <br>
 <b>Instrucciones:</b>
@@ -32,18 +33,19 @@
  - Las configuracion de columnas deben pasarse en cada linea como 'columna=nombreCampo'
  - El fichero Excel debe tener una fila con una cabecera, que es la que se indica en el parameto 'fila'
  - Se puede indicar de forma opcional el numero de hoja en la que estan los datos (por defecto la 1)
- - De cada factura se realiza un chequeo de las cuotas de IVA, cuota de IRPF y total factura, generando un fichero con los errores encontrados.
+ - En el caso de importacion de facturas, de cada factura se realiza un chequeo de las cuotas de IVA, cuota de IRPF y total factura, generando un fichero con los errores encontrados.
+ - En el caso de importacion de un balance, debe indicarse el parametro 'longitud' para que solo lea las cuentas con esa longitud (evita leer todos los niveles)
 <br>
 
 <b>Uso:</b>
-dseimfacex dsclave guion.txt
+dseimpex dsclave guion.txt
 
 * <u>Parametros de ejecucion:</u>
 	* dsclave: Clave de ejecucion del programa
 	* guion.txt: Fichero con los datos de ejecucion
 <br>
 ```
-* Ejemplo de guion:
+* Ejemplo de guion de facturas:
 	* [parametros]
 	* entrada=emitidasDiagram.xlsx
 	* salida=salida_emitidasDiaram.csv
@@ -55,11 +57,27 @@ dseimfacex dsclave guion.txt
 	* D=serieFactura
 	* E=numeroFactura
 	* H=nifFactura
+	
+* Ejemplo de guion de balance:
+	* [parametros]
+	* entrada=balance.xlsx
+	* salida=salida_balance.csv
+	* proceso=BAL
+	* fila=4
+	* longitud=12
+	* [columnas]
+	* A=Cuenta
+	* B=Descripcion
+	* G=ImporteDebe
+	* H=ImporteHaber
 
 *Contenido campos:
 	entrada		Fichero excel de entrada
 	salida		Fichero csv en el que se grabara el resultado (opcional)
 	proceso		Identifica el tipo de proceso a realizar. Esta formado por una letra y dos numeros ('E'mitidas, 'R'ecibidas)
 				Para la importacion 'estandar' de Diagram sera 'E00' para emitidas y 'R00' para recibidas
+				En el caso de importacion de balances sera fijo 'BAL'
 	fila		Fila que contiene la cabecera de las columnas
 	hoja		(Opcional) Hoja en la que estan los datos, si no se pasa se toma por defecto la 1
+	longitud	(solo para balances) Longitud de las cuentas a procesar (evita generar apuntes de todos los niveles que tenga el balance)
+	

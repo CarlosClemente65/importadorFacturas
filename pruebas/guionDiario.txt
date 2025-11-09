@@ -1,0 +1,11 @@
+[parametros]
+entrada=balance.xlsx
+salida=salida_balance.csv
+proceso=BAL
+fila=14
+longitud=12
+[columnas]
+A=Cuenta
+B=Descripcion
+G=ImporteDebe
+H=ImporteHaber
