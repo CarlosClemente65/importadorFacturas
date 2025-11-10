@@ -1,11 +1,11 @@
 [parametros]
-entrada=balance_signo.xlsx
+entrada=balance_saldos.xlsx
 salida=salida_balance_saldos.csv
 proceso=BAL
-fila=1
-longitud=8
-columna=s
+fila=14
+longitud=12
 [columnas]
 A=Cuenta
 B=Descripcion
-I=ImporteDebe
+G=ImporteDebe
+H=ImporteHaber

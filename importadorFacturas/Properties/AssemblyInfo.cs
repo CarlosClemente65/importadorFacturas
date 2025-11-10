@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Importador a contabilidad de facturas o balance en Excel")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Diagram Software Europa S.L.")]
-[assembly: AssemblyProduct("DseImpex")]
+[assembly: AssemblyProduct("DseImfacex")]
 [assembly: AssemblyCopyright("© Diagram Software Europa 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
