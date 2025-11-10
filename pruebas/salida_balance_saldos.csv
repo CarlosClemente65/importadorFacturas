@@ -1,0 +1,411 @@
+1;10000000;Capital Social;0;435484,6
+2;11200000;Reserva Legal;0;87618,4
+3;11300000;Reservas Voluntarias;0;1569904,42
+4;11320000;Reservas p/trans.PGC-2007;22947,11;0
+5;11330000;Reservas p/regul.saldos ej.Ant;6688,47;0
+6;11450119;Reserva Capitalización 2019;0;4843,95
+7;11450120;Reserva Capitalización 2020;0;7139,24
+8;11450121;Reserva Capitalización 2021;0;940,22
+9;11450122;Reserva Capitalización 2022;0;6334,5
+10;11900000;Dif. ajuste de capital a euros;0;8,77
+11;12100000;Resultados Negativos Ej.Ant.;16805,83;0
+12;13300000;Aj. valoracion activos finan.;0;164,68
+13;17000000;Deudas a L/P por prestamos rec;0;128292
+14;20400000;Fondo de Comercio;23163,94;0
+15;20600000;Aplicaciones Informaticas;46487,67;0
+16;20700000;Identificacion corporativa Nis;59063,06;0
+17;21000000;Terrenos;184185,99;0
+18;21100000;Edificios;2693521,52;0
+19;21300000;Maquinaria;122447,76;0
+20;21400000;Utillajes y Herramientas;133562,52;0
+21;21500000;Otras Instalaciones;69100,29;0
+22;21600000;Mobiliario;264532,18;0
+23;21700000;Equipos procesos de  informaci;103828,66;0
+24;21801000;Vehículos de compañía;86601,88;0
+25;21900000;Otro Inmovilizado Material;26375,22;0
+26;25000000;Inver. finan. LP en instrument;965,45;0
+27;26000000;Fianzas Constituidas a L/P;1442,44;0
+28;28040000;Amort.Acum.Fondo de Comercio;0;20847,55
+29;28060000;Amort.Acum.Aplicaciones Inf.;0;45082,75
+30;28070000;Amortizacion acum.Identf.coorp;0;46862,34
+31;28110000;Amortiz. Ac.Edificios;0;1577334,31
+32;28130000;Amort.Acum.Maquinaria;0;96382,7
+33;28140000;Amort.Acum.de Utillaje;0;112806,57
+34;28150000;Amort.Acum.Otras Instalaciones;0;15513,87
+35;28160000;Amort.Acum.de Mobiliario;0;199260,02
+36;28170000;Amortiz. ac eq. proc. inform.;0;79231,14
+37;28180100;Amort.Acum.elem. Transporte;0;24408,79
+38;28190000;Amort.Acum.Otro Inmov.Material;0;14309,41
+39;30000020;Existencias VO Turi/TT/Comerc.;613805,49;0
+40;30000080;Existencias Agricola;238937,18;0
+41;30000110;Existencias Turis./TT/Comer.VN;1062126,68;0
+42;30000150;Existencias Recambios;659526,86;0
+43;33000000;Existencias Trabajos en Curso;46470,08;0
+44;39000050;Provisión Deprec.Rec. Nissan;0;264541,99
+45;39000051;Provisión Deprec. Rec.Kia;0;71239,43
+46;39000052;Dotc.Prov.Exist.Rec.Varios;0;19607,02
+47;39000053;Provisión Deprec. Rec.Agricola;0;67895,07
+48;40000000;Proveedores;0;156929,18
+49;40001010;Kia Proveedor Recambios;0;25407,05
+50;40090000;Facturas Pendientes Recibir;0;56187,06
+51;40090100;Gastos pendientes liquidar;0;4776,69
+52;43004000;Clientes Recambios;274140,34;0
+53;43100000;Efectos en cartera;4248,77;0
+54;43600000;Clientes de Dudoso Cobro;10124,65;0
+55;43800000;Anticipos de clientes;0;87170,41
+56;43800200;Depositos Clientes Pos-venta;0;5090,31
+57;44004000;Rci Banque Deudor;10046,28;0
+58;45000002;Nissan por garantias y revisio;2264,29;0
+59;45000004;Nissan por incentivos;90210,81;0
+60;45000009;Nissan cargos y abonos;0;1262,87
+61;47090000;H P Deudor Devolución Impuesto;9398,21;0
+62;47200000;IVA Soportado;0,05;0
+63;47300000;H P  Retenciones y Pagos Cta.;9120;0
+64;47450000;Creditos Perdidas a Compensar;12966,91;0
+65;47500000;H P  Acreedor por IVA;0;22720,36
+66;47510000;Retenciones I R P F. Nomina;0;21764,85
+67;47510100;Retenciones IRPF Profesionales;0;48,03
+68;47510200;Retenciones IRPF Alquileres;0;137,16
+69;47600000;Seguridad Social Acreedora;0;28748,33
+70;47700000;IVA  Repercutido;0;0,05
+71;48009000;Otros Gastos Anticipados;500;0
+72;49900002;Det.valor Cdtos.p/oper.Taller;0;10124,65
+73;52000000;Prestamos Recib. C/P Ent.Cred.;0;52230,77
+74;52010000;Rci Banque Vehiculos nuevos;0;1285173,29
+75;52010001;Rci Banque Vehiculos usados;0;241122,13
+76;52010002;Rci Banque Vehiculos Democar;0;232360,55
+77;52010003;Rci Banque Facturas Recambios;0;86350,22
+78;52010004;Rci Banque Intereses Polizas;0;2238,36
+79;52020000;Argo Finance;0;273927,48
+80;56500000;Fianzas Constituidas C/P;500;0
+81;57000010;Caja Central Amposta;1411,92;0
+82;57000020;Caja Central Tortosa;2288,69;0
+83;57000030;Caja Central Vinarós;3353,85;0
+84;57200000;Santander cuenta corriente;110254,74;0
+85;57200005;La Caixa cuenta corriente;449709,18;0
+86;57200006;Banc Sabadell;145981,94;0
+87;60000010;Compras Vehículos Nuevos;5903751,36;0
+88;60000020;Vehículos Usados;2927895,23;0
+89;60000050;Compras Recambios;1240722,47;0
+90;60700010;Compras Trabajos Exteriores;331348,94;0
+91;60900010;Ayudas Nmesa por preentrega;0;11778,62
+92;60900020;Rappel e incentivos VO;0;15876,43
+93;60900030;Rappel e incentivos Taller;0;3715,39
+94;60900050;Rappel e inventivos Almacén;0;32497,69
+95;60940000;Bono Volumen;0;192725
+96;60940010;Bono Fidelizacion/Pedidos;0;49075
+97;60990010;Bonos por calidad VN (CVS);0;35456,92
+98;60990030;Bonos por calidad Taller (CVA);0;16537
+99;61000080;Var. Existen.Agricola;189814,36;0
+100;61000110;Var. Exist.VN Turi/TT/Comerc.;0;117969,11
+101;61000120;Var. Existen.VO Turi/TT/Comerc;85792,94;0
+102;61000150;Var. Existencias  Recambios;0;43381,64
+103;62100000;Alquileres Edificios;8585,76;0
+104;62110030;Alquileres Depto. Taller;3689,26;0
+105;62130000;Otros alquileres;1436,71;0
+106;62200000;Rep. y Cons. Maquinaria y equi;1073,69;0
+107;62210000;Rep. y Cons. Edificios;23098,17;0
+108;62220000;Rep. y Cons. Equip.Informático;134,42;0
+109;62230000;Rep. y Cons. Mobiliario;1488,42;0
+110;62240010;Rep y Cons. Vehículos Demos;4472,5;0
+111;62250030;Rep.y cons.Inmovil. Taller;1250,2;0
+112;62260000;Otras reparaciones;540;0
+113;62300000;Asesoría Jurídica;679,3;0
+114;62300001;Asesoría Fiscal;6586,04;0
+115;62300002;Asesoría Laboral;3952,48;0
+116;62300003;Otros Servicios Profesionales;4057,44;0
+117;62320010;Gastos Gestoría VN;14477,06;0
+118;62320020;Gastos Gestoría VO;23477,35;0
+119;62330000;Gastos de Auditoria;6920,17;0
+120;62350010;Comisión Avisadores VN;6226,45;0
+121;62350020;Comisión Avisadores VO;2243,48;0
+122;62400000;Otros gastos transporte;1187,94;0
+123;62400010;Otros gastos transporte VN;15063,17;0
+124;62400020;Otros gastos transporte VO;449,78;0
+125;62400030;Gastos Portes Taller;1209,14;0
+126;62400050;Otros gastos transporte Rec.;6,17;0
+127;62500000;Seguros  Edificios;10452,56;0
+128;62510000;Otros seguros (no edificios);10718,35;0
+129;62510010;Seguro Garantia Extendida VN;5270,21;0
+130;62510020;Seguro Garantia VO;4993,58;0
+131;62600000;Gastos  TPV Banesto;3286,3;0
+132;62600010;Gastos Devolucion recibos;206,64;0
+133;62600020;Comisiones bancarias;623,38;0
+134;62610000;Gastos Gestión cobros general;0;25,58
+135;62610030;Gastos Gestión de Cobro Taller;546,67;0
+136;62710000;Gastos Publicidad Directa;3781,71;0
+137;62710010;Gastos Publicidad Directa VN;28040,27;0
+138;62710020;Gastos Publicidad Directa VO;24246,24;0
+139;62710030;Publicidad Directa Taller;3328,03;0
+140;62710050;Gastos Publicidad Directa Rec.;82,65;0
+141;62800000;Agua;1180,98;0
+142;62820000;Electricidad;445,29;0
+143;62820010;Electricidad VN;9863,21;0
+144;62820030;Electricidad Taller;4931,61;0
+145;62820050;Electricidad Recambios;4931,5;0
+146;62830000;Combustible General;3829,31;0
+147;62830010;Combustible VN;7199,58;0
+148;62830020;Combustible VO;3337,24;0
+149;62830030;Combustible Taller;11790,31;0
+150;62830050;Combustible Recambios;2483,03;0
+151;62840000;Herramientas y útiles;0;43,02
+152;62840030;Herramientas y útiles Taller;11537,46;0
+153;62850000;Suscripciones;398,57;0
+154;62860000;Consumibles;896,49;0
+155;62860010;Consumibles VN;246,73;0
+156;62860030;Consumibles Taller;18632,78;0
+157;62900000;Gastos Viaje;7007,56;0
+158;62900010;Gastos Viaje VN;10396,06;0
+159;62900020;Gastos Viaje VO;5140,26;0
+160;62900030;Gastos Viaje Taller;7291,1;0
+161;62900050;Gastos Viaje Rec.;819,96;0
+162;62901000;Transporte de Personal;46,23;0
+163;62910000;Correos y Franqueo;110,87;0
+164;62910030;Correos y Franqueo Taller;5,57;0
+165;62911000;Teléfono y Fax;8934,59;0
+166;62920000;Material de Oficina;3010,72;0
+167;62920010;Mater. Oficina VN;74,24;0
+168;62920020;Mater. Oficina VO;78;0
+169;62920030;Mater. Oficina Taller;3882,05;0
+170;62920050;Mater. Oficina Recambios;438,13;0
+171;62940000;Cuotas Asociaciones;3381,6;0
+172;62940010;Gestión residuos;5020,7;0
+173;62960000;Otros gastos edificios;6347,74;0
+174;62970000;Proceso de Datos;56238,49;0
+175;62980000;Limpieza y vigilancia;30197,97;0
+176;62990000;Gastos Otros Servicios;6560,35;0
+177;62998020;Impuesto Circulación VO;67,67;0
+178;62999020;Inspección Técnica Vehículos;70,86;0
+179;62999900;Lavadero;12913,7;0
+180;62999910;Lavadero VN;1870,78;0
+181;63000000;Impuestos Sobre Beneficios;31037,51;0
+182;63010000;Impuesto diferido s/beneficios;0;6483,45
+183;63100000;Impto.S/Activ. Economicas;10816,47;0
+184;63110000;Otros Tributos;2805,76;0
+185;63120000;Impuesto Circulación;682,15;0
+186;63130000;Impuesto Sobre Bienes Inmuebl;7132;0
+187;63150020;Otros Tributos VO;10525,45;0
+188;63300000;Ajustes Negativos S/Beneficios;2589,68;0
+189;63410000;Ajustes Negativos IVA Circul.;884,6;0
+190;64000000;Salarios Administracion;9656,64;0
+191;64000001;Salarios Jefes de Admon;44108,07;0
+192;64000003;Salarios Gerente;44107,96;0
+193;64000010;Salarios  Vendedores VN;96683,5;0
+194;64000011;Salarios Jefe de ventas VN;57928,09;0
+195;64000014;Salarios Otros VN;36488,48;0
+196;64000020;Salarios  Vendedores VO;36832,12;0
+197;64000024;Salarios Otros VO;37471,37;0
+198;64000030;Salarios Improduct.Taller;110475,47;0
+199;64000031;Salarios Productivos Taller;331636,27;0
+200;64000033;Sueldos Jefe Taller;29814,83;0
+201;64000050;Salarios Rec.;73773,18;0
+202;64000051;Salarios Jefes Recambios;24394,12;0
+203;64016010;Comisiones Vendedores VN;30517,15;0
+204;64016020;Comisiones Vendedores VO;39512,71;0
+205;64016030;Comis. e incentivos Taller;2770;0
+206;64016050;Comisiones Vendedores Rec.;250;0
+207;64200000;Seg. Social Admon;3141,39;0
+208;64200010;Seg.Social vendedores VN;41378,33;0
+209;64200011;Seg.Social otros  VN;12637,27;0
+210;64200020;Seg.Social Vendedores VO;24835;0
+211;64200021;Seg.Social otros VO;12037,38;0
+212;64200030;Seg.Social Improd.Taller;45751,53;0
+213;64200031;Seg.Social Productivos Taller;110084,97;0
+214;64200050;Seg.Social Rec.;24406,77;0
+215;64200051;Seg.Social Jefes Recambios;7763,29;0
+216;64900010;Otros Gastos Sociales VN;180;0
+217;64900030;Otros Gastos Sociales Taller;975,71;0
+218;64900031;Formación Taller;10349,28;0
+219;64900100;Formación Profesional;7468,72;0
+220;64900110;Formación Profesional VN;2885;0
+221;64900120;Formación Profesional VO;1435;0
+222;64900150;Formación Profesional Rec.;527,29;0
+223;65000000;Perd.Crdtos.Comerc.Incobrables;0;0,26
+224;66200005;Intereses deudas no hipotecari;3336,85;0
+225;66230010;Intereses financ. exist. VN;36371,41;0
+226;66230020;Intereses financ. exist. VO;9758,65;0
+227;66230050;Intereses Fin ext.Recambios;2965,84;0
+228;66520000;Intereses Descuento Efectos;209,64;0
+229;66530000;Int.dcto.efectos, ent cto ot.;0,01;0
+230;66530001;Diferencias en cobros clientes;1341,12;0
+231;66900000;Otros Gastos Financieros;742,5;0
+232;67800010;Incentivos detra.desp.cierre;2350;0
+233;68040000;Amort. Fondo de Comercio;2316,4;0
+234;68060000;Amort. Aplic.Informáticas;733;0
+235;68070000;Amort. Indentific. Corporat.;8244,16;0
+236;68110000;Amort. Edificios Amposta;75683,18;0
+237;68110001;Amort. Edificio Tortosa;8662,39;0
+238;68130000;Amort. Maquinaria;4686,22;0
+239;68140000;Amort. Utillaje;10867,02;0
+240;68150000;Amort. Otras Instalaciones;5184,3;0
+241;68160000;Amort. Mobiliario;13982,39;0
+242;68170000;Amort. Equipos Proc.Informat;3495,52;0
+243;68180000;Amort. Elementos de Transporte;18196,05;0
+244;68190000;Amort. Otro Inmovil Material;2620,02;0
+245;69300050;Dotac Prov.Existencias Rec.;11094,81;0
+246;69400000;Pdas por deterioro de ctos por;10124,65;0
+247;70000011;Venta Recambios Mostr. Detalle;0;129649,39
+248;70000014;Venta Recambios Mostr. Mayor;0;79500,83
+249;70000031;Venta Neumaticos Mostr.Detalle;0;980,69
+250;70000051;Venta Lubricant.Mostr. Detalle;0;1354,33
+251;70000054;Venta Lubricant.Mostr. Mayor;0;149,94
+252;70000091;Venta Otros Mat. Mostr.Detalle;0;34531,7
+253;70000094;Venta Otros Mat. Mostr.Mayor;0;6649,01
+254;70010011;Turis.VO.Nissan Recomprado;0;1968056,44
+255;70010013;Turis.VO.Nissan Compraventa;0;268487,18
+256;70010014;Turis VO.Nissan Demo;0;28011,82
+257;70013011;Turis.VO.O.Marcas Recomprado;0;579066,48
+258;70013013;Turis.VO.O.Marcas Compraventa;0;394855,23
+259;70016011;Indust.VO.Nissan Recomprado;0;18016,53
+260;70016013;Indust.VO.Nissan Flotas;0;48916,2
+261;70018015;Tractor VO.Agricola;0;5694,21
+262;70020013;Vta. Turis/TT/Comerc Cesión.;0;406056,27
+263;70024011;Qashqai Vehículo Detalle;0;1543912,26
+264;70024012;Qashqai Vehículo Flota;0;457011,67
+265;70024051;Qashqai Acc.Con Detalle;0;5856,7
+266;70024052;Qashqai Acc.Con Flota;0;1577,16
+267;70030011;Juke Vehículo Detalle;0;803525,14
+268;70030012;Juke Vehículo Flota;0;139419,89
+269;70030051;Juke Acc.Con Detalle;0;2095,69
+270;70032011;Ariya Detall;0;99079,82
+271;70032051;Ariya Acc.Detall;0;4363,5
+272;70041011;X-Trail Vehículo Detalle;0;400461,15
+273;70041012;X-Trail Vehículo Flota;0;216078,94
+274;70041051;X-Trail Acc.Con Detalle;0;859,99
+275;70041052;X-Trail Acc.Con Flota;0;1328,87
+276;70050000;Ventas Carrozados Industriales;0;9719
+277;70062011;Primastar Vehículo Detalle;0;87090,28
+278;70062012;Primastar Vehículo Flota;0;426883,79
+279;70062051;Primastar Acc.Con Detalle;0;1521,57
+280;70063012;Interstar Vehículo Flota;0;58082,07
+281;70063052;Interstar Acc.Con Flota;0;174,7
+282;70066011;Townstar Vehiculo detalle;0;148770,74
+283;70066012;Townstar vehiculo flota;0;100954,24
+284;70066051;Townstar Acc.Con Detalle;0;328,05
+285;70066052;Townstar Acc.Con Flota;0;1455,71
+286;70073012;Interstar Indust. Vehículo Flo;0;57321,52
+287;70073014;NV300 Vehículo Flota;0;26843,6
+288;70080013;Ventas Veh Landini Detalle;0;96884,3
+289;70080014;Ventas Veh McCormick Detalle;0;248200
+290;70080051;Ventas Maq.Agricola y Aperos;0;35300
+291;70090011;Dto.  Recambios Mostr. Detalle;21397,15;0
+292;70090014;Dto.  Recambios Mostr. Mayor;15578,86;0
+293;70090031;Dto. Neumaticos Mostr.Detalle;9,71;0
+294;70090051;Dto. Lubricant.Mostr. Detalle;498,27;0
+295;70090054;Dto.  Lubricant.Mostr. Mayor;33,25;0
+296;70090091;Dto.  Otros Mat. Mostr.Detalle;6600,64;0
+297;70090094;Dto.  Otros Mat. Mostr.Mayor;756,43;0
+298;70091241;Qashqai Incent.Nmesa Detalle;0;208606,25
+299;70091242;Qashqai Incent.Nmesa Flota;0;110436,93
+300;70091301;Juke Incent.Nmesa Detalle;0;123568,84
+301;70091302;Juke Incent.Nmesa Flota;0;30912,83
+302;70091321;Incentivo Ariya Detall;0;32567,11
+303;70091411;X-Trail Incent.Nmesa Detalle;0;77641,78
+304;70091412;X-Trail Incent.Nmesa Flota;0;42415,98
+305;70091621;Primastar Incent.Nmesa Detalle;0;12938,72
+306;70091622;Primastar Incent.Nmesa Flota;0;76003,11
+307;70091632;Interstar Incent.Nmesa Flota;0;6891,98
+308;70091661;Townstar Incent.Nmesa Detalle;0;27265,47
+309;70091662;Townstar Incent.Nmesa Flota;0;20041,28
+310;70091731;Interstar Indust. Incent.Nmesa;0;500
+311;70091732;Interstar Indust. Incent.Nmesa;0;8936,58
+312;70091734;NV300 Incent.Nmesa Flota;0;3791,35
+313;70091803;Landini Inc. Marca Detalle;0;5900
+314;70091804;McCormick Inc. Marca Detalle;0;9000
+315;70099241;Qashqai Dto. Detalle;25954,49;0
+316;70099242;Qashqai Dto. Flota;3152,01;0
+317;70099301;Juke Dto. Detalle;15361,34;0
+318;70099321;Ariya Descuento Detalle;1983,01;0
+319;70099411;X-Trail Dto. Detalle;6641,24;0
+320;70099412;X-Trail Dto. Flota;1192,84;0
+321;70099621;Primastar Dto. Detalle;2377,65;0
+322;70099622;Primastar Dto. Flota;1083,3;0
+323;70099632;Interstar Dto. Flota;492,32;0
+324;70099661;Townstar Dto. Detalle;2484,14;0
+325;70099662;Townstar Dto. Flota;914,51;0
+326;70099732;Interstar Indust. Dto. Flota;519,34;0
+327;70300100;Venta de Chatarra;0;3546,17
+328;70500011;Venta M O  Mecánica;0;590457,93
+329;70500014;Venta M O  Mecánica Cia.Seg;0;3510,66
+330;70500031;Venta Subcontratado;0;213652,38
+331;70500034;Venta Subcontratado Cia.Seg;0;1538,18
+332;70500041;Venta Pequeño Material;0;7008,7
+333;70500061;Venta Franquicia;0;1213,5
+334;70500091;Venta Veh.Cortesía Externa;0;34834,99
+335;70509990;Ventas mano obra gar. Aprob.;0;303554,82
+336;70520011;Venta Rec.Tal. Mec. Detalle;0;428005,15
+337;70520014;Venta Rec.Tal. Mec. Mayor;0;20153,01
+338;70520031;Venta Neum.Tal.Mec. Detall;0;21792,41
+339;70520034;Venta Neum.Tal.Mec. Mayor;0;490,46
+340;70520051;Venta Lubric.Tal.Mec. Detal;0;49181,64
+341;70520054;Venta Lubric.Tal.Mec. Mayor;0;1263,94
+342;70520091;Venta Otros Tal.Mec. Detall;0;170306,29
+343;70520094;Venta Otros Tal.Mec. Mayor;0;3919,15
+344;70521011;Venta Recambios Tal.NH Detalle;0;110907,57
+345;70521014;Venta Recambios Tal.NH Mayor;0;17861,46
+346;70521031;Venta Neumat.Tal.NH Mayor;0;505,56
+347;70521051;Venta Lubric. Tall.NH Detal;0;24598,76
+348;70521054;Venta Lubric. Tall.NH Mayor;0;1287,82
+349;70521091;Venta Otros rec.Tal.NH Detall;0;56116,7
+350;70521094;Venta Otros rec.Tal.NH Mayor;0;3667,38
+351;70522011;Venta Recamb.Tal.Kia detalle;0;278150,62
+352;70522014;Venta Recamb.Tal.Kia Mayor;0;2955,17
+353;70522031;Venta Neum. Tal.Kia Detall;0;13093,25
+354;70522051;Venta Lubric.Tal.Kia Detall;0;42805,53
+355;70522054;Venta Lubric. Tal.Kia Mayor;0;163,1
+356;70522091;Venta Otros Mat.Tal.Kia Detall;0;30049,63
+357;70522094;Venta Otros Mat.Tal.Kia Mayor;0;28,42
+358;70530011;Venta Rec Tal. Chapa. Detalle;0;35774,93
+359;70530031;Venta Neum.Tal.Chapa Detall;0;681,76
+360;70530051;Venta Lubric.Tal.Chapa Detall;0;506,22
+361;70530091;Venta Otros Tal.Chapa Detall;0;929,08
+362;70592011;Dto.Recamb.Tal. Mec. Detalle;49143,82;0
+363;70592014;Dto.  Recambios Mec. Mayor;1978,22;0
+364;70592031;Dto.  Neum.Tal.Mec. Detall;729,34;0
+365;70592034;Dto.  Neum.Tal.Mec. Mayor;77,02;0
+366;70592051;Dto.  Lubric.Tal.Mec. Detal;10684,96;0
+367;70592054;Dto.  Lubric.Tal.Mec. Mayor;247,53;0
+368;70592091;Dto.  Otros Tal.Mec. Detall;21026,44;0
+369;70592094;Dto.  Otros Tal.Mec. Mayor;325,1;0
+370;70592111;Dto.  Recambios Tal.NH Detall;18387,96;0
+371;70592114;Dto.  Recambios Tal.NH Mayor;3545,6;0
+372;70592151;Dto.  Lubric.Tal. NH Detall;6607,57;0
+373;70592154;Dto.  Lubric.Tal. NH Mayor;313,01;0
+374;70592191;Dto. Otros Rec.Tal. NH Detall;6742,59;0
+375;70592194;Dto. Otros Rec.Tal. NH Mayor;530,46;0
+376;70592211;Dto.Recamb.Tal.Kia Detalle;36603,47;0
+377;70592214;Dto. Recamb.Tal.Kia Mayor;478,58;0
+378;70592231;Dto.  Neum. Tal.Kia Detall;690,09;0
+379;70592251;Dto.  Lubric. Tal.Kia Detal;4226,14;0
+380;70592254;Dto.  Lubric. Tal.Kia Mayor;16,23;0
+381;70592291;Dto.  Otros Mat.Tal.Kia Detall;8211,3;0
+382;70592294;Dto.  Otros Mat.Tal.Kia Mayor;0,4;0
+383;70593011;Dto.Recam. Tal. Chapa  Detalle;1529,91;0
+384;70593031;Dto.  Neum.Tal.Chapa Detall;82,85;0
+385;70593051;Dto.  Lubric.Tal.Chapa Detall;154,43;0
+386;70593091;Dto.  Otros Tal.Chapa Detall;79,11;0
+387;70900030;Rapells Sobre Ventas Taller;0;3834,24
+388;71000000;Variación Trabajos en Curso;35853,55;0
+389;74000000;Subvenciones Oficiales;0;10928,77
+390;75200000;Ingresos Alquileres de Locales;0;48000
+391;75400010;Comisiones s/vtas.  VN;0;359,28
+392;75400020;Comisiones  s/vtas  VO;0;428
+393;75430000;Comisiones financieras;0;1606,36
+394;75430010;Comisiones financieras VN;0;91745,42
+395;75430020;Comisiones financieras VO;0;112193,87
+396;75440010;Comisiones Cias. Seguros VN;0;3669,64
+397;75440020;Comisiones Cias. Seguros VO;0;450
+398;75450010;Ingresos por gestoría VN;0;77519,83
+399;75450020;Ingresos por gestoría VO;83,47;0
+400;75460010;Ingresos Garant.Extendida;0;60777,26
+401;75460020;Ingresos Garant.Extendida VO;0;3041,31
+402;75900010;Ingresos Serv. Diversos VN;0;1475,09
+403;75900020;Ingresos Serv.Diversos VO;0;1847,61
+404;75900030;Manteniment Anav;0;21270
+405;75900050;Contrac.Mant.Kia;0;13959
+406;75901010;Otros Incent. Ventas Directas;0;100
+407;76900000;Otros Ingresos Financieros;0;548,71
+408;76990000;Otros Ingresos;0;1940,55
+409;77100000;Beneficios Inmovilizado Mat.;0;5544,08
+410;77800000;Ingresos Excepcionales;0;6839,07
+411;79400000;Rever det.ctos op. Comerciales;0;4545,59

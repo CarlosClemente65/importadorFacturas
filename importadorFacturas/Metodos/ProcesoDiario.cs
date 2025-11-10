@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
-using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace importadorFacturas.Metodos
 {
@@ -42,37 +37,43 @@ namespace importadorFacturas.Metodos
                     foreach(var columna in Diario.MapeoColumnasDiario)
                     {
                         var nombreColumna = columna.Value;
-                        var valorCelda = fila[columna.Key]?.ToString().Trim() ?? "";
+                        var valorCelda = fila[columna.Key]?
+                            .ToString()
+                            .Trim()
+                            .Replace(".", "")
+                            .Replace(";", "")
+                            ?? "";
 
                         // Solo procesa las lineas que tengan la longitud de cuenta pasada en parametros
-                        if(nombreColumna == "Cuenta")
+                        if(nombreColumna == "Cuenta" && valorCelda.Length != Configuracion.LongitudCuenta)
                         {
-                            if(valorCelda.Length != Configuracion.LongitudCuenta)
-                            {
-                                lineaDiario = null;
-                                break;
-                            }
+                            lineaDiario = null;
+                            break;
                         }
-
 
                         AsignarValor(fila, lineaDiario, columna);
 
-                        if(lineaDiario.ImporteDebe != 0)
+                        // Control de importes dede/haber segun si hay o no una sola columna
+                        if(Configuracion.ColumnaUnica == 'S' && lineaDiario.ImporteDebe < 0)
                         {
-                            lineaDiario.CuentaDebe = lineaDiario.Cuenta;
-                            lineaDiario.Signo = 'D';
-                        }
-                        else if(lineaDiario.ImporteHaber != 0)
-                        {
-                            lineaDiario.CuentaHaber = lineaDiario.Cuenta;
-                            lineaDiario.Signo = 'H';
+                            lineaDiario.ImporteHaber = Math.Abs(lineaDiario.ImporteDebe); // Coge el valor sin signo
+                            lineaDiario.ImporteDebe = 0;
                         }
                     }
+
                     if(lineaDiario != null)
                     {
-                        numLinea++;
-                        lineaDiario.Apunte = numLinea;
-                        Diario.ApuntesDiario.Add(lineaDiario);
+                        // Controla si grabar la linea sin movimientos
+                        if(Configuracion.ConMovimientos == 'N' && lineaDiario.ImporteDebe == 0 && lineaDiario.ImporteHaber == 0)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            numLinea++;
+                            lineaDiario.Apunte = numLinea;
+                            Diario.ApuntesDiario.Add(lineaDiario);
+                        }
                     }
                 }
             }

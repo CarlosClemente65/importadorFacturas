@@ -1,4 +1,4 @@
-# DseImfacex v1.7.1.0
+# DseImfacex v2.0.1.0
 ## Programa para importar un listado de facturas o un balance desde un excel personalizando las columnas de datos
 
 ### Desarrollado por Carlos Clemente (04-2025)
@@ -18,6 +18,8 @@
  - Version 1.6	- Añadido metodo 'ChequeoIntegridadFacturas' para comprobar si las facturas son correctas (cuotas de IVA calculadas y total factura)
  - Version 1.7	- Modificado metodo 'ProcesoAlcasal' para incluir nuevas series de ingresos del cliente Alcasal
  - Version 2.0	- Añadida funcionalidad para generar un diario a partir de un balance
+ - Version 2.1	- Añadida funcionalidad para que los importes del balance esten en una columna y no importar cuentas sin movimientos
+
 
 <br>
 <b>Instrucciones:</b>
@@ -38,7 +40,7 @@
 <br>
 
 <b>Uso:</b>
-dseimpex dsclave guion.txt
+dseimfaex dsclave guion.txt
 
 * <u>Parametros de ejecucion:</u>
 	* dsclave: Clave de ejecucion del programa
@@ -58,18 +60,32 @@ dseimpex dsclave guion.txt
 	* E=numeroFactura
 	* H=nifFactura
 	
-* Ejemplo de guion de balance:
+* Ejemplo de guion de balance 2 columnas:
 	* [parametros]
 	* entrada=balance.xlsx
 	* salida=salida_balance.csv
 	* proceso=BAL
 	* fila=4
 	* longitud=12
+	* movimientos=S
 	* [columnas]
 	* A=Cuenta
 	* B=Descripcion
 	* G=ImporteDebe
 	* H=ImporteHaber
+	
+* Ejemplo de guion de balance 1 columna:
+	* [parametros]
+	* entrada=balance.xlsx
+	* salida=salida_balance.csv
+	* proceso=BAL
+	* fila=4
+	* longitud=12
+	* columna=S
+	* [columnas]
+	* A=Cuenta
+	* B=Descripcion
+	* G=ImporteDebe
 
 *Contenido campos:
 	entrada		Fichero excel de entrada
@@ -80,4 +96,6 @@ dseimpex dsclave guion.txt
 	fila		Fila que contiene la cabecera de las columnas
 	hoja		(Opcional) Hoja en la que estan los datos, si no se pasa se toma por defecto la 1
 	longitud	(solo para balances) Longitud de las cuentas a procesar (evita generar apuntes de todos los niveles que tenga el balance)
+	columna		(solo para balances) Indica si los saldos de las cuentas estan en una sola columna (positivos al debe / negativos al haber)
+	movimientos	(solo para balances) Indica si recoger las cuentas sin movimientos (defecto N)
 	

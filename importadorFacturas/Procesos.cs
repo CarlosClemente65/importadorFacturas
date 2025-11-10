@@ -337,6 +337,20 @@ namespace importadorFacturas
                             return false;
                         }
                         break;
+
+                    case "columna":
+                        if(string.Equals(valor, "S", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            Configuracion.ColumnaUnica = 'S';
+                        }
+                        break;
+
+                    case "movimientos":
+                        if(string.Equals(valor, "S", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            Configuracion.ConMovimientos = 'S';
+                        }
+                        break;
                 }
             }
             return true;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace importadorFacturas.Metodos
 {
@@ -13,10 +9,6 @@ namespace importadorFacturas.Metodos
         public int Apunte { get; set; }
         public string Cuenta { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
-        public char Signo { get; set; }
-        public decimal Importe { get; set; }
-        public string CuentaDebe {  get; set; } = string.Empty;
-        public string CuentaHaber { get; set; } = string.Empty;
         public decimal ImporteDebe { get; set; }
         public decimal ImporteHaber { get; set; }
 
@@ -38,8 +30,7 @@ namespace importadorFacturas.Metodos
                 { 1, "Cuenta" },
                 { 2, "Descripcion" },
                 { 3, "ImporteDebe" },
-                { 4, "ImporteHaber" },
-                { 5, "Signo" },
+                { 4, "ImporteHaber" }
             };
         }
 
@@ -49,7 +40,5 @@ namespace importadorFacturas.Metodos
         {
             return ApuntesDiario;
         }
-
-
     }
 }

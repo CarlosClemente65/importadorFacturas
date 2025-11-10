@@ -2,25 +2,24 @@
 	- Apunte
 	- Cuenta
 	- Signo (D/H)
-	- Importe
-	- Cuenta Debe
-	- Cuenta Haber
-
+	- Importe Debe
+	- Importe Haber
 
 * Guion
 	[parametros]
-	- entrada (fichero de entrada)
-	- salida (fichero de salida opcional)
-	- proceso = BAL
-	- hoja (hoja en la que estan los datos)
-	- fila (fila que tiene la cabecera del balance)
-	- longitud (largo de las cuentas a procesar ya que puede haber varios niveles)
+	- entrada: fichero de entrada
+	- salida: fichero de salida (opcional)
+	- proceso: en los balances sera fijo 'BAL'
+	- hoja: hoja de la excel en la que estan los datos
+	- fila: fila que tiene la cabecera del balance
+	- longitud: largo de las cuentas a procesar ya que puede haber varios niveles
+	- columna: indica si los importes vienen en una sola columna (opcional y defecto N)
+	- movimientos: indica si se recogen las cuentas que no tienen movimiento (defecto N)
 	[columnas]
-	- A = cuenta
-	- B = descripcion
-	- C = importe debe
-	- D = importe haber
-	- E = Signo (d/h) - Opcional
+	- A=Cuenta
+	- B=Descripcion
+	- C=ImporteDebe
+	- D=ImporteHaber
 	
 * Pantalla seleccion
 	- Diario
@@ -31,11 +30,11 @@
 	- Descripcion
 	- Fichero Excel
 	- Hoja
-	- Fila inicio
-	- Columnas obligatorias
+	- Fila cabecera
+	- Importes en una columna (S/N) - positivos al debe / negativos al haber
+	- Cuentas sin movimientos (S/N) - Solo recoge las cuentas que tengan importe al debe o haber (salta las que no tienen movimiento)
+	- Columnas
 		> Cuenta
 		> Descripcion
-		> Importe debe
-		> Signo (si no se informa la cuenta haber)
-	- Columnas opcionales
-		> Importe haber
+		> Importe
+		> Importe haber (solo si los importes vienen en 2 columnas.

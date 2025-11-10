@@ -1,0 +1,11 @@
+[parametros]
+entrada=balance_signo.xlsx
+salida=salida_balance_saldos.csv
+proceso=BAL
+fila=1
+longitud=8
+columna=s
+[columnas]
+A=Cuenta
+B=Descripcion
+I=ImporteDebe

@@ -13,6 +13,8 @@ namespace importadorFacturas
         public static int HojaExcel { get; set; } = 1;
 
         public static int LongitudCuenta { get; set; } // Necesario para la importacion de balance a diario
+        public static char ColumnaUnica { get; set; } = 'N'; // Importes en una sola columna
+        public static char ConMovimientos { get; set; } = 'N'; // Permite recoger solo las cuentas con movimientos
 
 
         //Lista de parametros
