@@ -1,0 +1,11 @@
+[parametros]
+entrada=C:\Programacion\c#\importadorFacturas\pruebas\sys.xls
+salida=C:\Programacion\c#\importadorFacturas\pruebas\salida_balance_sys.csv
+proceso=BAL
+fila=4
+longitud=9
+columna=S
+[columnas]
+A=Cuenta
+B=Descripcion
+F=ImporteDebe

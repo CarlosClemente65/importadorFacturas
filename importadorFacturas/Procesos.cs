@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System;
-using UtilidadesDiagram;
+using UtilesDS = UtilidadesDiagram.Utilidades;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using importadorFacturas.Metodos;
 
@@ -39,8 +39,24 @@ namespace importadorFacturas
             //Se ajusta el numero de la fila y columna de inicio ya que ClosedXML usa base 0
             filaInicio--;
 
-            using(var libro = new XLWorkbook(Configuracion.FicheroEntrada))
+            // Si el fichero de entrada esta en formato Excel 97-2003 se convierte a Excel 2007
+            MemoryStream ms;
+            Stream fileStream;
+            if(Path.GetExtension(Configuracion.FicheroEntrada).Equals(".xls", StringComparison.OrdinalIgnoreCase))
             {
+                ms = UtilesDS.ConvertirAXlsx(Configuracion.FicheroEntrada);
+                fileStream = ms; //Carga la plantilla convertida en el fileStream
+            }
+            else
+            {
+                //Carga la plantilla original en el fileStream
+                fileStream = new FileStream(Configuracion.FicheroEntrada, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            }
+
+
+            using(fileStream)
+            {
+                XLWorkbook libro = new XLWorkbook(fileStream);
                 var hoja = libro.Worksheet(Configuracion.HojaExcel);
 
                 //Carga las columnas de la fila de cabecera para procesarlas
@@ -248,7 +264,7 @@ namespace importadorFacturas
             foreach(string linea in Configuracion.parametros)
             {
                 //Separa el parametro y su valor
-                (string parametro, string valor) = Utilidades.DivideCadena(linea, '=');
+                (string parametro, string valor) = UtilesDS.DivideCadena(linea, '=');
 
                 switch(parametro)
                 {
@@ -258,7 +274,7 @@ namespace importadorFacturas
 
                         if(!string.IsNullOrEmpty(chequeo))
                         {
-                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, chequeo);
+                            UtilesDS.GrabarFichero(Configuracion.FicheroErrores, chequeo);
                             return false;
                         }
                         Configuracion.FicheroEntrada = valor;
@@ -267,19 +283,19 @@ namespace importadorFacturas
                         if(string.IsNullOrEmpty(Configuracion.FicheroSalida))
                         {
                             Configuracion.FicheroSalida = $"salida_{Path.GetFileNameWithoutExtension(Configuracion.FicheroEntrada)}.csv";
-                            Utilidades.ControlFicheros(Configuracion.FicheroSalida);
+                            UtilesDS.ControlFicheros(Configuracion.FicheroSalida);
                         }
 
                         //Graba el defecto del fichero de errores segun el nombre del fichero de entrada
                         Configuracion.FicheroErrores = Path.Combine(Path.GetDirectoryName(Configuracion.FicheroEntrada), "errores.txt");
-                        Utilidades.ControlFicheros(Configuracion.FicheroErrores);
+                        UtilesDS.ControlFicheros(Configuracion.FicheroErrores);
 
                         break;
 
                     //Fichero salida
                     case "salida":
                         Configuracion.FicheroSalida = valor;
-                        Utilidades.ControlFicheros(Configuracion.FicheroSalida);
+                        UtilesDS.ControlFicheros(Configuracion.FicheroSalida);
                         break;
 
                     //Tipo de proceso
@@ -291,7 +307,7 @@ namespace importadorFacturas
                         }
                         else
                         {
-                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. Tipo de proceso {valor} incorrecto");
+                            UtilesDS.GrabarFichero(Configuracion.FicheroErrores, $"Error. Tipo de proceso {valor} incorrecto");
                             return false;
                         }
                         break;
@@ -305,7 +321,7 @@ namespace importadorFacturas
                         }
                         else
                         {
-                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. Fila {valor} incorrecta");
+                            UtilesDS.GrabarFichero(Configuracion.FicheroErrores, $"Error. Fila {valor} incorrecta");
                             return false;
                         }
                         break;
@@ -319,7 +335,7 @@ namespace importadorFacturas
                         }
                         else
                         {
-                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. Hoja {valor} incorrecta");
+                            UtilesDS.GrabarFichero(Configuracion.FicheroErrores, $"Error. Hoja {valor} incorrecta");
                             return false;
                         }
                         break;
@@ -333,7 +349,7 @@ namespace importadorFacturas
                         }
                         else
                         {
-                            Utilidades.GrabarFichero(Configuracion.FicheroErrores, $"Error. Longitud de cuenta incorrecta");
+                            UtilesDS.GrabarFichero(Configuracion.FicheroErrores, $"Error. Longitud de cuenta incorrecta");
                             return false;
                         }
                         break;
@@ -377,7 +393,7 @@ namespace importadorFacturas
             foreach(var linea in lineas)
             {
                 //Divide la cadena por el simbolo igual 
-                (string letraColumna, string propiedad) = Utilidades.DivideCadena(linea, '=');
+                (string letraColumna, string propiedad) = UtilesDS.DivideCadena(linea, '=');
 
                 // Convertir la letra de columna a número
                 int numeroColumna = LetraAColumna(letraColumna);
@@ -409,7 +425,7 @@ namespace importadorFacturas
             foreach(var linea in lineas)
             {
                 //Divide la cadena por el simbolo igual 
-                (string letraColumna, string propiedad) = Utilidades.DivideCadena(linea, '=');
+                (string letraColumna, string propiedad) = UtilesDS.DivideCadena(linea, '=');
 
                 // Convertir la letra de columna a número
                 int numeroColumna = LetraAColumna(letraColumna);
