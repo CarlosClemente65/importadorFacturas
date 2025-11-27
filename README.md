@@ -19,6 +19,7 @@
  - Version 1.7	- Modificado metodo 'ProcesoAlcasal' para incluir nuevas series de ingresos del cliente Alcasal
  - Version 2.0	- Añadida funcionalidad para generar un diario a partir de un balance
  - Version 2.1	- Añadida funcionalidad para que los importes del balance esten en una columna y no importar cuentas sin movimientos
+ - Version 2.2	- Añadida funcionalidad para convertir libros de Excel 97-2003 a Excel 2007
 
 
 <br>
