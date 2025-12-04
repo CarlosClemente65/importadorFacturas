@@ -343,7 +343,7 @@ namespace importadorFacturas
                     // Longitud de cuenta para el proceso de importacion de balance a diario
                     case "longitud":
                         // Se valida de que sea mayor de 4 y menor de 12
-                        if(int.TryParse(valor, out int _longitud) && _longitud >= 4 && _longitud <= 12)
+                        if(int.TryParse(valor, out int _longitud) && _longitud >= 3 && _longitud <= 12)
                         {
                             Configuracion.LongitudCuenta = _longitud;
                         }

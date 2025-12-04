@@ -1,0 +1,11 @@
+[parametros]
+entrada=C:\Programacion\c#\importadorFacturas\pruebas\sys_3digitos.xlsx
+salida=C:\Programacion\c#\importadorFacturas\pruebas\salida_balance_sys_3digitos.csv
+proceso=BAL
+fila=7
+longitud=3
+columna=S
+[columnas]
+A=Cuenta
+B=Descripcion
+H=ImporteDebe
