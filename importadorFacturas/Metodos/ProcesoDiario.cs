@@ -80,7 +80,7 @@ namespace importadorFacturas.Metodos
 
             catch(InvalidOperationException ex)
             {
-                resultado.AppendLine($"Error al procesar los datos.");
+                resultado.AppendLine($"Error al procesar los datos en la fila {numLinea}.");
                 resultado.AppendLine($"{ex.Message}");
                 return resultado;
             }
