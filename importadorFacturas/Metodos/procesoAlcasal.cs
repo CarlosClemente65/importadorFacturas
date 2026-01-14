@@ -89,13 +89,29 @@ namespace importadorFacturas
             var datosExcel = Program.proceso.LeerExcel();
 
             //Se ordenan los datos por la fecha y numero de factura para evitar errores en la agrupacion
-            var datosExcelOrdenados = datosExcel
-                .Select(fila => new
+            // Primero se filtran los datos de Excel para eliminar filas que no tengan fecha
+            var datosExcelFiltrados = datosExcel
+                .Select(fila =>
                 {
-                    Fila = fila,
-                    Fecha = DateTime.Parse(fila[2]).Date, // Convierte el campo de la fecha a una valida
-                    NumeroFactura = fila[3].Trim() // Convierte el número de factura de string a entero
+                    var valorFecha = fila[2];
+                    DateTime fecha = DateTime.MinValue;
+
+                    bool fechaValida =
+                        !string.IsNullOrWhiteSpace(valorFecha) &&
+                        DateTime.TryParse(valorFecha, out fecha);
+
+                    return new
+                    {
+                        Fila = fila,
+                        FechaValida = fechaValida,
+                        Fecha = fecha,
+                        NumeroFactura = fila[3].Trim()
+                    };
                 })
+                .Where(x => x.FechaValida)
+                .ToList();
+
+            var datosExcelOrdenados = datosExcelFiltrados
                 .OrderBy(x => x.Fecha) // Primero ordenamos por fecha
                 .ThenBy(x => x.NumeroFactura) // Luego por número de factura
                 .Select(x => x.Fila) // Seleccionamos solo la fila original

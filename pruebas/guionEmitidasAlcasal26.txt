@@ -1,0 +1,4 @@
+[parametros]
+entrada=c:\Programacion\C#\importadorFacturas\pruebas\08012026.xlsx
+salida=c:\Programacion\C#\importadorFacturas\pruebas\salida_08012026.csv
+proceso=E01
